@@ -72,4 +72,5 @@ try
     });
 }
 finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+failures += await ProgramDownloadWorkflowTests.RunAsync();
 return failures == 0 ? 0 : 1;

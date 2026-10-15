@@ -88,9 +88,12 @@ public sealed partial class MainWindow : Window
     private long monitorSequence;
     private string? trendPath;
     private SshTarget? operationTarget;
+    private readonly Func<SshTarget, DeploymentRequest, Task<DeploymentResponse>>? deploymentTransport;
 
-    public MainWindow()
+    public MainWindow() : this(null) { }
+    public MainWindow(Func<SshTarget, DeploymentRequest, Task<DeploymentResponse>>? deploymentTransport)
     {
+        this.deploymentTransport = deploymentTransport;
         NameScope.SetNameScope(this, scope);
         Title = "ST Workbench · 工程站"; Width = 1440; Height = 940; MinWidth = 1080; MinHeight = 720;
         Background = Brush.Parse("#0C1523"); FontFamily = new FontFamily("Microsoft YaHei UI, Segoe UI");
@@ -110,8 +113,8 @@ public sealed partial class MainWindow : Window
         buildButton = ActionButton("检查 / 编译", CompileAsync); commands.Children.Add(buildButton);
         packageButton = ActionButton("生成候选包", GeneratePackageAsync); commands.Children.Add(packageButton);
         commands.Children.Add(ActionButton("取消编译", () => { buildCancellation?.Cancel(); return Task.CompletedTask; }));
-        downloadButton = ActionButton("下载 / Linux 编译", StageAndCompileAsync); downloadButton.IsEnabled = false; Register(downloadButton, "DownloadButton"); commands.Children.Add(downloadButton);
-        activateButton = ActionButton("显式激活", ActivateAsync); activateButton.IsEnabled = false; commands.Children.Add(activateButton);
+        downloadButton = ActionButton("下载 / 应用程序", StageAndCompileAsync); downloadButton.IsEnabled = false; Register(downloadButton, "DownloadButton"); commands.Children.Add(downloadButton);
+        activateButton = ActionButton("应用已编译程序", ActivateAsync); activateButton.IsEnabled = false; commands.Children.Add(activateButton);
         startButton = ActionButton("▶ 运行", () => DeploymentActionAsync("start")); startButton.IsEnabled = false;
         ToolTip.SetTip(startButton, "运行设备上已激活的程序；需先确认设备处于停止状态。"); Register(startButton, "RunButton"); commands.Children.Add(startButton);
         stopButton = ActionButton("■ 停止", () => DeploymentActionAsync("stop")); stopButton.IsEnabled = false; Register(stopButton, "StopButton"); commands.Children.Add(stopButton);
@@ -162,6 +165,7 @@ public sealed partial class MainWindow : Window
     private async Task Run(Func<Task> action)
     {
         try { await action(); }
+        catch (ProgramApplicationException e) { var status = buildStatus.Text; AppendLog(e.Message, true); buildStatus.Text = status; }
         catch (OperationCanceledException) { AppendLog("操作已取消；设备状态需重新查询。", false); }
         catch (Exception e) { AppendLog(e.Message, true); }
     }
@@ -228,15 +232,15 @@ public sealed partial class MainWindow : Window
     private Control DeploymentPane()
     {
         var panel = new StackPanel { Spacing = 8 };
-        panel.Children.Add(new TextBlock { Text = "下载与显式激活", FontSize = 22, FontWeight = FontWeight.Bold });
+        panel.Children.Add(new TextBlock { Text = "下载与应用程序", FontSize = 22, FontWeight = FontWeight.Bold });
         panel.Children.Add(Label("SSH 目标在“连接与工具”页设置，使用已配置密钥及严格主机身份验证。"));
         panel.Children.Add(ActionButton("查询真实状态", () => DeploymentActionAsync("status")));
         panel.Children.Add(ActionButton("首次登记空设备基线", () => DeploymentActionAsync("adopt-empty-baseline")));
         panel.Children.Add(ActionButton("登记已有停止程序基线", () => DeploymentActionAsync("adopt-baseline")));
         panel.Children.Add(deploymentDetails);
-        panel.Children.Add(Label("激活成功后保持停止；点击顶部“▶ 运行”执行已激活程序，点击“■ 停止”正常停止。按钮灰色时先点击“刷新设备状态”。"));
+        panel.Children.Add(Label("点击顶部“下载 / 应用程序”，编译通过后会提示重启核心。确认后自动应用，完成后保持停止；点击“▶ 运行”执行新程序。按钮灰色时先点击“刷新设备状态”。"));
         panel.Children.Add(ActionButton("恢复中断的激活事务", () => DeploymentActionAsync("recover")));
-        panel.Children.Add(Label("下载先暂存，再在 Linux 隔离编译，保持活动版本。激活会暂时中断在线连接，重启安全模式后保持停止；运行是另一个明确操作。通信中断后先查询实际状态，不自动重试。"));
+        panel.Children.Add(Label("上传与 Linux 编译期间原程序不变。编译成功且具备应用条件后，确认重启提示才会停止原程序、重启 Runtime 核心并应用新程序。取消后可点击“应用已编译程序”继续。通信中断后先查询真实状态，不自动重试或自动运行。"));
         return ScrollPanel(panel);
     }
     private bool CandidateMatchesProject()
@@ -250,7 +254,9 @@ public sealed partial class MainWindow : Window
     {
         var request = new DeploymentRequest(action, Guid.NewGuid().ToString("N"), action is "stage" or "compile" or "activate" ? candidatePackage?.BuildHash : null, activeBuildHash, packageBase64, packageHash);
         var target = operationTarget ?? new(sshHost.Text ?? "", sshUser.Text ?? "");
-        var response = await new RemoteDeploymentClient(knownHostsPath: Path.Combine(WorkbenchSettings.WorkspaceRoot, "artifacts", "ssh-known-hosts")).ExecuteAsync(target, request);
+        var response = deploymentTransport is null
+            ? await new RemoteDeploymentClient(knownHostsPath: Path.Combine(WorkbenchSettings.WorkspaceRoot, "artifacts", "ssh-known-hosts")).ExecuteAsync(target, request)
+            : await deploymentTransport(target, request);
         if (target.Host != sshHost.Text || target.User != sshUser.Text) throw new InvalidOperationException("操作期间目标已改变，结果属于原设备；请查询当前目标");
         deploymentDetails.Text = JsonSerializer.Serialize(response, new JsonSerializerOptions { WriteIndented = true });
         ApplyDeploymentResponse(response, action);
@@ -266,6 +272,7 @@ public sealed partial class MainWindow : Window
         stopButton.IsEnabled = remoteKnown && activeBuildHash is not null && response.State == "running";
         deviceRunStatus.Text = response.State switch { "stopped" => "设备：已停止", "running" => "设备：运行中", "activated-not-running" => "已激活，待确认停止状态", _ => "设备状态需刷新" };
         if (remoteKnown && candidatePackage is not null && activeBuildHash == candidatePackage.BuildHash) buildStatus.Text = response.State == "running" ? "当前候选已激活 · 真实运行中" : response.State == "stopped" ? "当前候选已激活 · 已停止" : "当前候选为设备活动版本";
+        RefreshCompiledProgramAction();
     }
     public Task RefreshDeploymentStatusAsync() => DeploymentActionAsync("status");
     private async Task DeploymentActionAsync(string action)
@@ -275,24 +282,9 @@ public sealed partial class MainWindow : Window
         deploymentBusy = true; operationTarget = new(sshHost.Text ?? "", sshUser.Text ?? "");
         try { await SendDeploymentAsync(action); if (action is "activate" or "recover" or "start" or "stop") { runtimeDetails.Text = "设备控制状态已变化，请重新读取状态。"; await DisconnectDebugAsync(); } if (action is "activate" or "recover") await SendDeploymentAsync("status"); }
         catch { remoteKnown = false; startButton.IsEnabled = stopButton.IsEnabled = false; deviceRunStatus.Text = "设备状态未确认，请刷新"; throw; }
-        finally { deploymentBusy = false; operationTarget = null; }
+        finally { deploymentBusy = false; operationTarget = null; RefreshCompiledProgramAction(); }
     }
-    private async Task StageAndCompileAsync()
-    {
-        if (deploymentBusy || busy) return;
-        if (!CandidateMatchesProject()) throw new InvalidOperationException("工程已变更，请重新生成候选包");
-        deploymentBusy = true; busy = true; operationTarget = new(sshHost.Text ?? "", sshUser.Text ?? ""); downloadButton.IsEnabled = false; activateButton.IsEnabled = false; compiledBuildHash = null;
-        try
-        {
-            var bytes = await File.ReadAllBytesAsync(candidatePackage!.PackagePath);
-            if (bytes.Length > 32 * 1024 * 1024) throw new InvalidDataException("程序包超过上传限制");
-            var hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)).ToLowerInvariant();
-            buildStatus.Text = "设备暂存中…"; await SendDeploymentAsync("stage", Convert.ToBase64String(bytes), hash);
-            buildStatus.Text = "Linux 隔离编译中…"; var result = await SendDeploymentAsync("compile");
-            ApplyCompiledCandidate(result);
-        }
-        finally { deploymentBusy = false; busy = false; operationTarget = null; downloadButton.IsEnabled = CandidateMatchesProject(); }
-    }
+    private Task StageAndCompileAsync() => DownloadAndApplyAsync(upload: true);
     private void ApplyCompiledCandidate(DeploymentResponse result)
     {
         if (result.State != "compiled" || candidatePackage is null) throw new InvalidOperationException("Linux 编译结果未确认");
@@ -304,19 +296,7 @@ public sealed partial class MainWindow : Window
         if (!motionDeploymentReady) AppendLog("运动候选暂不能激活：" + (offlineAxisProperties ? "轴机械与回零参数尚未应用，控制核心缺少参数应用/确认接口。" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? result.MotionCycleMessage : axisRequired && result.AxisReady != true ? result.AxisMessage : result.MotionMessage), true);
         buildStatus.Text = motionDeploymentReady ? "Linux 编译通过 · 未激活" : offlineAxisProperties ? "Linux 编译通过 · 轴机械与回零参数尚未应用，不可激活" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? "Linux 编译通过 · 轴控周期执行端未就绪，不可激活" : axisRequired && result.AxisReady != true ? "Linux 编译通过 · 基础轴控后端未就绪，不可激活" : "Linux 编译通过 · 连续运动后端未就绪，不可激活";
     }
-    private async Task ActivateAsync()
-    {
-        if (deploymentBusy || busy) return;
-        if (project.Hardware.Axes.Any(a => a.Mechanics is not null)) throw new InvalidOperationException("轴机械与回零参数尚未应用，当前候选不可激活。");
-        if (!CandidateMatchesProject() || compiledBuildHash != candidatePackage!.BuildHash) throw new InvalidOperationException("需要当前工程的 Linux 编译通过候选");
-        if ((project.Paths.Count > 0 || project.MotionCycle?.Enabled == true || AxisControlBinding.UsesAxisControl(GetSources())) && !motionDeploymentReady) throw new InvalidOperationException("运动执行端未验证就绪，当前候选不可激活。");
-        await DeploymentActionAsync("status");
-        if (!remoteKnown) throw new InvalidOperationException("请先明确登记设备基线");
-        if (!await ConfirmAsync("显式激活候选", "激活会短暂断开在线连接，并替换已登记的活动程序。成功后保持停止，需要另行点击运行。", "激活并保持停止")) return;
-        if (!CandidateMatchesProject()) throw new InvalidOperationException("确认期间工程已变更，请重新编译");
-        await DeploymentActionAsync("activate");
-        buildStatus.Text = startButton.IsEnabled ? "已激活 · 已停止，请点击顶部 ▶ 运行" : "已激活 · 运行状态需刷新";
-    }
+    private Task ActivateAsync() => DownloadAndApplyAsync(upload: false);
     private IReadOnlyList<SourceDocument> GetSources() => project.Items.Select(i => sources[i.Id]).ToArray();
     private void SetNewProject()
     {
