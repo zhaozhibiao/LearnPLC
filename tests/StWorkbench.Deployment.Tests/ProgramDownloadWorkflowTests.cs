@@ -21,10 +21,10 @@ internal static class ProgramDownloadWorkflowTests
                 var host = Ready(running);
                 var result = await ProgramDownloadWorkflow.ExecuteAsync(new(New, "payload", "checksum"), host);
                 Equal(ProgramDownloadState.Activated, result.State);
-                Equal(running ? "stage,compile,compiled,status,confirm,status,invalidate,stop,activate,status" : "stage,compile,compiled,status,confirm,status,invalidate,activate,status", host.Trace);
+                Equal(running ? "stage,compile,compiled,status,confirm,status,invalidate,stop,activate,status,start,status" : "stage,compile,compiled,status,confirm,status,invalidate,activate,status", host.Trace);
                 Equal(("payload", "checksum"), host.Payload);
                 Equal(new ProgramRestartNotice(running, true, Old), host.Notice);
-                Equal("stopped", result.Status!.State);
+                Equal(running ? "running" : "stopped", result.Status!.State);
             });
 
         await Test("cancel retains compiled candidate and leaves running program alone", async () =>
@@ -86,7 +86,7 @@ internal static class ProgramDownloadWorkflowTests
                 await Refuses(() => ProgramDownloadWorkflow.ApplyCompiledAsync(New, host));
                 Equal("status,confirm,status", host.Trace);
             });
-        foreach (var boundary in new[] { "stage", "compile", "compiled", "status", "confirm", "invalidate", "stop", "activate" })
+        foreach (var boundary in new[] { "stage", "compile", "compiled", "status", "confirm", "invalidate", "stop", "activate", "start" })
             await Test("stale identity after " + boundary + " prevents further actions", async () =>
             {
                 var host = Ready(true); host.After = action => { if (action == boundary) host.IsCurrent = false; };
@@ -128,6 +128,26 @@ internal static class ProgramDownloadWorkflowTests
             catch (IOException error) { Equal(expected, error); }
             Equal("status,confirm,status,invalidate,activate", host.Trace);
         });
+        foreach (var start in new[] { Response("unknown", New, false), Response("stopped", New), Response("running", Old) })
+            await Test("unverified resume never retries start", async () =>
+            {
+                var host = Ready(true); host.Override = action => action == "start" ? start : null;
+                await Refuses(() => ProgramDownloadWorkflow.ApplyCompiledAsync(New, host));
+                Equal("status,confirm,status,invalidate,stop,activate,status,start", host.Trace);
+            });
+        foreach (var final in new[] { Response("unknown", New, false), Response("stopped", New), Response("running", Old) })
+            await Test("resumed candidate requires verified running status", async () =>
+            {
+                var host = Ready(true); host.Override = action => action == "status" && host.Started ? final : null;
+                await Refuses(() => ProgramDownloadWorkflow.ApplyCompiledAsync(New, host));
+                Equal("status,confirm,status,invalidate,stop,activate,status,start,status", host.Trace);
+            });
+        await Test("readiness loss after activation prevents resume", async () =>
+        {
+            var host = Ready(true); host.After = action => { if (action == "activate") host.CanApply = false; };
+            await Refuses(() => ProgramDownloadWorkflow.ApplyCompiledAsync(New, host));
+            Equal("status,confirm,status,invalidate,stop,activate,status", host.Trace);
+        });
         return failures;
     }
 
@@ -147,6 +167,7 @@ internal static class ProgramDownloadWorkflowTests
         public bool CanApply { get; set; } = true;
         public bool Accept { get; set; } = true;
         public bool Activated { get; private set; }
+        public bool Started { get; private set; }
         public List<string> Events { get; } = [];
         public string Trace => string.Join(",", Events);
         public (string?, string?) Payload { get; private set; }
@@ -165,12 +186,14 @@ internal static class ProgramDownloadWorkflowTests
             {
                 "stage" => Response("staged", baseline),
                 "compile" => Response("compiled", baseline),
-                "status" => Response(Activated || !running ? "stopped" : "running", Activated ? New : baseline),
+                "status" => Response(Started ? "running" : Activated || !running ? "stopped" : "running", Activated ? New : baseline),
                 "stop" => Response("stopped", baseline),
                 "activate" => Response("activated-not-running", New),
+                "start" => Response("running", New),
                 _ => throw new Exception("Unexpected action " + action)
             };
             if (action == "activate") Activated = true;
+            if (action == "start") Started = true;
             return Task.FromResult(result);
         }
         public void ApplyCompilation(DeploymentResponse result) => Record("compiled");

@@ -4,14 +4,14 @@
 
 **Goal:** Download defaults to applying the compiled program after one core-restart prompt.
 
-**Architecture:** Tested Toolchain workflow with host ports, MainWindow adapter freezing target/candidate and holding operation lock, existing coordinator transactions unchanged. All successful applications remain stopped.
+**Architecture:** Tested Toolchain workflow with host ports, MainWindow adapter freezing target/candidate and holding operation lock, existing coordinator transactions unchanged. Successful applications restore the confirmed original running/stopped state.
 
 **Tech Stack:** .NET 10, Avalonia; current SSH deployment client.
 
 ## Task 1 — Workflow
 - [x] Write failing Deployment workflow tests with deterministic fake host and action trace.
 - [x] Implement ProgramDownloadRequest, ProgramRestartNotice, ProgramDownloadOutcome/State and IProgramDownloadHost; ProgramDownloadWorkflow.ExecuteAsync and ApplyCompiledAsync.
-- [x] Assert compile/readiness gate before prompt; cancel and already-active do not stop/restart; fresh baseline and candidate checks before each write; exact response identities, no retries/start, final stopped proof.
+- [x] Assert compile/readiness gate before prompt; cancel and already-active do not stop/restart; fresh baseline and candidate checks before each write; exact response identities, no retries, verified STOP before restoring a previously running program and final running proof.
 
 ## Task 2 — Desktop
 - [x] Add actual UI tests for labels, restart prompt and local gates without SSH calls.

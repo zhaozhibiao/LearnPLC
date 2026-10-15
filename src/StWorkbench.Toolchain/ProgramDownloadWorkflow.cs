@@ -65,6 +65,16 @@ public static class ProgramDownloadWorkflow
         var final = await SendAsync(host, "status");
         Require(SameHash(ReadActiveHash(final, "stopped"), buildHash),
             "Final status did not verify the stopped candidate; refresh actual status.");
+        if (wasRunning)
+        {
+            Require(host.CanApply, "The candidate is no longer ready; the new program remains stopped.");
+            var started = await SendAsync(host, "start");
+            Require(SameHash(ReadActiveHash(started, "running"), buildHash),
+                "Resume did not verify the running candidate; refresh actual status before another action.");
+            final = await SendAsync(host, "status");
+            Require(SameHash(ReadActiveHash(final, "running"), buildHash),
+                "Final status did not verify the resumed candidate; refresh actual status.");
+        }
         return new(ProgramDownloadState.Activated, final);
     }
 

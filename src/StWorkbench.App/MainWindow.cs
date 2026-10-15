@@ -238,9 +238,9 @@ public sealed partial class MainWindow : Window
         panel.Children.Add(ActionButton("首次登记空设备基线", () => DeploymentActionAsync("adopt-empty-baseline")));
         panel.Children.Add(ActionButton("登记已有停止程序基线", () => DeploymentActionAsync("adopt-baseline")));
         panel.Children.Add(deploymentDetails);
-        panel.Children.Add(Label("点击顶部“下载 / 应用程序”，编译通过后会提示重启核心。确认后自动应用，完成后保持停止；点击“▶ 运行”执行新程序。按钮灰色时先点击“刷新设备状态”。"));
+        panel.Children.Add(Label("点击顶部“下载 / 应用程序”，编译通过后会提示重启核心。确认后自动应用，并恢复原运行/停止状态：原来运行的继续运行，原来停止的保持停止。按钮灰色时先点击“刷新设备状态”。"));
         panel.Children.Add(ActionButton("恢复中断的激活事务", () => DeploymentActionAsync("recover")));
-        panel.Children.Add(Label("上传与 Linux 编译期间原程序不变。编译成功且具备应用条件后，确认重启提示才会停止原程序、重启 Runtime 核心并应用新程序。取消后可点击“应用已编译程序”继续。通信中断后先查询真实状态，不自动重试或自动运行。"));
+        panel.Children.Add(Label("上传与 Linux 编译期间原程序不变。编译成功且具备应用条件后，确认重启提示才会停止原程序、重启 Runtime 核心并应用新程序。原程序运行时，在新程序身份及停止状态确认后恢复运行。取消后可点击“应用已编译程序”继续。通信结果不明时先查询真实状态，不自动重试。"));
         return ScrollPanel(panel);
     }
     private bool CandidateMatchesProject()

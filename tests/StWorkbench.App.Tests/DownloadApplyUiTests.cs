@@ -23,23 +23,25 @@ internal static class DownloadApplyUiTests
         }
         finally { Field("allowClose").SetValue(probe, true); probe.Close(); }
         Scenario(accept: true);
+        Scenario(accept: true, originallyRunning: false);
         Scenario(accept: false);
         Scenario(accept: true, editDuringPrompt: true);
         Scenario(accept: true, targetDuringPrompt: true);
         Scenario(accept: true, alreadyActive: true);
         Scenario(accept: true, blockedMechanics: true);
         Scenario(accept: true, activationUnknown: true);
-        Console.WriteLine("PASS download/apply toolbar, actual restart prompt, cancellation, old program stop, identity checks and verified STOP state");
+        Console.WriteLine("PASS download/apply toolbar, restart prompt, cancellation, identity checks and original running/stopped state restoration");
     }
-    private static void Scenario(bool accept, bool editDuringPrompt = false, bool targetDuringPrompt = false, bool alreadyActive = false, bool blockedMechanics = false, bool activationUnknown = false)
+    private static void Scenario(bool accept, bool editDuringPrompt = false, bool targetDuringPrompt = false, bool alreadyActive = false, bool blockedMechanics = false, bool activationUnknown = false, bool originallyRunning = true)
     {
-        var actions = new List<string>(); var state = "running"; var active = alreadyActive ? Candidate : Old;
+        var actions = new List<string>(); var state = originallyRunning ? "running" : "stopped"; var active = alreadyActive ? Candidate : Old;
         Task<DeploymentResponse> Transport(SshTarget target, DeploymentRequest request)
         {
             actions.Add(request.Action);
             if (target.Host != "192.168.1.31") throw new Exception("FAIL: download changed target");
             if (request.Action == "stop") { if (request.ExpectedActiveBuildHash != Old) throw new Exception("FAIL: stop lost baseline"); state = "stopped"; }
             if (request.Action == "activate") { if (state != "stopped" || request.ExpectedActiveBuildHash != Old) throw new Exception("FAIL: activation without stopped baseline"); active = Candidate; state = "activated-not-running"; }
+            if (request.Action == "start") { if (request.ExpectedActiveBuildHash != Candidate || !originallyRunning) throw new Exception("FAIL: inappropriate automatic resume"); state = "running"; }
             if (activationUnknown && request.Action == "activate") return Task.FromResult(new DeploymentResponse(false, "unknown", request.RequestId, "uncertain activation", null, null));
             var resultState = request.Action switch { "stage" => "staged", "compile" => "compiled", "status" when state == "activated-not-running" => "stopped", _ => state };
             return Task.FromResult(new DeploymentResponse(true, resultState, request.RequestId, "", JsonSerializer.SerializeToElement(new { build_hash = active }), null, AxisReady: true));
@@ -70,10 +72,10 @@ internal static class DownloadApplyUiTests
                 var dialog = window.OwnedWindows.SingleOrDefault() ?? throw new Exception("FAIL: download must prompt before stopping/restarting core");
                 Dispatcher.UIThread.RunJobs();
                 var text = string.Join("\n", dialog.GetVisualDescendants().OfType<TextBlock>().Select(t => t.Text));
-                if (!text.Contains("重启 Runtime 核心") || !text.Contains("保持停止") || !text.Contains("192.168.1.31")) throw new Exception("FAIL: restart prompt omits consequence/target");
-                if (actions.Any(a => a is "stop" or "activate")) throw new Exception("FAIL: old program interrupted before confirmation");
+                if (!text.Contains("重启 Runtime 核心") || !text.Contains(originallyRunning ? "自动恢复运行" : "保持停止") || !text.Contains("192.168.1.31")) throw new Exception("FAIL: restart prompt omits consequence/target");
+                if (actions.Any(a => a is "stop" or "activate" or "start")) throw new Exception("FAIL: old program interrupted before confirmation");
                 if (accept && !editDuringPrompt && !targetDuringPrompt && !activationUnknown)
-                    using (var frame = dialog.CaptureRenderedFrame()) frame?.Save("artifacts/download-restart-dialog.png", Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
+                    using (var frame = dialog.CaptureRenderedFrame()) frame?.Save(originallyRunning ? "artifacts/download-restart-dialog.png" : "artifacts/download-restart-stopped-dialog.png", Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
                 if (editDuringPrompt) window.FindControl<TextEditor>("SourceEditor")!.Text += "\n(* changed during confirmation *)";
                 if (targetDuringPrompt) ((TextBox)Field("sshHost").GetValue(window)!).Text = "192.168.1.99";
                 dialog.GetVisualDescendants().OfType<Button>().Single(b => Equals(b.Content, accept ? "重启核心并应用" : "取消")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -89,14 +91,14 @@ internal static class DownloadApplyUiTests
             else if (editDuringPrompt || targetDuringPrompt)
             {
                 try { Pump(operation); throw new Exception("FAIL: changed candidate/target applied"); } catch (InvalidOperationException) { }
-                if (actions.Any(a => a is "stop" or "activate")) throw new Exception("FAIL: changed identity still caused control write");
+                if (actions.Any(a => a is "stop" or "activate" or "start")) throw new Exception("FAIL: changed identity still caused control write");
             }
             else
             {
                 Pump(operation);
-                var expected = alreadyActive || !accept ? new[] { "stage", "compile", "status" } : new[] { "stage", "compile", "status", "status", "stop", "activate", "status" };
+                var expected = alreadyActive || !accept ? new[] { "stage", "compile", "status" } : originallyRunning ? new[] { "stage", "compile", "status", "status", "stop", "activate", "status", "start", "status" } : new[] { "stage", "compile", "status", "status", "activate", "status" };
                 if (!actions.SequenceEqual(expected)) throw new Exception("FAIL: unexpected download action sequence: " + string.Join(",", actions));
-                if (accept && !alreadyActive && (!window.FindControl<Button>("RunButton")!.IsEnabled || !window.FindControl<TextBlock>("BuildStatus")!.Text!.Contains("已停止"))) throw new Exception("FAIL: successful download must report verified STOP and allow separate Run");
+                if (accept && !alreadyActive && (window.FindControl<Button>("RunButton")!.IsEnabled != !originallyRunning || !window.FindControl<TextBlock>("BuildStatus")!.Text!.Contains(originallyRunning ? "恢复运行" : "已停止"))) throw new Exception("FAIL: successful download must restore and report original run state");
             }
         }
         finally { Field("allowClose").SetValue(window, true); window.Close(); }

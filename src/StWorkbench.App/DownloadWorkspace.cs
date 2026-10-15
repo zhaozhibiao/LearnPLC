@@ -41,8 +41,9 @@ public sealed partial class MainWindow
             switch (outcome.State)
             {
                 case ProgramDownloadState.Activated:
-                    buildStatus.Text = "下载完成 · 程序已应用，已停止；点击顶部 ▶ 运行";
-                    AppendLog("程序已应用并核对为停止状态；未自动运行。", false);
+                    var resumed = outcome.Status?.State == "running";
+                    buildStatus.Text = resumed ? "下载完成 · 程序已应用，已恢复运行" : "下载完成 · 程序已应用，已停止，保持原停止状态";
+                    AppendLog(resumed ? "新程序已应用并核对为运行状态，已恢复原运行状态。" : "新程序已应用并核对为停止状态，保持原停止状态。", false);
                     break;
                 case ProgramDownloadState.AlreadyActive:
                     buildStatus.Text = outcome.Status?.State == "running" ? "该程序已在 PLC 中 · 运行中，未重启核心" : "该程序已在 PLC 中 · 已停止，未重启核心";
@@ -88,7 +89,7 @@ public sealed partial class MainWindow
             owner.buildStatus.Text = action switch
             {
                 "stage" => "正在上传程序…", "compile" => "Linux 编译中…", "stop" => "正在停止原程序…",
-                "activate" => "正在重启 Runtime 核心并应用程序…", _ => owner.buildStatus.Text
+                "activate" => "正在重启 Runtime 核心并应用程序…", "start" => "正在恢复新程序运行…", _ => owner.buildStatus.Text
             };
             return await owner.SendDeploymentAsync(action, packageBase64, packageHash);
         }
@@ -105,7 +106,8 @@ public sealed partial class MainWindow
     {
         var dialog = new Window { Title = "下载并应用程序", Width = 560, Height = 330, WindowStartupLocation = WindowStartupLocation.CenterOwner, CanResize = false };
         var state = notice.WasRunning ? "当前 PLC 程序正在运行，继续后将先停止原程序。" : "当前 PLC 程序已停止。";
-        var message = $"目标：{target.User}@{target.Host}\n\n{state}\n本次应用需要重启 Runtime 核心，在线监视会短暂断开。\n\n应用完成后保持停止，需要另行点击“▶ 运行”。取消将保留已编译程序，不执行停止或切换。";
+        var completion = notice.WasRunning ? "应用完成并核对新程序后自动恢复运行。" : "应用完成后保持停止，不会自动运行。";
+        var message = $"目标：{target.User}@{target.Host}\n\n{state}\n本次应用需要重启 Runtime 核心，在线监视会短暂断开。\n\n{completion}取消将保留已编译程序，不执行停止或切换。";
         var yes = new Button { Content = "重启核心并应用" }; var no = new Button { Content = "取消" };
         yes.Click += (_, _) => dialog.Close(true); no.Click += (_, _) => dialog.Close(false);
         dialog.Content = new StackPanel { Margin = new Thickness(22), Spacing = 18, Children =
