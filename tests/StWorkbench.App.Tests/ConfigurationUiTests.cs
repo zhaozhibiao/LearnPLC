@@ -34,7 +34,8 @@ public static class ConfigurationUiTests
             if(!networkStations.ItemsSource!.Cast<string>().First().Contains("IoRenamed"))throw new Exception("FAIL: hardware rename not reflected in network");
             var stationCombo=window.FindControl<ComboBox>("IoStation")!;
             stationCombo.SelectedItem=stationCombo.ItemsSource!.Cast<object>().Single(c=>Equals(c.GetType().GetProperty("Id")!.GetValue(c),driveId));
-            window.FindControl<TextBox>("IoName")!.Text="Ready";window.FindControl<TextBox>("IoAddress")!.Text="%IX0.0";window.FindControl<ComboBox>("IoPdo")!.SelectedIndex=0;window.SaveIoProperties(false);
+            window.FindControl<ListBox>("IoMappings")!.SelectedIndex=0;
+            window.FindControl<TextBox>("IoName")!.Text="Ready";window.FindControl<TextBox>("IoAddress")!.Text="%IX0.0";window.FindControl<ComboBox>("IoPdo")!.SelectedIndex=0;window.SaveIoProperties(true);
             if(project.Hardware.Io[0].StationId!=driveId)throw new Exception("FAIL: IO does not retain station PDO binding");
             networkStations.SelectedIndex=1;
             var check=window.FindControl<StackPanel>("StationPdos")!.Children.OfType<CheckBox>().Single(c=>Equals(c.Tag,input));check.IsChecked=false;

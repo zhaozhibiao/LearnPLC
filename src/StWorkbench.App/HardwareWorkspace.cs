@@ -44,13 +44,14 @@ public sealed partial class MainWindow
         var actions = new WrapPanel();
         AddConfigurationButton(actions, "加入工程从站", "AddStationButton", () => AddConfiguredStation());
         AddConfigurationButton(actions, "应用从站属性 / PDO", "ApplyStationButton", () => ApplyStationProperties());
+        AddConfigurationButton(actions, "补全 IO 映射", "CompleteStationIoButton", () => CompleteStationIoMappings());
         AddConfigurationButton(actions, "删除从站", "RemoveStationButton", () => RemoveConfiguredStation());
         AddConfigurationButton(actions, "上移", "HardwareStationUp", () => MoveConfiguredStation(-1));
         AddConfigurationButton(actions, "下移", "HardwareStationDown", () => MoveConfiguredStation(1)); panel.Children.Add(actions);
         configuredStations.SelectionChanged += (_, _) => { if (!refreshingConfiguration) SelectConfiguredStation(configuredStations.SelectedIndex); };
         panel.Children.Add(new Expander { Header = "选中从站的 PDO（勾选后应用）", IsExpanded = true, Content = stationPdos });
         panel.Children.Add(hardwareConfigurationStatus);
-        panel.Children.Add(new Expander { Header = "IO 映射与轴配置", IsExpanded = true, Content = HardwareIoAxisPane() });
+        hardwareIoAxisExpander.Content = HardwareIoAxisPane(); Register(hardwareIoAxisExpander, "HardwareIoAxisExpander"); panel.Children.Add(hardwareIoAxisExpander);
         var scroll=ScrollPanel(panel);Register(scroll,"HardwareConfigurationScroll");return scroll;
     }
     private void AddConfigurationButton(Panel panel, string label, string name, Action action)
@@ -81,8 +82,12 @@ public sealed partial class MainWindow
         if (!ushort.TryParse(stationAlias.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var alias)) throw new InvalidDataException("从站别名地址应为 0–65535 的整数。");
         var station = new EtherCatStation(Guid.NewGuid(), name, device.Id, alias, device.Entries.DistinctBy(e => (e.Index,e.SubIndex,e.IsInput)).ToArray());
         var previous = project.Hardware.Stations;
-        ChangeHardware(() => project.Hardware.Stations = [.. Stations, station], () => project.Hardware.Stations = previous);
+        var plan = IoAutoMapping.Plan(project.Hardware, station);
+        var previousIo = project.Hardware.Io;
+        ChangeHardware(() => { project.Hardware.Stations = [.. Stations, station]; project.Hardware.Io = [.. previousIo, .. plan.Added]; },
+            () => { project.Hardware.Stations = previous; project.Hardware.Io = previousIo; });
         selectedStationId = station.Id; RefreshConfigurationViews();
+        ReportIoMappingPlan(plan);
     }
     public void ApplyStationProperties()
     {
@@ -151,7 +156,7 @@ public sealed partial class MainWindow
     {
         foreach (var pair in new (Control Control, string Name)[] { (ioNameEditor,"IoName"), (ioAddressEditor,"IoAddress"), (ioTypeEditor,"IoType"), (ioDirectionEditor,"IoDirection"), (ioStation,"IoStation"), (ioPdo,"IoPdo"), (axisStation,"AxisStation"), (ioList,"IoMappings"), (axisList,"AxisConfigurations"), (axisNameEditor,"AxisName"), (controllerAxisEditor,"ControllerAxis"), (axisUnitEditor,"AxisUnit"), (axisMinEditor,"AxisMinimum"), (axisMaxEditor,"AxisMaximum") }) Register(pair.Control,pair.Name);
         var panel = new StackPanel { Spacing = 7 };
-        panel.Children.Add(Label("IO 映射 · 可关联选定从站的 PDO")); panel.Children.Add(ioList);
+        panel.Children.Add(Label("IO 映射 · 加入从站时自动分配；选中表格行可在下方修改")); panel.Children.Add(IoMappingTablePane());
         panel.Children.Add(new WrapPanel { Children = { ioNameEditor, ioAddressEditor, ioTypeEditor, ioDirectionEditor, ioStation, ioPdo } });
         ioStation.SelectionChanged += (_, _) => { if (!refreshingConfiguration) RefreshIoPdoChoices(); };
         ioDirectionEditor.SelectionChanged += (_, _) => { if (!refreshingConfiguration) RefreshIoPdoChoices(); };
@@ -188,6 +193,8 @@ public sealed partial class MainWindow
         var next=new IoMapping(ioNameEditor.Text?.Trim()??"",ioAddressEditor.Text?.Trim()??"",ioTypeEditor.SelectedItem?.ToString()??"",ioDirectionEditor.SelectedIndex==0) { StationId=(ioStation.SelectedItem as StationChoice)?.Id, PdoIndex=pdo?.Index, PdoSubIndex=pdo?.SubIndex };
         var old=edit?project.Hardware.Io[at]:null;
         ChangeHardware(()=> { if(edit)project.Hardware.Io[at]=next;else project.Hardware.Io.Add(next); },()=> { if(edit)project.Hardware.Io[at]=old!;else project.Hardware.Io.Remove(next); });
+        ioList.SelectedIndex = edit ? at : project.Hardware.Io.Count - 1;
+        LoadIoProperties();
     }
     private void LoadAxisProperties()
     {

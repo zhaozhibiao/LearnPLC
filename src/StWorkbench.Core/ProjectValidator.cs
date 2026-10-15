@@ -51,7 +51,7 @@ public static class ProjectValidator
         foreach (var io in project.Hardware.Io)
         {
             if (!Regex.IsMatch(io.Name, @"^[A-Za-z_][A-Za-z0-9_]*$") || !resourceNames.Add(io.Name)) Error("IO 名称无效或重复");
-            if (!Regex.IsMatch(io.Address, io.IsInput ? @"^%I[XWDB]\d+(\.\d+)?$" : @"^%Q[XWDB]\d+(\.\d+)?$", RegexOptions.IgnoreCase) || !addresses.Add(io.Address)) Error("IO 地址无效、方向不符或重复");
+            if (!Regex.IsMatch(io.Address, io.IsInput ? @"^%I[XWDBL]\d+(\.\d+)?$" : @"^%Q[XWDBL]\d+(\.\d+)?$", RegexOptions.IgnoreCase) || !addresses.Add(io.Address)) Error("IO 地址无效、方向不符或重复");
             if (!new[] { "BOOL", "BYTE", "WORD", "DWORD", "INT", "DINT", "REAL", "LREAL" }.Contains(io.Type.ToUpperInvariant())) Error("不支持的 IO 类型");
         }
         var controllerAxes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

@@ -15,6 +15,7 @@ var originalSettings = WorkbenchSettings.Load();
 var realDevice = Environment.GetEnvironmentVariable("ST_REAL_APP_VERIFY") == "1";
 if (realDevice) (originalSettings with { Endpoint = "https://localhost:18443" }).Save();
 var window = new MainWindow();
+if (Environment.GetEnvironmentVariable("ST_IO_MAPPING_UI_VERIFY") == "1") { IoMappingUiTests.Run(); window.Close(); return; }
 if (Environment.GetEnvironmentVariable("ST_PATH_NAVIGATION_UI_VERIFY") == "1") { PathNavigationUiTests.Run(); window.Close(); return; }
 if (Environment.GetEnvironmentVariable("ST_AXIS_PROPERTIES_UI_VERIFY") == "1") { AxisPropertiesUiTests.Run(); window.Close(); return; }
 if (Environment.GetEnvironmentVariable("ST_AXIS_UI_VERIFY") == "1") { AxisUiTests.Run(); window.Close(); return; }
@@ -127,6 +128,7 @@ if (Environment.GetEnvironmentVariable("ST_INSTRUCTION_COMPILE_VERIFY") == "1")
     MotionCycleUiTests.Run();
     AxisUiTests.Run();
     ConfigurationUiTests.Run();
+    IoMappingUiTests.Run();
     AxisPropertiesUiTests.Run();
     MultiAxisUiTests.Run();
     PathScaleUiTests.Run();

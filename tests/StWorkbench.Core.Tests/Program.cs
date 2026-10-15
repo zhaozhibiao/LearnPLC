@@ -35,6 +35,7 @@ try
     AxisMechanicsTests.Run();
     await PathAssetTests.Run();
     EsiTests.Run();
+    IoAutoMappingTests.Run();
     await RegressionTests.Run();
 }
 catch (Exception error) { Console.Error.WriteLine(error.Message); return 1; }
