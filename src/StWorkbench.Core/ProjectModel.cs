@@ -32,6 +32,8 @@ public sealed record IoMapping(string Name, string Address, string Type, bool Is
 public sealed record AxisConfiguration(string Name, string ControllerAxis, string Unit, double MinPosition, double MaxPosition)
 {
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public AxisMechanics? Mechanics { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public Guid? StationId { get; init; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
     public double? MaximumVelocity { get; init; }

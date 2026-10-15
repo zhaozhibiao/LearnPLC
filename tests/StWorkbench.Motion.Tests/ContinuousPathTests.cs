@@ -10,6 +10,7 @@ static class ContinuousPathTests
     public static void Run()
     {
         var line = Asset(new("Line", new(0, 0), new(10, 0)), new("Line", new(10, 0), new(20, 0)));
+        Refuses(() => ContinuousPathPlanner.Prepare(line, [Axes[0] with { Mechanics = new() { Kind = AxisKind.Rotary } }, Axes[1]]));
         var diagonal = Asset(new PathSegment("Line", new(0, 0), new(100, 100)));
         var diagonalPlan = ContinuousPathPlanner.Prepare(diagonal, Axes);
         if (diagonalPlan.Samples.Any(s => Math.Sqrt(s.Velocity.X * s.Velocity.X + s.Velocity.Y * s.Velocity.Y) > diagonal.Profile.Velocity * 1.000001)) throw new Exception("Diagonal vector feed exceeds machining profile");

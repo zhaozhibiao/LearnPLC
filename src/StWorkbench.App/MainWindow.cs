@@ -298,14 +298,16 @@ public sealed partial class MainWindow : Window
         if (result.State != "compiled" || candidatePackage is null) throw new InvalidOperationException("Linux 编译结果未确认");
         compiledBuildHash = candidatePackage.BuildHash;
         var axisRequired = AxisControlBinding.UsesAxisControl(GetSources());
-        motionDeploymentReady = (project.Paths.Count == 0 || result.MotionReady == true) && (project.MotionCycle?.Enabled != true || result.MotionCycleReady == true) && (!axisRequired || result.AxisReady == true);
+        var offlineAxisProperties = project.Hardware.Axes.Any(a => a.Mechanics is not null);
+        motionDeploymentReady = !offlineAxisProperties && (project.Paths.Count == 0 || result.MotionReady == true) && (project.MotionCycle?.Enabled != true || result.MotionCycleReady == true) && (!axisRequired || result.AxisReady == true);
         activateButton.IsEnabled = CandidateMatchesProject() && motionDeploymentReady;
-        if (!motionDeploymentReady) AppendLog("运动候选暂不能激活：" + (project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? result.MotionCycleMessage : axisRequired && result.AxisReady != true ? result.AxisMessage : result.MotionMessage), true);
-        buildStatus.Text = motionDeploymentReady ? "Linux 编译通过 · 未激活" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? "Linux 编译通过 · 轴控周期执行端未就绪，不可激活" : axisRequired && result.AxisReady != true ? "Linux 编译通过 · 基础轴控后端未就绪，不可激活" : "Linux 编译通过 · 连续运动后端未就绪，不可激活";
+        if (!motionDeploymentReady) AppendLog("运动候选暂不能激活：" + (offlineAxisProperties ? "轴机械与回零参数尚未应用，控制核心缺少参数应用/确认接口。" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? result.MotionCycleMessage : axisRequired && result.AxisReady != true ? result.AxisMessage : result.MotionMessage), true);
+        buildStatus.Text = motionDeploymentReady ? "Linux 编译通过 · 未激活" : offlineAxisProperties ? "Linux 编译通过 · 轴机械与回零参数尚未应用，不可激活" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? "Linux 编译通过 · 轴控周期执行端未就绪，不可激活" : axisRequired && result.AxisReady != true ? "Linux 编译通过 · 基础轴控后端未就绪，不可激活" : "Linux 编译通过 · 连续运动后端未就绪，不可激活";
     }
     private async Task ActivateAsync()
     {
         if (deploymentBusy || busy) return;
+        if (project.Hardware.Axes.Any(a => a.Mechanics is not null)) throw new InvalidOperationException("轴机械与回零参数尚未应用，当前候选不可激活。");
         if (!CandidateMatchesProject() || compiledBuildHash != candidatePackage!.BuildHash) throw new InvalidOperationException("需要当前工程的 Linux 编译通过候选");
         if ((project.Paths.Count > 0 || project.MotionCycle?.Enabled == true || AxisControlBinding.UsesAxisControl(GetSources())) && !motionDeploymentReady) throw new InvalidOperationException("运动执行端未验证就绪，当前候选不可激活。");
         await DeploymentActionAsync("status");

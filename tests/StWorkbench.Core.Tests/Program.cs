@@ -32,6 +32,7 @@ try
     ResourceInsertionTests.Run();
     await MotionCycleTests.Run();
     AxisBindingTests.Run();
+    AxisMechanicsTests.Run();
     await PathAssetTests.Run();
     EsiTests.Run();
     await RegressionTests.Run();

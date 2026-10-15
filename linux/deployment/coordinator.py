@@ -495,6 +495,12 @@ class Coordinator:
             result = {"state": "compiled", "build_hash": identity(request["build_hash"]), "library_sha256": digest(library),
                 "exports_verified": True, "runtime_commit": RUNTIME_COMMIT, "log_path": str(log_path), "request_id": request["request_id"]}
         result["log"] = log_path.read_text(encoding="utf8", errors="replace")[-65536:]
+        if stage["manifest"].get("AxisInterfaceVersion") is None:
+            try:
+                verify_axis_ready(stage["manifest"], version / "core" / "generated", self.config, "")
+            except DeploymentError as error:
+                result["axis_ready"] = False
+                result["axis_message"] = str(error)
         if stage["manifest"].get("MotionCycleInterfaceVersion") is not None:
             result["motion_cycle_ready"] = False
             result["motion_cycle_message"] = motion_cycle.ADAPTER_MESSAGE
@@ -554,6 +560,8 @@ class Coordinator:
         manifest = read_json(version / "stage-result.json")["manifest"]
         if manifest.get("MotionCycleInterfaceVersion") is not None:
             raise DeploymentError(motion_cycle.ADAPTER_MESSAGE)
+        if manifest.get("AxisInterfaceVersion") is None:
+            verify_axis_ready(manifest, version / "core" / "generated", self.config, "")
         if manifest.get("AxisInterfaceVersion") is not None:
             if compiled.get("axis_ready") is not True:
                 raise DeploymentError("Candidate basic axis readiness was not verified")

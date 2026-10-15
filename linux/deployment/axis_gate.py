@@ -41,7 +41,7 @@ def validate_manifest(data):
         raise ValueError('Axis count must be 1..64')
     names, controllers = set(), set()
     for index, axis in enumerate(axes, 1):
-        if not isinstance(axis, dict) or set(axis) != AXIS_KEYS or type(axis['Index']) is not int or axis['Index'] != index:
+        if not isinstance(axis, dict) or set(axis) - {'Mechanics'} != AXIS_KEYS or type(axis['Index']) is not int or axis['Index'] != index:
             raise ValueError('Invalid axis schema or dense index')
         name = axis['Name']
         if not isinstance(name, str) or not 1 <= len(name) <= 256 or re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*', name) is None or name.casefold() in names:
@@ -95,7 +95,22 @@ def read_private_json(path):
 
 
 def verify_ready(manifest, generated, config, environment):
+    hardware_path = pathlib.Path(generated) / 'hardware-configuration.json'
+    try:
+        hardware_raw = hardware_path.read_bytes()
+    except FileNotFoundError:
+        hardware_raw = None
+    if hardware_raw is not None:
+        hardware = strict_json(hardware_raw)
+        if any(axis.get('Mechanics') is not None for axis in (hardware.get('Hardware') or {}).get('Axes', [])):
+            raise ValueError('Axis mechanical/rotary/homing configuration is offline only; controller apply/confirm is not implemented')
     if manifest.get('AxisInterfaceVersion') is None: return
+    # Offline staging/compilation preserves these properties for review. Activation
+    # must refuse them before contacting a worker: the protocol cannot apply them.
+    raw = (pathlib.Path(generated) / 'axis-manifest.json').read_bytes()
+    data = validate_manifest(strict_json(raw))
+    if any(axis.get('Mechanics') is not None for axis in data['Axes']):
+        raise ValueError('Axis mechanical/rotary/homing configuration is offline only; controller apply/confirm is not implemented')
     backend = config.get('axis_backend')
     if manifest['AxisInterfaceVersion'] != INTERFACE or backend not in ('EcMotion', 'EcMotionSimulator'):
         raise ValueError('Basic axis backend must be explicitly configured')
@@ -122,8 +137,6 @@ def verify_ready(manifest, generated, config, environment):
     os.kill(pid, 0)
     if (pathlib.Path('/proc') / str(pid)).stat().st_uid != os.getuid():
         raise ValueError('Axis worker process owner differs')
-    raw = (pathlib.Path(generated) / 'axis-manifest.json').read_bytes()
-    validate_manifest(strict_json(raw))
     expected = dict(SchemaVersion=1, InterfaceVersion=INTERFACE, Backend=backend,
         ManifestSha256=hashlib.sha256(raw).hexdigest(), ControllerReady=True,
         PhysicalBasicAxis=backend == 'EcMotion', SimulatorBasicAxis=backend == 'EcMotionSimulator',

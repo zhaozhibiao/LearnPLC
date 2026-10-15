@@ -41,7 +41,8 @@ public sealed class PackageBuilder
             {
                 if (ProjectValidator.Hash(hardwareJson) != frozen.HardwareHash) throw new InvalidDataException("Hardware configuration differs from captured identity.");
                 var configuration = JsonSerializer.Deserialize<HardwareConfigurationDocument>(hardwareJson) ?? throw new InvalidDataException("Hardware configuration is empty.");
-                if (configuration.SchemaVersion != 1 || configuration.State != "offline-engineering" || configuration.Network is null && configuration.Hardware?.Stations is null)
+                if (configuration.SchemaVersion != 1 || configuration.State != "offline-engineering" ||
+                    configuration.Network is null && configuration.Hardware?.Stations is null && configuration.Hardware?.Axes.Any(a => a.Mechanics is not null) != true)
                     throw new InvalidDataException("Unsupported hardware configuration document.");
                 var item = new ProjectItem();
                 var configuredProject = new StProject { Items = [item], Tasks = [new PlcTask { ProgramId = item.Id }], Hardware = configuration.Hardware!, Network = configuration.Network, MotionCycle = configuration.MotionCycle };
@@ -147,7 +148,18 @@ public sealed class PackageBuilder
                 File.Copy(Path.Combine(axisWorkerDirectory, "axis_worker.py"), Path.Combine(axesDirectory, "axis_worker.py"));
                 File.Copy(Path.Combine(axisWorkerDirectory, "LICENSE"), Path.Combine(axesDirectory, "LICENSE"));
                 await File.WriteAllTextAsync(Path.Combine(output, "axis-manifest.json"), JsonSerializer.Serialize(new { SchemaVersion = 1, InterfaceVersion = "workbench-axis-v1", PlcIntervalMilliseconds = activeTask.IntervalMilliseconds,
-                    Axes = frozen.Axes.OrderBy(a => a.Name, StringComparer.Ordinal).Select((a, i) => new { Index = i + 1, a.Name, a.ControllerAxis, a.Unit, a.MinPosition, a.MaxPosition, a.MaximumVelocity, a.MaximumAcceleration, a.MaximumDeceleration, a.MaximumJerk }) }), token);
+                    Axes = frozen.Axes.OrderBy(a => a.Name, StringComparer.Ordinal).Select((a, i) =>
+                    {
+                        var axis = new Dictionary<string, object?>
+                        {
+                            ["Index"] = i + 1, ["Name"] = a.Name, ["ControllerAxis"] = a.ControllerAxis,
+                            ["Unit"] = a.Unit, ["MinPosition"] = a.MinPosition, ["MaxPosition"] = a.MaxPosition,
+                            ["MaximumVelocity"] = a.MaximumVelocity, ["MaximumAcceleration"] = a.MaximumAcceleration,
+                            ["MaximumDeceleration"] = a.MaximumDeceleration, ["MaximumJerk"] = a.MaximumJerk
+                        };
+                        if (a.Mechanics is not null) axis.Add("Mechanics", a.Mechanics);
+                        return axis;
+                    }) }), token);
             }
             if (cycle is not null)
                 await File.WriteAllTextAsync(Path.Combine(output, "motion-cycle.json"), JsonSerializer.Serialize(new

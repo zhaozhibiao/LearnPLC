@@ -100,6 +100,8 @@ class Manifest:
             raise ValueError('Axis count must be 1..64')
         indexes, names, controllers = set(), set(), set()
         for axis in axes:
+            if axis.get('Mechanics') is not None:
+                raise ValueError('Axis mechanical/rotary/homing configuration is offline only; controller apply/confirm is not implemented')
             index = axis.get('Index')
             if type(index) is not int or not 1 <= index <= 64 or index in indexes:
                 raise ValueError('Invalid or duplicate axis index')

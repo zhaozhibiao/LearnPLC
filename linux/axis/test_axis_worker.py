@@ -57,6 +57,21 @@ def packet(scan=1, request=1, kind=1, position=0, velocity=1, flags=0):
 
 
 class AxisTests(unittest.TestCase):
+    def test_manifest_rejects_explicit_mechanics_including_empty_or_invalid_values(self):
+        for mechanics in ({'Kind': 'Linear', 'FeedbackUnit': 'EncoderCounts'},
+                          {'Kind': 'Rotary', 'RotaryMode': 'Modulo'}, {}, False, 0, ''):
+            data = manifest()
+            data['Axes'][0]['Mechanics'] = mechanics
+            with self.subTest(mechanics=mechanics), self.assertRaisesRegex(
+                    ValueError, 'mechanical/rotary/homing configuration is offline only; controller apply/confirm is not implemented'):
+                w.Manifest.from_object(data)
+
+    def test_manifest_accepts_legacy_missing_or_null_mechanics(self):
+        data = manifest()
+        self.assertEqual('Axis1', w.Manifest.from_object(data).axes[0]['Name'])
+        data['Axes'][0]['Mechanics'] = None
+        self.assertEqual('Axis1', w.Manifest.from_object(data).axes[0]['Name'])
+
     def worker(self, physical=False):
         fake = Fake(physical)
         self.now = 1.

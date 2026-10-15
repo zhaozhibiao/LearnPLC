@@ -57,6 +57,7 @@ public static class ProjectValidator
         var controllerAxes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var axis in project.Hardware.Axes)
         {
+            foreach (var message in AxisMechanicsValidator.Validate(axis)) Error(message);
             if (!Regex.IsMatch(axis.Name, @"^[A-Za-z_][A-Za-z0-9_]*$") || !resourceNames.Add(axis.Name) || string.IsNullOrWhiteSpace(axis.ControllerAxis) || !controllerAxes.Add(axis.ControllerAxis)) Error("轴名称/控制器轴引用无效或重复");
             if (!double.IsFinite(axis.MinPosition) || !double.IsFinite(axis.MaxPosition) || axis.MinPosition >= axis.MaxPosition || string.IsNullOrWhiteSpace(axis.Unit)) Error("轴单位或限位无效");
             if (new[] { axis.MaximumVelocity, axis.MaximumAcceleration, axis.MaximumDeceleration, axis.MaximumJerk }.Any(v => v.HasValue && (!double.IsFinite(v.Value) || v.Value <= 0))) Error("轴动态限制必须是正的有限数值");
@@ -110,7 +111,7 @@ public static class ProjectValidator
         var cycle = project.MotionCycle is { Enabled: true } enabledCycle ? enabledCycle with { AxisNames = enabledCycle.AxisNames.ToArray() } : null;
         var hardwareIdentity = cycle is null ? JsonSerializer.Serialize(project.Hardware) : JsonSerializer.Serialize(new { Hardware = project.Hardware, MotionCycle = cycle });
         string? configurationJson = null;
-        if (project.Network is not null || project.Hardware.Stations is not null)
+        if (project.Network is not null || project.Hardware.Stations is not null || project.Hardware.Axes.Any(a => a.Mechanics is not null))
             hardwareIdentity = configurationJson = JsonSerializer.Serialize(new HardwareConfigurationDocument(project.Hardware) { Network = project.Network, MotionCycle = cycle });
         return new(project.Id, project.Name, Hash(identity), Hash(hardwareIdentity), copy, tasks)
         { HardwareConfigurationJson = configurationJson, Paths = pathAssets, Axes = Array.AsReadOnly(project.Hardware.Axes.Select(a => a with { }).ToArray()), MotionCycle = cycle };

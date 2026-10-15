@@ -20,7 +20,7 @@ public static class ContinuousPathPlanner
         // Snapshot the supplied configuration. No realtime allocations or device writes occur here.
         var mapped = asset.Axes.Select(name => {
             var matches = axes.Where(a => string.Equals(a.Name, name, StringComparison.OrdinalIgnoreCase)).ToArray();
-            if (matches.Length != 1 || matches[0].Unit != "mm" || !double.IsFinite(matches[0].MinPosition) || !double.IsFinite(matches[0].MaxPosition) || matches[0].MinPosition >= matches[0].MaxPosition) throw new InvalidDataException("Missing/ambiguous axis or invalid millimeter limits.");
+            if (matches.Length != 1 || matches[0].Unit != "mm" || matches[0].Mechanics is { Kind: not AxisKind.Linear } || !double.IsFinite(matches[0].MinPosition) || !double.IsFinite(matches[0].MaxPosition) || matches[0].MinPosition >= matches[0].MaxPosition) throw new InvalidDataException("Missing/ambiguous linear axis or invalid millimeter limits.");
             return matches[0];
         }).ToArray();
         if (mapped.Any(a => string.IsNullOrWhiteSpace(a.ControllerAxis)) || mapped.Select(a => a.ControllerAxis).Distinct(StringComparer.OrdinalIgnoreCase).Count() != mapped.Length) throw new InvalidDataException("Path axes must map to distinct controller axes.");

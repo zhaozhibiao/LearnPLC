@@ -149,7 +149,7 @@ public sealed partial class MainWindow
     }
     private Control HardwareIoAxisPane()
     {
-        foreach (var pair in new (Control Control, string Name)[] { (ioNameEditor,"IoName"), (ioAddressEditor,"IoAddress"), (ioTypeEditor,"IoType"), (ioDirectionEditor,"IoDirection"), (ioStation,"IoStation"), (ioPdo,"IoPdo"), (axisStation,"AxisStation"), (ioList,"IoMappings"), (axisList,"AxisConfigurations"), (axisNameEditor,"AxisName"), (controllerAxisEditor,"ControllerAxis"), (axisMinEditor,"AxisMinimum"), (axisMaxEditor,"AxisMaximum") }) Register(pair.Control,pair.Name);
+        foreach (var pair in new (Control Control, string Name)[] { (ioNameEditor,"IoName"), (ioAddressEditor,"IoAddress"), (ioTypeEditor,"IoType"), (ioDirectionEditor,"IoDirection"), (ioStation,"IoStation"), (ioPdo,"IoPdo"), (axisStation,"AxisStation"), (ioList,"IoMappings"), (axisList,"AxisConfigurations"), (axisNameEditor,"AxisName"), (controllerAxisEditor,"ControllerAxis"), (axisUnitEditor,"AxisUnit"), (axisMinEditor,"AxisMinimum"), (axisMaxEditor,"AxisMaximum") }) Register(pair.Control,pair.Name);
         var panel = new StackPanel { Spacing = 7 };
         panel.Children.Add(Label("IO 映射 · 可关联选定从站的 PDO")); panel.Children.Add(ioList);
         panel.Children.Add(new WrapPanel { Children = { ioNameEditor, ioAddressEditor, ioTypeEditor, ioDirectionEditor, ioStation, ioPdo } });
@@ -159,8 +159,9 @@ public sealed partial class MainWindow
         var ioActions = new WrapPanel(); AddConfigurationButton(ioActions,"添加 IO","AddConfiguredIo",()=> SaveIoProperties(false)); AddConfigurationButton(ioActions,"应用选中 IO 属性","ApplyConfiguredIo",()=> SaveIoProperties(true));
         AddConfigurationButton(ioActions,"删除选中 IO","RemoveConfiguredIo",()=> { var at=ioList.SelectedIndex; if(at<0)return; var old=project.Hardware.Io[at]; ChangeHardware(()=>project.Hardware.Io.RemoveAt(at),()=>project.Hardware.Io.Insert(at,old)); }); panel.Children.Add(ioActions);
         panel.Children.Add(Label("轴配置 · 绑定逻辑轴、控制器轴与可选从站")); panel.Children.Add(axisList);
-        panel.Children.Add(new WrapPanel { Children = { axisNameEditor, controllerAxisEditor, axisUnitEditor, axisMinEditor, axisMaxEditor, axisStation } });
+        panel.Children.Add(new WrapPanel { Children = { axisNameEditor, controllerAxisEditor, Label("工程单位"), axisUnitEditor, Label("位置下限 / 上限"), axisMinEditor, axisMaxEditor, axisStation } });
         var limits = new WrapPanel(); foreach(var field in axisLimitEditors) limits.Children.Add(field); panel.Children.Add(limits);
+        panel.Children.Add(AxisMechanicalPropertiesPane());
         axisList.SelectionChanged += (_, _) => { if (!refreshingConfiguration) LoadAxisProperties(); };
         var axisActions = new WrapPanel(); AddConfigurationButton(axisActions,"添加轴引用","AddConfiguredAxis",()=> SaveAxisProperties(false)); AddConfigurationButton(axisActions,"应用选中轴属性","ApplyConfiguredAxis",()=> SaveAxisProperties(true));
         AddConfigurationButton(axisActions,"删除选中轴","RemoveConfiguredAxis",()=> { var at=axisList.SelectedIndex; if(at<0)return; var old=project.Hardware.Axes[at]; ChangeHardware(()=>project.Hardware.Axes.RemoveAt(at),()=>project.Hardware.Axes.Insert(at,old)); }); panel.Children.Add(axisActions);
@@ -194,14 +195,17 @@ public sealed partial class MainWindow
         axisNameEditor.Text=axis.Name; controllerAxisEditor.Text=axis.ControllerAxis;axisUnitEditor.Text=axis.Unit;axisMinEditor.Text=axis.MinPosition.ToString(CultureInfo.InvariantCulture);axisMaxEditor.Text=axis.MaxPosition.ToString(CultureInfo.InvariantCulture);
         var values=new[]{axis.MaximumVelocity,axis.MaximumAcceleration,axis.MaximumDeceleration,axis.MaximumJerk};for(var i=0;i<4;i++)axisLimitEditors[i].Text=values[i]?.ToString(CultureInfo.InvariantCulture)??"";
         axisStation.SelectedItem=((IEnumerable<StationChoice>)axisStation.ItemsSource!).FirstOrDefault(c=>c.Id==axis.StationId);
+        LoadAxisMechanics(axis);
     }
     public void SaveAxisProperties(bool edit)
     {
         var at=axisList.SelectedIndex; if(edit&&(at<0||at>=project.Hardware.Axes.Count))throw new InvalidOperationException("请先选择轴。");
         if(!double.TryParse(axisMinEditor.Text,NumberStyles.Float,CultureInfo.InvariantCulture,out var low)||!double.TryParse(axisMaxEditor.Text,NumberStyles.Float,CultureInfo.InvariantCulture,out var high))throw new InvalidDataException("请输入有效限位数值。");
         double? Limit(TextBox field)=>string.IsNullOrWhiteSpace(field.Text)?null:double.TryParse(field.Text,NumberStyles.Float,CultureInfo.InvariantCulture,out var value)&&double.IsFinite(value)&&value>0?value:throw new InvalidDataException("轴动态限制须为正数。");
-        var next=new AxisConfiguration(axisNameEditor.Text?.Trim()??"",controllerAxisEditor.Text?.Trim()??"",axisUnitEditor.Text?.Trim()??"",low,high){StationId=(axisStation.SelectedItem as StationChoice)?.Id,MaximumVelocity=Limit(axisLimitEditors[0]),MaximumAcceleration=Limit(axisLimitEditors[1]),MaximumDeceleration=Limit(axisLimitEditors[2]),MaximumJerk=Limit(axisLimitEditors[3])};
+        var next=new AxisConfiguration(axisNameEditor.Text?.Trim()??"",controllerAxisEditor.Text?.Trim()??"",axisUnitEditor.Text?.Trim()??"",low,high){StationId=(axisStation.SelectedItem as StationChoice)?.Id,MaximumVelocity=Limit(axisLimitEditors[0]),MaximumAcceleration=Limit(axisLimitEditors[1]),MaximumDeceleration=Limit(axisLimitEditors[2]),MaximumJerk=Limit(axisLimitEditors[3]),Mechanics=ReadAxisMechanics()};
         var old=edit?project.Hardware.Axes[at]:null;
         ChangeHardware(()=> {if(edit)project.Hardware.Axes[at]=next;else project.Hardware.Axes.Add(next);},()=> {if(edit)project.Hardware.Axes[at]=old!;else project.Hardware.Axes.Remove(next);});
+        axisList.SelectedIndex = edit ? at : project.Hardware.Axes.Count - 1;
+        LoadAxisProperties();
     }
 }

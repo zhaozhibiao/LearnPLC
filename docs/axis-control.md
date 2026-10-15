@@ -59,3 +59,8 @@ PLC 用户程序保持在原 PLC 周期内提交运动意图；实时轴循环�
 自研轴控代码使用 MIT；独立编译工具继续履行 GPL 义务，见 [授权记录](licenses.md)。这组 MC_ 功能块不宣称完整 PLCopen 认证。
 
 验证入口：`scripts/verify.ps1` 包含工程站与 Python 回归测试；`tools/axis-bridge/verify-linux.sh` 检查真实生成的 ST 和原生传输；`linux/axis/integration_simulator.py`、`integration_candidate.py` 使用显式提供的原项目仿真器与独立候选，均不会激活生产 PLC 或连接实体轴。
+# 机械参数的归属
+
+减速比、驱动器反馈分辨率、直线导程、轴类型、旋转范围及回零配置集中在硬件组态中的轴属性。ST 指令保持工程轴引用和单次运动输入，当前基本轴接口仍是既有 Position/Velocity 等输入，未新增加减速度、旋转最短方向等执行协议。
+
+显式机械属性目前只用于工程保存、校验、换算预览及候选冻结，不能声称已经下发到驱动器。候选激活和工作进程均拒绝尚未支持的机械配置；现有控制器配置模式保持兼容。操作说明见 [硬件与网络组态](hardware-network.md)。

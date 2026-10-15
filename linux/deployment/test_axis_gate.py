@@ -23,6 +23,117 @@ def axis_manifest():
 
 
 class AxisGateTests(unittest.TestCase):
+    def test_readiness_rejects_hardware_mechanics_without_axis_function_blocks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            hardware = {'Hardware': {'Axes': [{'Name': 'X', 'Mechanics': {'Kind': 'Linear'}}]}}
+            (root / 'hardware-configuration.json').write_text(json.dumps(hardware))
+            with patch.object(axis_gate, 'read_private_json') as capability:
+                with self.assertRaisesRegex(ValueError, 'mechanical/rotary/homing configuration is offline only'):
+                    axis_gate.verify_ready({}, root, {}, '')
+                capability.assert_not_called()
+
+    def test_readiness_accepts_legacy_hardware_without_axis_function_blocks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            for axis in ({'Name': 'X'}, {'Name': 'X', 'Mechanics': None}):
+                (root / 'hardware-configuration.json').write_text(json.dumps({'Hardware': {'Axes': [axis]}}))
+                with self.subTest(axis=axis):
+                    axis_gate.verify_ready({}, root, {}, '')
+
+    def test_archive_preserves_explicit_mechanics_for_offline_compilation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            data = axis_manifest()
+            data['Axes'][0]['Mechanics'] = {'Kind': 'Linear', 'FeedbackUnit': 'EncoderCounts'}
+            path, checksum, build = self.bundle(pathlib.Path(directory), data)
+            coordinator.validate_archive(path, checksum, build)
+            with zipfile.ZipFile(path) as archive:
+                self.assertEqual(data, json.loads(archive.read('axis-manifest.json')))
+
+    def test_readiness_rejects_explicit_mechanics_before_worker_handshake(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            for mechanics in ({'Kind': 'Rotary', 'RotaryMode': 'Modulo'}, {}, False, 0, ''):
+                data = axis_manifest()
+                data['Axes'][0]['Mechanics'] = mechanics
+                (root / 'axis-manifest.json').write_text(json.dumps(data))
+                with self.subTest(mechanics=mechanics), patch.object(axis_gate, 'read_private_json') as capability:
+                    with self.assertRaisesRegex(ValueError,
+                            'mechanical/rotary/homing configuration is offline only; controller apply/confirm is not implemented'):
+                        axis_gate.verify_ready({'AxisInterfaceVersion': 'workbench-axis-v1'}, root, {}, '')
+                    capability.assert_not_called()
+
+    def test_manifest_accepts_legacy_missing_or_null_mechanics(self):
+        data = axis_manifest()
+        self.assertIs(data, axis_gate.validate_manifest(data))
+        data['Axes'][0]['Mechanics'] = None
+        self.assertIs(data, axis_gate.validate_manifest(data))
+
+    def test_activation_refuses_mechanics_even_with_prior_readiness_record(self):
+        from test_coordinator import Tests
+        fixture = Tests(); fixture.setUp()
+        try:
+            data = axis_manifest()
+            data['Axes'][0]['Mechanics'] = {'Kind': 'Linear', 'HomeMode': 'Switch'}
+            path, checksum, build = self.bundle(fixture.root, data)
+            fixture.request('stage', package_path=str(path), package_sha256=checksum, build_hash=build)
+            active = fixture.runtime / 'build/libplc_existing.so'; active.write_bytes(b'baseline')
+            baseline = fixture.request('adopt-baseline')['active']
+            version = fixture.coordinator.version(build); (version / 'build').mkdir()
+            library = version / 'build/new_libplc.so'; library.write_bytes(b'candidate')
+            coordinator.atomic_json(version / 'compile-result.json', dict(state='compiled', exports_verified=True,
+                library_sha256=coordinator.digest(library), axis_ready=True))
+            fixture.daemon.commands.clear()
+            with patch.object(coordinator.subprocess, 'run', return_value=types.SimpleNamespace(stdout='')), \
+                    patch.object(fixture.coordinator, 'service') as service, \
+                    patch.object(axis_gate, 'read_private_json') as capability:
+                with self.assertRaisesRegex(coordinator.DeploymentError, 'mechanical/rotary/homing configuration is offline only'):
+                    fixture.request('activate', build_hash=build, expected_active_build_hash=baseline['build_hash'])
+                service.assert_not_called()
+                capability.assert_not_called()
+            self.assertEqual([], fixture.daemon.commands)
+            self.assertEqual(b'baseline', active.read_bytes())
+            self.assertFalse(fixture.coordinator.transaction_path.exists())
+        finally:
+            fixture.tearDown()
+
+    def test_nonaxis_candidate_compiles_offline_but_activation_rechecks_hardware_mechanics(self):
+        from test_coordinator import Tests
+        fixture = Tests(); fixture.setUp()
+        try:
+            hardware = {'Hardware': {'Axes': [{'Name': 'X', 'Mechanics': {'Kind': 'Linear'}}]}}
+            path, checksum, build = fixture.package({'hardware-configuration.json': json.dumps(hardware).encode()})
+            fixture.request('stage', package_path=str(path), package_sha256=checksum, build_hash=build)
+            active = fixture.runtime / 'build/libplc_existing.so'; active.write_bytes(b'baseline')
+            baseline = fixture.request('adopt-baseline')['active']
+            version = fixture.coordinator.version(build); (version / 'build').mkdir()
+            library = version / 'build/new_libplc.so'; library.write_bytes(b'candidate')
+            original = coordinator.read_json
+            def read(path):
+                return {'source_hashes': {}} if pathlib.Path(path).name == 'runtime-profile.json' else original(path)
+            def compile_command(args, directory, output, timeout):
+                pathlib.Path(output).write_text('\n'.join(coordinator.REQUIRED_EXPORTS) if args[0] == 'nm' else 'compiled')
+                return 0
+            with patch.object(coordinator, 'read_json', side_effect=read), patch.object(coordinator, 'run_bounded', side_effect=compile_command):
+                result = fixture.request('compile', build_hash=build)
+            self.assertEqual('compiled', result['state'])
+            self.assertFalse(result['axis_ready'])
+            self.assertIn('controller apply/confirm is not implemented', result['axis_message'])
+            # A forged/old readiness result must not bypass the fresh activation check.
+            result['axis_ready'] = True
+            coordinator.atomic_json(version / 'compile-result.json', result)
+            fixture.daemon.commands.clear()
+            with patch.object(fixture.coordinator, 'service') as service, patch.object(axis_gate, 'read_private_json') as capability:
+                with self.assertRaisesRegex(coordinator.DeploymentError, 'mechanical/rotary/homing configuration is offline only'):
+                    fixture.request('activate', build_hash=build, expected_active_build_hash=baseline['build_hash'])
+                service.assert_not_called()
+                capability.assert_not_called()
+            self.assertEqual([], fixture.daemon.commands)
+            self.assertEqual(b'baseline', active.read_bytes())
+            self.assertFalse(fixture.coordinator.transaction_path.exists())
+        finally:
+            fixture.tearDown()
+
     def bundle(self, root, document=None, flagged=True, omit=None, constants=None):
         files = {name: b'fixture' for name in ('generated.cpp', 'generated.hpp', 'generated_debug.cpp',
             'defines.h', 'configuration.st', 'strucpp_runtime/include/debug_table.hpp',
