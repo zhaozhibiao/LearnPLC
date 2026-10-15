@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/__pycache__/
+artifacts/
+.tools/
+*.user
+*.tmp
+**/.avalonia-build-tasks/

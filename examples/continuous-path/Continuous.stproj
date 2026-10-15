@@ -1,0 +1,100 @@
+{
+  "SchemaVersion": 1,
+  "Project": {
+    "SchemaVersion": 1,
+    "Id": "9c22f68d-6834-4563-830b-d20971f9a4f1",
+    "Name": "Continuous virtual example",
+    "Items": [
+      {
+        "Id": "86cb2a0b-ac8c-4f3e-8d7e-8bc88dad8236",
+        "Name": "Main",
+        "Kind": 0,
+        "SourcePath": "sources/Main.st"
+      }
+    ],
+    "Tasks": [
+      {
+        "Name": "Cyclic",
+        "ProgramId": "86cb2a0b-ac8c-4f3e-8d7e-8bc88dad8236",
+        "IntervalMilliseconds": 10,
+        "Enabled": true
+      }
+    ],
+    "Hardware": {
+      "Devices": [],
+      "Io": [],
+      "Axes": [
+        {
+          "Name": "X",
+          "ControllerAxis": "Axis1",
+          "Unit": "mm",
+          "MinPosition": -100,
+          "MaxPosition": 100
+        },
+        {
+          "Name": "Y",
+          "ControllerAxis": "Axis2",
+          "Unit": "mm",
+          "MinPosition": -100,
+          "MaxPosition": 100
+        }
+      ]
+    },
+    "Paths": [
+      {
+        "Id": "55555555-2222-3333-4444-555555555555",
+        "Version": 1,
+        "Name": "Outline",
+        "SourceName": "",
+        "Layer": "0",
+        "ImportScale": 1,
+        "OriginalUnit": "drawing-unit",
+        "Mode": "Continuous",
+        "Unit": "mm",
+        "Axes": [
+          "X",
+          "Y"
+        ],
+        "Segments": [
+          {
+            "Kind": "Line",
+            "Start": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            },
+            "End": {
+              "X": 1,
+              "Y": 0,
+              "Z": 0
+            },
+            "Center": {
+              "X": 0,
+              "Y": 0,
+              "Z": 0
+            },
+            "SweepRadians": 0
+          }
+        ],
+        "Profile": {
+          "Velocity": 5,
+          "Acceleration": 20,
+          "Deceleration": 20,
+          "Jerk": 100,
+          "CornerTolerance": 0.05,
+          "CycleSeconds": 0.001
+        },
+        "Offset": {
+          "X": 0,
+          "Y": 0,
+          "Z": 0
+        },
+        "ContentHash": "86f122386e0214ba642d4b669a804e8894e6df36250418b968e5637f92ab15be",
+        "NumericId": 6148914690377528115
+      }
+    ]
+  },
+  "SourceFiles": {
+    "86cb2a0b-ac8c-4f3e-8d7e-8bc88dad8236": ".stversions/c746138afac4558e7a629782049400c67e73578a19f1e66c720b29b2cd6a0983/001256fb862421b22604e8fe8cc51163cf85e05626883f72a753d16299908511/sources/Main.st"
+  }
+}

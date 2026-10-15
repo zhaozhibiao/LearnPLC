@@ -1,0 +1,32 @@
+{
+  "SchemaVersion": 1,
+  "Project": {
+    "SchemaVersion": 1,
+    "Id": "8149bf92-0b3f-46a7-89cb-73acba7c3962",
+    "Name": "Counter demo",
+    "Items": [
+      {
+        "Id": "fa0f5329-48df-49f9-a0c8-a0d61113b7fe",
+        "Name": "Main",
+        "Kind": 0,
+        "SourcePath": "sources/Main.st"
+      }
+    ],
+    "Tasks": [
+      {
+        "Name": "Cyclic",
+        "ProgramId": "fa0f5329-48df-49f9-a0c8-a0d61113b7fe",
+        "IntervalMilliseconds": 10,
+        "Enabled": true
+      }
+    ],
+    "Hardware": {
+      "Devices": [],
+      "Io": [],
+      "Axes": []
+    }
+  },
+  "SourceFiles": {
+    "fa0f5329-48df-49f9-a0c8-a0d61113b7fe": ".stversions/72e7b1effa23149b3532e3fa74e9dcacfcf94ff409cee1742157d8512efc7a6a/deaf93f9bf0f0808378dbe14d29152826ed8e3cfcb56dd2f444c7fae3402ce5a/sources/Main.st"
+  }
+}

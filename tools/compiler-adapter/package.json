@@ -1,0 +1,10 @@
+{
+  "name": "st-workbench-external-compiler-adapter",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "strucpp": "https://github.com/Autonomy-Logic/STruCpp/releases/download/v0.7.0/strucpp-0.7.0.tgz"
+  }
+}

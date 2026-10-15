@@ -1,0 +1,15 @@
+[Unit]
+Description=Independent ST Workbench OpenPLC Runtime v4.3.0
+
+[Service]
+Type=simple
+WorkingDirectory=%h/.local/share/st-workbench/runtime-v4.3.0/source
+ExecStart=%h/.local/share/st-workbench/runtime-v4.3.0/run-user.sh
+Restart=no
+TimeoutStopSec=30
+KillMode=control-group
+UMask=0077
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target

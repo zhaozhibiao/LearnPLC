@@ -1,0 +1,67 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (c) 2026 ST Workbench contributors
+// Separate GPL command-line tool; no compiler code is linked into the desktop application.
+import { readFile, writeFile } from 'node:fs/promises';
+import { dirname, join, basename } from 'node:path';
+import { compile, parse, getVersion, discoverStlibs } from 'strucpp/node';
+
+const args = process.argv.slice(2);
+if (args.includes('--version')) {
+  console.log(`STruC++ version ${getVersion()}`);
+  process.exit(0);
+}
+try {
+  if (getVersion() !== '0.7.0') throw new Error('Unsupported compiler version; this adapter requires 0.7.0');
+  const requestIndex = args.indexOf('--request');
+  const outputIndex = args.indexOf('-o');
+  if (requestIndex < 0 || outputIndex < 0) throw new Error('Expected --request and -o');
+  const request = JSON.parse(await readFile(args[requestIndex + 1], 'utf8'));
+  const sourcePaths = args.slice(requestIndex + 2, outputIndex);
+  if (sourcePaths.length !== request.Sources.length) throw new Error('Source count mismatch');
+  const sources = await Promise.all(sourcePaths.map(async (fileName) => ({ fileName, source: await readFile(fileName, 'utf8') })));
+  for (let index = 0; index < sources.length; index++) {
+    const parsed = parse(sources[index].source);
+    if (parsed.errors.length) {
+      for (const error of parsed.errors) console.error(`${sources[index].fileName}:${error.line}:${error.column}: error: ${error.message.replaceAll('\n', ' ')}`);
+      process.exit(1);
+    }
+    if (parsed.ast.configurations.length) throw new Error('Existing CONFIGURATION is unsupported; tasks come from the immutable project snapshot');
+    const mapped = request.ProgramNames[request.Sources[index].ItemId];
+    if (mapped && !parsed.ast.programs.some(program => program.name.toUpperCase() === mapped.toUpperCase()))
+      throw new Error(`Program mapping '${mapped}' does not match source ${basename(sources[index].fileName)}`);
+  }
+  const task = request.Tasks.filter(task => task.Enabled);
+  if (task.length !== 1) throw new Error('Exactly one enabled task is supported');
+  const programName = request.ProgramNames[task[0].ProgramId];
+  if (!programName || !/^[A-Za-z_][A-Za-z0-9_]*$/.test(programName)) throw new Error('Task program mapping missing or invalid');
+  if (!Number.isSafeInteger(task[0].IntervalMilliseconds) || task[0].IntervalMilliseconds <= 0) throw new Error('Invalid task interval');
+  const taskName = 'TASK_' + task[0].Name.replace(/[^A-Za-z0-9_]/g, '_').toUpperCase();
+  const config = `CONFIGURATION Config0\nRESOURCE Res0 ON PLC\nTASK ${taskName}(INTERVAL := T#${task[0].IntervalMilliseconds}ms, PRIORITY := 0);\nPROGRAM Instance0 WITH ${taskName} : ${programName};\nEND_RESOURCE\nEND_CONFIGURATION\n`;
+  const result = compile(sources[0].source, {
+    fileName: sources[0].fileName, headerFileName: 'generated.hpp', md5: request.ProgramMd5,
+    additionalSources: [...sources.slice(1), { fileName: '__workbench_axis.st', source: await readFile(request.AxisLibraryPath, 'utf8') }, { fileName: '__workbench_axis_constants.st', source: await readFile(request.AxisConstantsPath, 'utf8') }, ...(request.MotionLibraryPath ? [{ fileName: '__workbench_motion.st', source: await readFile(request.MotionLibraryPath, 'utf8') }] : []), { fileName: '__workbench_configuration.st', source: config }],
+    // Our executable MC_ implementations are authoritative for an axis candidate.
+    // The bundled SoftMotion reference library exports the same names and the
+    // pinned compiler otherwise emits both definitions into generated.hpp.
+    libraries: discoverStlibs(join(request.CompilerDistributionDirectory, 'libs'))
+      .filter(library => library.manifest.name !== 'plcopen-softmotion'),
+  });
+  for (const diagnostic of [...result.errors, ...result.warnings])
+    console.error(`${diagnostic.file ?? sources[0].fileName}:${diagnostic.line}:${diagnostic.column}: ${diagnostic.severity}: ${diagnostic.message.replaceAll('\n', ' ')}`);
+  if (!result.success) process.exit(1);
+  if (!result.debugTableCpp || !result.debugMap) throw new Error('Compiler omitted authoritative debug artifacts');
+  const directory = dirname(args[outputIndex + 1]);
+  const entry = `void Program_${programName.toUpperCase()}::run() {`;
+  if (result.cppCode.split(entry).length !== 2) throw new Error("Motion scan hook requires one authoritative program run entry");
+  const guard = `\n    struct MotionScanGuard { int exceptions = std::uncaught_exceptions(); ~MotionScanGuard() { workbench_axis_after_scan(std::uncaught_exceptions() == exceptions); ${request.MotionLibraryPath ? "workbench_motion_after_scan(std::uncaught_exceptions() == exceptions);" : ""} } } motionScanGuard;\n`;
+  const hooked = "#include <exception>\n#include \"axis_bridge.hpp\"\n" + (request.MotionLibraryPath ? "#include \"motion_bridge.hpp\"\n" : "") + result.cppCode.replace(entry, entry + guard);
+  await writeFile(args[outputIndex + 1], hooked);
+  await writeFile(join(directory, 'generated.hpp'), result.headerCode);
+  await writeFile(join(directory, 'generated_debug.cpp'), result.debugTableCpp);
+  await writeFile(join(directory, 'debug-map.json'), JSON.stringify(result.debugMap, null, 2));
+  await writeFile(join(directory, 'configuration.st'), config);
+  console.log('Generated C++ and authoritative debugger tables for isolated Runtime candidate compilation.');
+} catch (error) {
+  console.error(`compiler-adapter:0:0: error: ${error.message}`);
+  process.exit(1);
+}

@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><ProjectReference Include="../StWorkbench.Core/StWorkbench.Core.csproj"/><ProjectReference Include="../StWorkbench.Motion/StWorkbench.Motion.csproj"/></ItemGroup></Project>

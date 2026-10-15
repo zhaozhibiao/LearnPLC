@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "stworkbench.core": {
+        "type": "Project"
+      },
+      "stworkbench.motion": {
+        "type": "Project",
+        "dependencies": {
+          "StWorkbench.Core": "[1.0.0, )"
+        }
+      },
+      "stworkbench.toolchain": {
+        "type": "Project",
+        "dependencies": {
+          "StWorkbench.Core": "[1.0.0, )",
+          "StWorkbench.Motion": "[1.0.0, )"
+        }
+      }
+    }
+  }
+}

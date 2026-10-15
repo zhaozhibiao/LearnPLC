@@ -1,0 +1,52 @@
+{
+  "SchemaVersion": 1,
+  "Project": {
+    "SchemaVersion": 1,
+    "Id": "40a9b31d-7a33-48a3-a244-ec571c2d4047",
+    "Name": "ST \u793A\u4F8B\u5DE5\u7A0B",
+    "Items": [
+      {
+        "Id": "7820488e-4a4d-4084-9dd3-ade1f71e5802",
+        "Name": "Main",
+        "Kind": 0,
+        "SourcePath": "sources/Main.st"
+      }
+    ],
+    "Tasks": [
+      {
+        "Name": "Cyclic",
+        "ProgramId": "7820488e-4a4d-4084-9dd3-ade1f71e5802",
+        "IntervalMilliseconds": 10,
+        "Enabled": true
+      }
+    ],
+    "Hardware": {
+      "Devices": [],
+      "Io": [],
+      "Axes": [
+        {
+          "Name": "X",
+          "ControllerAxis": "Axis1",
+          "Unit": "mm",
+          "MinPosition": -100,
+          "MaxPosition": 100
+        }
+      ]
+    },
+    "Paths": [],
+    "MotionCycle": {
+      "Enabled": true,
+      "PeriodMicroseconds": 2000,
+      "SchedulingPolicy": "FIFO",
+      "Priority": 40,
+      "Cpu": null,
+      "WatchdogCycles": 3,
+      "AxisNames": [
+        "X"
+      ]
+    }
+  },
+  "SourceFiles": {
+    "7820488e-4a4d-4084-9dd3-ade1f71e5802": ".stversions/48ca88e0bba2de6e91cb47d0c888052254342de6f600585f19b5fef48f376ec1/245758e0bc80ec34e5c2df7c7d3751ef9ede818ad021a168060db12892594123/sources/Main.st"
+  }
+}

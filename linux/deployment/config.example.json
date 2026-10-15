@@ -1,0 +1,11 @@
+{
+  "prefix": "/home/a/.local/share/st-workbench/runtime-v4.3.0/deployment",
+  "runtime_source": "/home/a/.local/share/st-workbench/runtime-v4.3.0/source",
+  "runtime_commit": "a9e38d901fb87deb5a8cf778b52639b9387834d0",
+  "exclusive_control": true,
+  "control_transport": "rest",
+  "service_name": "stworkbench-openplc.service",
+  "safe_mode_verified": true,
+  "credentials_file": "/home/a/.local/share/st-workbench/runtime-v4.3.0/data/coordinator-auth.json",
+  "ca_file": "/home/a/.local/share/st-workbench/runtime-v4.3.0/source/webserver/certOPENPLC.pem"
+}
