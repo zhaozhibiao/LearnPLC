@@ -15,6 +15,7 @@ var originalSettings = WorkbenchSettings.Load();
 var realDevice = Environment.GetEnvironmentVariable("ST_REAL_APP_VERIFY") == "1";
 if (realDevice) (originalSettings with { Endpoint = "https://localhost:18443" }).Save();
 var window = new MainWindow();
+if (Environment.GetEnvironmentVariable("ST_ENGINEERING_NAVIGATION_UI_VERIFY") == "1") { EngineeringNavigationUiTests.Run(); window.Close(); return; }
 if (Environment.GetEnvironmentVariable("ST_IO_MAPPING_UI_VERIFY") == "1") { IoMappingUiTests.Run(); window.Close(); return; }
 if (Environment.GetEnvironmentVariable("ST_PATH_NAVIGATION_UI_VERIFY") == "1") { PathNavigationUiTests.Run(); window.Close(); return; }
 if (Environment.GetEnvironmentVariable("ST_AXIS_PROPERTIES_UI_VERIFY") == "1") { AxisPropertiesUiTests.Run(); window.Close(); return; }
@@ -133,6 +134,7 @@ if (Environment.GetEnvironmentVariable("ST_INSTRUCTION_COMPILE_VERIFY") == "1")
     MultiAxisUiTests.Run();
     PathScaleUiTests.Run();
     PathNavigationUiTests.Run();
+    EngineeringNavigationUiTests.Run();
 PathUiTests.Run(window);
 if (window.FindControl<Button>("StartInlineMonitor") is null || window.FindControl<ComboBox>("MonitorInstance") is null || !window.FindControl<TextBlock>("InlineMonitorStatus")!.Text!.Contains("不可用")) throw new Exception("FAIL: ST editor online controls and truthful initial unavailable status");
 if (window.FindControl<TreeView>("ProjectTree") is not { ItemCount: > 0 }) throw new Exception("FAIL: project tree");

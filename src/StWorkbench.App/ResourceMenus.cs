@@ -74,16 +74,13 @@ public sealed partial class MainWindow
         await dialog.ShowDialog(this);
     }
     private ContextMenu TaskGroupMenu() => new() { ItemsSource = new[] { MenuAction("添加任务…", AddTaskAsync), MenuAction("任务配置 / 属性", () => { NavigateTo(1); return Task.CompletedTask; }) } };
-    private TreeViewItem TaskNode(PlcTask task) => new()
-    {
-        Header = $"{task.Name} · {task.IntervalMilliseconds} ms" + (task.Enabled ? "" : " · 未启用"),
-        ContextMenu = new ContextMenu { ItemsSource = new object[]
+    private TreeViewItem TaskNode(PlcTask task) => PageNode($"{task.Name} · {task.IntervalMilliseconds} ms" + (task.Enabled ? "" : " · 未启用"), 1,
+        new ContextMenu { ItemsSource = new object[]
         {
             MenuAction("添加任务…", AddTaskAsync), MenuAction("重命名…", () => EditTaskAsync(task)),
             MenuAction("删除…", async () => { if (busy || task.Enabled) return; if (await ConfirmAsync("删除任务", "删除 " + task.Name + "？", "删除") && !busy && !task.Enabled) { project.Tasks.Remove(task); MarkDirty(); RefreshTree(); } }, !task.Enabled),
             MenuAction("属性 / 周期配置…", () => EditTaskAsync(task))
-        } }
-    };
+        } });
     private async Task AddTaskAsync()
     {
         if (busy) return;

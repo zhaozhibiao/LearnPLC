@@ -137,7 +137,7 @@ public sealed partial class MainWindow : Window
         root.Children.Add(header); Grid.SetRow(commands, 1); root.Children.Add(commands); Grid.SetRow(center, 2); root.Children.Add(center);
         var rowSplitter = new GridSplitter { ResizeDirection = GridResizeDirection.Rows, HorizontalAlignment = HorizontalAlignment.Stretch }; Grid.SetRow(rowSplitter, 3); root.Children.Add(rowSplitter);
         Grid.SetRow(footer, 4); root.Children.Add(footer); Content = root;
-        tree.SelectionChanged += (_, _) => { if (tree.SelectedItem is TreeViewItem { Tag: Guid id }) SelectItem(id); else if (tree.SelectedItem is TreeViewItem { Tag: PathResourceReference path }) SelectPath(path.Id, path.Version); else if (tree.SelectedItem is TreeViewItem { Tag: "path-resources" }) ShowPathWorkspace(); else if (tree.SelectedItem is TreeViewItem { Tag: "io-mappings" }) ShowIoMappingTable(); else if (tree.SelectedItem is TreeViewItem { Tag: ProjectResourceReference resource }) SelectItem(resource.ItemId); else if(tree.SelectedItem is TreeViewItem{Tag:EtherCatStation station}) { selectedStationId=station.Id;RefreshConfigurationViews();NavigateTo(2); } else if(tree.SelectedItem is TreeViewItem{Tag:"network-configuration"})NavigateTo(6); };
+        tree.SelectionChanged += (_, _) => { if (tree.SelectedItem is TreeViewItem { Tag: Guid id }) SelectItem(id); else if (tree.SelectedItem is TreeViewItem { Tag: PathResourceReference path }) SelectPath(path.Id, path.Version); else if (tree.SelectedItem is TreeViewItem { Tag: "path-resources" }) ShowPathWorkspace(); else if (tree.SelectedItem is TreeViewItem { Tag: "io-mappings" }) ShowIoMappingTable(); else if (tree.SelectedItem is TreeViewItem { Tag: WorkbenchPageReference page }) NavigateTo(page.TabIndex); else if (tree.SelectedItem is TreeViewItem { Tag: ProjectResourceReference resource }) SelectItem(resource.ItemId); else if(tree.SelectedItem is TreeViewItem{Tag:EtherCatStation station}) { selectedStationId=station.Id;RefreshConfigurationViews();NavigateTo(2); } };
         editor.TextChanged += (_, _) => { if (!loading && selected is not null) { sources[selected.Id] = new(selected.Id, selected.SourcePath, editor.Text); MarkDirty(); RefreshResourceMembers(selected); } };
         editor.TextArea.Caret.PositionChanged += (_, _) => UpdateHint();
         editor.KeyDown += EditorKeyDown;
@@ -329,9 +329,9 @@ public sealed partial class MainWindow : Window
         var groups = new List<TreeViewItem>();
         foreach (var kind in Enum.GetValues<ItemKind>()) groups.Add(new TreeViewItem { Header = KindLabel(kind), IsExpanded = true, ContextMenu = CategoryMenu(kind), ItemsSource = project.Items.Where(i => i.Kind == kind).Select(ResourceNode).ToArray() });
         groups.Add(PathResourceGroupNode());
-        groups.Add(new TreeViewItem { Header = "任务", IsExpanded = true, ContextMenu = TaskGroupMenu(), ItemsSource = project.Tasks.Select(TaskNode).ToArray() });
-        groups.Add(new TreeViewItem { Header = "硬件", IsExpanded = true, ContextMenu = NavigationMenu("硬件组态", 2), ItemsSource = new[] { new TreeViewItem { Header = $"工程从站 ({Stations.Count})", IsExpanded=true, ContextMenu=NavigationMenu("硬件组态 / 从站",2),ItemsSource=Stations.Select((s,i)=>new TreeViewItem{Header=$"{i+1}. {s.Name}",Tag=s,ContextMenu=NavigationMenu("从站属性",2)}).ToArray() }, IoMappingTreeNode(), new TreeViewItem { Header = $"轴资源 ({project.Hardware.Axes.Count})", ContextMenu = NavigationMenu("轴属性 / 配置", 2) } } });
-        groups.Add(new TreeViewItem{Header="网络",Tag="network-configuration",IsExpanded=true,ContextMenu=NavigationMenu("网络组态",6),ItemsSource=new[]{new TreeViewItem{Header=project.Network?.ManagementHost??"管理连接未配置",Tag="network-configuration"},new TreeViewItem{Header=string.IsNullOrWhiteSpace(project.Network?.EtherCatInterface)?"EtherCAT 网卡未配置":project.Network.EtherCatInterface,Tag="network-configuration"}}});tree.ItemsSource = groups;
+        groups.Add(TaskGroupNode());
+        groups.Add(HardwareGroupNode());
+        groups.Add(NetworkGroupNode()); tree.ItemsSource = groups;
         taskProgram.ItemsSource = project.Items.Where(i => i.Kind == ItemKind.Program).Select(i => i.Name).ToArray();
         taskProgram.SelectedItem = project.Items.FirstOrDefault(i => i.Id == project.Tasks.Single(t => t.Enabled).ProgramId)?.Name;
         RefreshInstructionLibrary();
