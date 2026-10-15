@@ -5,6 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
+using Avalonia.VisualTree;
 using StWorkbench.Core;
 using StWorkbench.Motion;
 using StWorkbench.OpenPlc;
@@ -79,6 +80,17 @@ public sealed partial class MainWindow
     }
     private void SetPathPlannedTime(PreparedTrajectory plan)=>pathPlanningTime.Text=$"预计运动时间（离线规划）：{plan.DurationSeconds:F3}s";
     private TreeViewItem[] PathNodes() => project.Paths.Select(p => new TreeViewItem { Header = p.ToString(), Tag = new PathResourceReference(p.Id, p.Version), ContextMenu = PathAssetMenu(p) }).ToArray();
+    private TreeViewItem PathResourceGroupNode()
+    {
+        var node = new TreeViewItem { Header = "路径资源", Tag = "path-resources", IsExpanded = true, ContextMenu = PathGroupMenu(), ItemsSource = PathNodes() };
+        // SelectionChanged does not fire when returning to an already selected group.
+        node.Tapped += (_, e) =>
+        {
+            if (e.Source is Control source && ReferenceEquals(source as TreeViewItem ?? source.FindAncestorOfType<TreeViewItem>(), node))
+                ShowPathWorkspace();
+        };
+        return node;
+    }
     private ContextMenu PathGroupMenu()
     {
         var import = new MenuItem { Header = "导入 DXF" }; import.Click += async (_, _) => await Run(ImportPathDxfAsync); return new ContextMenu { ItemsSource = new[] { import } };
