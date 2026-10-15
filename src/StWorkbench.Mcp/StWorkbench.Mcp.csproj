@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <ProjectReference Include="../StWorkbench.Core/StWorkbench.Core.csproj" />
+    <ProjectReference Include="../StWorkbench.Motion/StWorkbench.Motion.csproj" />
+    <ProjectReference Include="../StWorkbench.Toolchain/StWorkbench.Toolchain.csproj" />
+  </ItemGroup>
+</Project>

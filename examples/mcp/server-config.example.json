@@ -1,0 +1,22 @@
+{
+  "WorkspaceRoot": "D:/OPenplc",
+  "RepositoryRoot": "D:/OPenplc",
+  "NodeExecutable": "C:/Program Files/nodejs/node.exe",
+  "CompilerDistribution": "D:/OPenplc/.tools/strucpp-0.7.0/strucpp",
+  "Devices": [
+    {
+      "Id": "plc31",
+      "Host": "192.168.1.31",
+      "User": "a",
+      "Port": 22,
+      "KnownHostsPath": "D:/OPenplc/artifacts/ssh-known-hosts",
+      "AllowPlcControl": false,
+      "AllowMotion": false,
+      "Backend": "EcMotion",
+      "AllowedAxes": ["X"],
+      "GatewayPath": "/home/a/st-workbench-mcp/linux/mcp/motion_gateway.py",
+      "AxisManifestPath": "/home/a/st-workbench-mcp/axis-manifest.json",
+      "ControllerSocket": "/run/ecmotion/controller.sock"
+    }
+  ]
+}

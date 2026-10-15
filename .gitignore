@@ -3,6 +3,8 @@
 **/node_modules/
 **/__pycache__/
 artifacts/
+.st-mcp-builds/
+*.stproj.mcp-lock
 .tools/
 *.user
 *.tmp

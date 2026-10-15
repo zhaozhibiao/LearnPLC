@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "st-workbench": {
+      "command": "pwsh",
+      "args": [
+        "-NoProfile", "-File", "D:/OPenplc/scripts/start-mcp.ps1",
+        "-ConfigPath", "D:/OPenplc/artifacts/mcp-server.json"
+      ]
+    }
+  }
+}

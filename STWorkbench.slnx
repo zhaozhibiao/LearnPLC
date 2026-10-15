@@ -3,6 +3,7 @@
     <Project Path="src/StWorkbench.App/StWorkbench.App.csproj" />
     <Project Path="src/StWorkbench.Core/StWorkbench.Core.csproj" />
     <Project Path="src/StWorkbench.Motion/StWorkbench.Motion.csproj" />
+    <Project Path="src/StWorkbench.Mcp/StWorkbench.Mcp.csproj" />
     <Project Path="src/StWorkbench.OpenPlc/StWorkbench.OpenPlc.csproj" />
     <Project Path="src/StWorkbench.Toolchain/StWorkbench.Toolchain.csproj" />
   </Folder>
@@ -12,6 +13,7 @@
     <Project Path="tests/StWorkbench.Debug.Tests/StWorkbench.Debug.Tests.csproj" />
     <Project Path="tests/StWorkbench.Deployment.Tests/StWorkbench.Deployment.Tests.csproj" />
     <Project Path="tests/StWorkbench.Motion.Tests/StWorkbench.Motion.Tests.csproj" />
+    <Project Path="tests/StWorkbench.Mcp.Tests/StWorkbench.Mcp.Tests.csproj" />
     <Project Path="tests/StWorkbench.OpenPlc.Tests/StWorkbench.OpenPlc.Tests.csproj" />
     <Project Path="tests/StWorkbench.Toolchain.Tests/StWorkbench.Toolchain.Tests.csproj" />
   </Folder>

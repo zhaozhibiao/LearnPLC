@@ -19,7 +19,7 @@ if (Test-Path -LiteralPath (Join-Path $workspace 'tools/compiler-adapter/node_mo
     $env:ST_COMPILER_ADAPTER = $adapter
     $env:ST_COMPILER_DISTRIBUTION = Split-Path -Parent $compiler
 }
-foreach ($project in @('Core','Toolchain','OpenPlc','Motion','App','Debug','Deployment')) {
+foreach ($project in @('Core','Toolchain','OpenPlc','Motion','App','Debug','Deployment','Mcp')) {
     dotnet run --project "tests/StWorkbench.$project.Tests" -c Release --no-build
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
@@ -30,5 +30,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 python -m unittest discover -s linux/motion -p 'test*.py'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 python -m unittest discover -s linux/axis -p 'test*.py'
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+python -m unittest discover -s linux/mcp -p 'test_*.py'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 Write-Host '全部本地验证通过；设备联调结果见 docs/verification.md。'

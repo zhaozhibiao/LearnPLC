@@ -1,5 +1,7 @@
 # 商用授权记录
 
+2026-10-15 MCP 新增部分：独立 .NET MCP 宿主、工程事务、工具接口及 Linux 运动会话通道为自研 MIT。官方 ModelContextProtocol / ModelContextProtocol.Core 固定 2.2.0，NuGet 元数据声明 Apache-2.0；该固定版本上游正在从 MIT 向 Apache-2.0 过渡，未同意重新许可的旧贡献仍适用 MIT，不能只标注为纯 MIT。完整原始许可和第三方通知保存在 [third-party/mcp-sdk](third-party/mcp-sdk/LICENSE)。32 项新增依赖的版本、内容摘要、许可证元数据、源码提交及随包通知记录在 [mcp-dependency-licenses.json](mcp-dependency-licenses.json)，其中 Microsoft/.NET 包元数据为 MIT。所用许可允许商业使用，需保留适用通知并履行发行义务；本轮不改变最终发行物 `CommercialRedistributionCleared=false` 门禁。
+
 2026-10-14 基础轴控新增部分：轴绑定、资源模板、ST 功能块、原生扫描桥和 Python EcMotion 协议工作进程为自研 MIT 源码，许可证保存在 src/LICENSE、tools/axis-bridge/LICENSE、linux/axis/LICENSE。compile-axis.mjs 属于独立 GPL-3.0-or-later 编译适配工具。接口通过进程间协议连接现有运动核心，没有将 IgH 源码或库链接入桌面或新轴控候选。原项目仿真器只在隔离验收目录使用，不进入产品候选包。现有运动核心及其依赖的分发义务仍需独立履行。
 
 自研工程站和设备协调器采用本仓库 MIT 许可。桌面没有嵌入 GPL 编译器；ST 解析、类型检查及代码生成由独立 GPL 工具进程完成。所选组件允许商业使用，发行时必须履行各组件的通知、源码和修改说明义务。
