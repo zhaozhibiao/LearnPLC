@@ -126,7 +126,8 @@ public sealed class DeviceService(WorkspaceService workspace, ServerOptions opti
             ready = result.Success && draft.Project.Hardware.Axes.All(a => a.Mechanics is null) &&
                 (draft.Project.Paths.Count == 0 || result.MotionReady == true) &&
                 (draft.Project.MotionCycle?.Enabled != true || result.MotionCycleReady == true) &&
-                (!StWorkbench.Core.AxisControlBinding.UsesAxisControl(draft.Sources) || result.AxisReady == true);
+                (!StWorkbench.Core.AxisControlBinding.UsesAxisControl(draft.Sources) || result.AxisReady == true) &&
+                (!StWorkbench.Core.CommunicationBinding.IsUsed(draft.Sources) || result.CommunicationReady == true);
         }
         public Task BeforeProgramChangeAsync() => owner.RequireRevision(plan);
         public Task<bool> ConfirmRestartAsync(ProgramRestartNotice notice) => Task.FromResult(plan.ExpiresAt > DateTimeOffset.UtcNow &&

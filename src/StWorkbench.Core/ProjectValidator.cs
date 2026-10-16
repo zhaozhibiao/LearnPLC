@@ -47,6 +47,8 @@ public static class ProjectValidator
             if (device.Entries.Any(e => e.BitLength is < 1 or > 65536)) Error("EtherCAT PDO 位宽无效");
         }
         errors.AddRange(NetworkTopologyValidator.Validate(project));
+        errors.AddRange(CommunicationBinding.Validate(project.Communication, sources, project.Tasks));
+        errors.AddRange(ControlLibraryBinding.Validate(sources));
         var addresses = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var io in project.Hardware.Io)
         {
@@ -109,12 +111,13 @@ public static class ProjectValidator
             ? JsonSerializer.Serialize(new { project.Id, project.Name, Sources = copy, Tasks = tasks })
             : JsonSerializer.Serialize(new { project.Id, project.Name, Sources = copy, Tasks = tasks, Paths = pathAssets });
         var cycle = project.MotionCycle is { Enabled: true } enabledCycle ? enabledCycle with { AxisNames = enabledCycle.AxisNames.ToArray() } : null;
+        var communication = project.Communication is { } comm ? comm with { Channels = comm.Channels.Select(c => c with { }).ToArray() } : null;
         var hardwareIdentity = cycle is null ? JsonSerializer.Serialize(project.Hardware) : JsonSerializer.Serialize(new { Hardware = project.Hardware, MotionCycle = cycle });
         string? configurationJson = null;
-        if (project.Network is not null || project.Hardware.Stations is not null || project.Hardware.Axes.Any(a => a.Mechanics is not null))
-            hardwareIdentity = configurationJson = JsonSerializer.Serialize(new HardwareConfigurationDocument(project.Hardware) { Network = project.Network, MotionCycle = cycle });
+        if (project.Network is not null || project.Hardware.Stations is not null || project.Hardware.Axes.Any(a => a.Mechanics is not null) || communication is not null)
+            hardwareIdentity = configurationJson = JsonSerializer.Serialize(new HardwareConfigurationDocument(project.Hardware) { Network = project.Network, MotionCycle = cycle, Communication = communication });
         return new(project.Id, project.Name, Hash(identity), Hash(hardwareIdentity), copy, tasks)
-        { HardwareConfigurationJson = configurationJson, Paths = pathAssets, Axes = Array.AsReadOnly(project.Hardware.Axes.Select(a => a with { }).ToArray()), MotionCycle = cycle };
+        { HardwareConfigurationJson = configurationJson, Paths = pathAssets, Axes = Array.AsReadOnly(project.Hardware.Axes.Select(a => a with { }).ToArray()), MotionCycle = cycle, Communication = communication };
     }
 }
 

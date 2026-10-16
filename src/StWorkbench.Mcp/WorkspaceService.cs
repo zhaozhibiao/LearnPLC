@@ -100,7 +100,7 @@ public sealed class WorkspaceService
             var copied = McpJson.Clone(project);
             current.Name = copied.Name; current.SchemaVersion = copied.SchemaVersion; current.Items = copied.Items;
             current.Tasks = copied.Tasks; current.Hardware = copied.Hardware; current.Network = copied.Network;
-            current.MotionCycle = copied.MotionCycle; current.Paths = copied.Paths;
+            current.MotionCycle = copied.MotionCycle; current.Paths = copied.Paths; current.Communication = copied.Communication;
             docs.Clear(); docs.AddRange(McpJson.Clone(sources));
         }, false);
 

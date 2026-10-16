@@ -39,6 +39,27 @@ internal static class ProtocolTests
             WorkspaceTests.Check(!saved.GetProperty("HasUnsavedChanges").GetBoolean(), "MCP saves actual project");
             var loaded = await new ProjectStore().LoadAsync(Path.Combine(root, "Demo/Main.stproj"));
             WorkspaceTests.Check(loaded.Sources.Single().Text.Contains("counter := counter + 1"), "MCP file compatible with desktop store");
+            WorkspaceTests.Check(tools.Any(t => t.Name == "communication_configure") && tools.Any(t => t.Name == "control_communication_catalog"), "communication and control tool discovery");
+            project = await Call(client, "communication_configure", new() { ["sessionId"] = session, ["expectedRevision"] = revision,
+                ["communication"] = new CommunicationConfiguration { Channels = [new() { Name = "Bus", Host = "127.0.0.1", Port = 15020 }] } });
+            revision = project.GetProperty("Revision").GetString()!;
+            var catalog = await Call(client, "control_communication_catalog", new() { ["sessionId"] = session });
+            WorkspaceTests.Check(catalog.ToString().Contains("WB_PID") && catalog.ToString().Contains("COMM_Bus"), "actual ST interfaces and channel constants");
+            foreach (var id in new[] { "WB_PID", "Comm_Bus_WB_MB_REQUEST" })
+            {
+                var currentText = project.GetProperty("Sources")[0].GetProperty("Text").GetString()!;
+                project = await Call(client, "st_insert_instruction", new() { ["sessionId"] = session, ["expectedRevision"] = revision,
+                    ["itemId"] = item, ["offset"] = currentText.IndexOf("END_PROGRAM", StringComparison.Ordinal), ["instructionId"] = id });
+                revision = project.GetProperty("Revision").GetString()!;
+            }
+            var featureBuild = await Call(client, "build_start", new() { ["sessionId"] = session, ["expectedRevision"] = revision });
+            featureBuild = await WaitBuild(client, featureBuild.GetProperty("OperationId").GetString()!);
+            WorkspaceTests.Check(featureBuild.GetProperty("Success").GetBoolean(), "MCP inserted real control and communication templates compile: " + featureBuild.GetProperty("Log").GetString());
+            project = await Call(client, "source_write", new() { ["sessionId"] = session, ["expectedRevision"] = revision, ["itemId"] = item, ["text"] = loaded.Sources.Single().Text });
+            revision = project.GetProperty("Revision").GetString()!;
+            project = await Call(client, "communication_configure", new() { ["sessionId"] = session, ["expectedRevision"] = revision });
+            revision = project.GetProperty("Revision").GetString()!;
+            _ = await Call(client, "project_save", new() { ["sessionId"] = session, ["expectedRevision"] = revision });
             var unknown = await client.CallToolAsync("device_status", new Dictionary<string, object?> { ["deviceId"] = "unconfigured" });
             WorkspaceTests.Check(unknown.IsError == true, "unknown device rejected without network");
             var build = await Call(client, "build_start", new() { ["sessionId"] = session, ["expectedRevision"] = revision });

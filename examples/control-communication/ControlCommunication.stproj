@@ -1,0 +1,117 @@
+{
+  "SchemaVersion": 1,
+  "Project": {
+    "Communication": {
+      "Channels": [
+        {
+          "Name": "Bus",
+          "Protocol": "ModbusTcp",
+          "Host": "127.0.0.1",
+          "Port": 15020,
+          "Device": "/dev/ttyUSB0",
+          "BaudRate": 9600,
+          "DataBits": 8,
+          "Parity": "Even",
+          "StopBits": 1,
+          "Physical": "RS232",
+          "Direction": "Automatic",
+          "BeforeSendMicroseconds": 0,
+          "AfterSendMicroseconds": 0,
+          "TimeoutMilliseconds": 1000,
+          "Framing": "Raw",
+          "DelimiterHex": "0D0A",
+          "FixedLength": 1,
+          "IdleMilliseconds": 20
+        },
+        {
+          "Name": "RawTcp",
+          "Protocol": "Tcp",
+          "Host": "127.0.0.1",
+          "Port": 15021,
+          "Device": "/dev/ttyUSB0",
+          "BaudRate": 9600,
+          "DataBits": 8,
+          "Parity": "Even",
+          "StopBits": 1,
+          "Physical": "RS232",
+          "Direction": "Automatic",
+          "BeforeSendMicroseconds": 0,
+          "AfterSendMicroseconds": 0,
+          "TimeoutMilliseconds": 1000,
+          "Framing": "Raw",
+          "DelimiterHex": "0D0A",
+          "FixedLength": 1,
+          "IdleMilliseconds": 20
+        },
+        {
+          "Name": "Serial",
+          "Protocol": "Serial",
+          "Host": "127.0.0.1",
+          "Port": 502,
+          "Device": "/dev/ttyUSB0",
+          "BaudRate": 9600,
+          "DataBits": 8,
+          "Parity": "Even",
+          "StopBits": 1,
+          "Physical": "RS232",
+          "Direction": "Automatic",
+          "BeforeSendMicroseconds": 0,
+          "AfterSendMicroseconds": 0,
+          "TimeoutMilliseconds": 1000,
+          "Framing": "Raw",
+          "DelimiterHex": "0D0A",
+          "FixedLength": 1,
+          "IdleMilliseconds": 20
+        },
+        {
+          "Name": "Rtu",
+          "Protocol": "ModbusRtu",
+          "Host": "127.0.0.1",
+          "Port": 502,
+          "Device": "/dev/ttyUSB1",
+          "BaudRate": 9600,
+          "DataBits": 8,
+          "Parity": "Even",
+          "StopBits": 1,
+          "Physical": "RS485",
+          "Direction": "Automatic",
+          "BeforeSendMicroseconds": 0,
+          "AfterSendMicroseconds": 0,
+          "TimeoutMilliseconds": 1000,
+          "Framing": "Raw",
+          "DelimiterHex": "0D0A",
+          "FixedLength": 1,
+          "IdleMilliseconds": 20
+        }
+      ]
+    },
+    "SchemaVersion": 1,
+    "Id": "e0668f38-208e-46d5-a96d-df6bfffd4bc4",
+    "Name": "\u63A7\u5236\u4E0E\u901A\u4FE1\u793A\u4F8B",
+    "Items": [
+      {
+        "Id": "b12b717d-ef7c-47e9-9369-9b22d1c90610",
+        "Name": "Main",
+        "Kind": 0,
+        "SourcePath": "sources/Main.st"
+      }
+    ],
+    "Tasks": [
+      {
+        "Name": "Cyclic",
+        "ProgramId": "b12b717d-ef7c-47e9-9369-9b22d1c90610",
+        "IntervalMilliseconds": 10,
+        "Enabled": true
+      }
+    ],
+    "Hardware": {
+      "Devices": [],
+      "Io": [],
+      "Axes": []
+    },
+    "Paths": []
+  },
+  "SourceFiles": {
+    "b12b717d-ef7c-47e9-9369-9b22d1c90610": ".stversions/befc5c0f1946957e932f9f4e35ef711b67ec28e15a6b9a8fc16838e889d5b76f/bc493104f8053331a49da9aedf87e2d595efbd7307619a900db7456a1481ddb6/sources/Main.st"
+  }
+}

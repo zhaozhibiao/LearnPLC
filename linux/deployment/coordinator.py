@@ -22,6 +22,7 @@ import shlex
 import urllib.request
 import motion_cycle
 import axis_gate
+import communication_gate
 
 RUNTIME_COMMIT = "a9e38d901fb87deb5a8cf778b52639b9387834d0"
 MAX_ARCHIVE = 32 * 1024 * 1024
@@ -81,7 +82,7 @@ def validate_archive(path, package_sha256, build_hash):
                     or str(pathlib.PurePosixPath(name)) != name or name in names or stat.S_ISLNK(entry.external_attr >> 16) or entry.is_dir()
                     or entry.file_size > 16 * 1024 * 1024 or entry.file_size > max(1, entry.compress_size) * 500):
                 raise DeploymentError("Unsafe archive member: " + name)
-            if not (name in {"LICENSE", "COPYING", "COPYING.RUNTIME", "RUNTIME-COMPAT-LICENSE", "paths/LICENSE", "paths/virtual_worker.py", "runtime_lifecycle.inc", "axis_lifecycle.inc", "axes/axis_worker.py", "axes/LICENSE"} or pathlib.PurePosixPath(name).suffix in {".cpp", ".hpp", ".h", ".st", ".json"}):
+            if not (name in {"LICENSE", "COPYING", "COPYING.RUNTIME", "RUNTIME-COMPAT-LICENSE", "control/LICENSE", "paths/LICENSE", "paths/virtual_worker.py", "runtime_lifecycle.inc", "axis_lifecycle.inc", "axes/axis_worker.py", "axes/LICENSE"} or name in communication_gate.FILES or pathlib.PurePosixPath(name).suffix in {".cpp", ".hpp", ".h", ".st", ".json"}):
                 raise DeploymentError("Unexpected archive file: " + name)
             names.add(name)
         if "build-manifest.json" not in names:
@@ -105,6 +106,10 @@ def validate_archive(path, package_sha256, build_hash):
             axis_gate.validate_bundle(archive, manifest, names)
         except (ValueError, TypeError, OverflowError, UnicodeError) as error:
             raise DeploymentError("Invalid axis dependency bundle: " + str(error)) from error
+        try:
+            communication_gate.validate_bundle(archive, manifest, names)
+        except (ValueError, TypeError, OverflowError, UnicodeError, AttributeError) as error:
+            raise DeploymentError("Invalid communication dependency bundle: " + str(error)) from error
         motion_files = {"paths/motion-manifest.json", "paths/virtual_worker.py", "runtime_lifecycle.inc", "continuous_path.st", "motion_bridge.cpp", "motion_bridge.hpp", "generated_scan_shim.cpp"}
         if manifest.get("MotionInterfaceVersion") is not None:
             if manifest["MotionInterfaceVersion"] != "workbench-continuous-v1" or not motion_files.issubset(names):
@@ -157,12 +162,15 @@ def motion_candidate_source(relative, content, manifest):
     """Candidate-only entry hook; verify the pinned original before calling this."""
     motion = manifest.get("MotionInterfaceVersion")
     axis = manifest.get("AxisInterfaceVersion")
-    if motion is None and axis is None:
+    communication = manifest.get("CommunicationInterfaceVersion")
+    if motion is None and axis is None and communication is None:
         return content
     if motion is not None and motion != "workbench-continuous-v1":
         raise DeploymentError("Unsupported motion interface")
     if axis is not None and axis != axis_gate.INTERFACE:
         raise DeploymentError("Unsupported axis interface")
+    if communication is not None and communication != communication_gate.INTERFACE:
+        raise DeploymentError("Unsupported communication interface")
     if relative == "core/strucpp_runtime/runtime_v4_entry.cpp":
         entry = b'extern "C" strucpp::ConfigurationInstance* strucpp_get_config(void) {\n    return &g_config;\n}'
         if content.count(entry) != 1:
@@ -174,6 +182,9 @@ def motion_candidate_source(relative, content, manifest):
         if axis is not None:
             includes += b'#include "axis_lifecycle.inc"\n'
             calls += b'    if (!workbench_axis_bootstrap()) return nullptr;\n'
+        if communication is not None:
+            includes += b'#include "communication_lifecycle.inc"\n'
+            calls += b'    if (!workbench_comm_bootstrap()) return nullptr;\n'
         hook = includes + entry.replace(b'    return &g_config;', calls + b'    return &g_config;')
         return content.replace(entry, hook)
     return content
@@ -185,6 +196,14 @@ def verify_axis_ready(manifest, generated, config, environment):
         axis_gate.verify_ready(manifest, generated, config, environment)
     except (OSError, ValueError, TypeError, OverflowError, UnicodeError) as error:
         raise DeploymentError("Axis worker unavailable or invalid: " + str(error)) from error
+
+
+def verify_communication_ready(manifest, generated, config, environment):
+    """Local metadata only; never connects peers or opens serial devices."""
+    try:
+        communication_gate.verify_ready(manifest, generated, config, environment)
+    except (OSError, ValueError, TypeError, OverflowError, UnicodeError) as error:
+        raise DeploymentError("Communication worker unavailable or invalid: " + str(error)) from error
 
 
 def verify_motion_ready(manifest, generated, config, environment):
@@ -526,6 +545,17 @@ class Coordinator:
                     result["motion_message"] = "Verified isolated VirtualContinuous backend"
                 except (DeploymentError, OSError, subprocess.SubprocessError) as error:
                     result["motion_message"] = str(error)
+        if stage["manifest"].get("CommunicationInterfaceVersion") is not None:
+            result["communication_ready"] = False
+            result["communication_message"] = "Communication NativeClient backend not explicitly configured"
+            if self.config.get("communication_backend") == "NativeClient":
+                try:
+                    environment = subprocess.run(["systemctl", "--user", "show", "stworkbench-openplc.service", "--property=Environment", "--value"], capture_output=True, text=True, timeout=10, check=True).stdout
+                    verify_communication_ready(stage["manifest"], version / "core" / "generated", self.config, environment)
+                    result["communication_ready"] = result["state"] == "compiled"
+                    result["communication_message"] = "Verified private NativeClient worker metadata; no device connection performed"
+                except (DeploymentError, OSError, subprocess.SubprocessError) as error:
+                    result["communication_message"] = str(error)
         atomic_json(version / "compile-result.json", result)
         return result
 
@@ -562,6 +592,11 @@ class Coordinator:
             raise DeploymentError(motion_cycle.ADAPTER_MESSAGE)
         if manifest.get("AxisInterfaceVersion") is None:
             verify_axis_ready(manifest, version / "core" / "generated", self.config, "")
+        if manifest.get("CommunicationInterfaceVersion") is not None:
+            if compiled.get("communication_ready") is not True:
+                raise DeploymentError("Candidate communication readiness was not verified")
+            environment = subprocess.run(["systemctl", "--user", "show", "stworkbench-openplc.service", "--property=Environment", "--value"], capture_output=True, text=True, timeout=10, check=True).stdout
+            verify_communication_ready(manifest, version / "core" / "generated", self.config, environment)
         if manifest.get("AxisInterfaceVersion") is not None:
             if compiled.get("axis_ready") is not True:
                 raise DeploymentError("Candidate basic axis readiness was not verified")

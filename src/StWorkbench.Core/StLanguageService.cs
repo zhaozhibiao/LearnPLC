@@ -64,6 +64,11 @@ public sealed class StLanguageService
     public string? Signature(IReadOnlyList<StSymbol> symbols, string name)
     {
         var symbol = symbols.FirstOrDefault(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && s.Kind is "FUNCTION" or "FUNCTION_BLOCK");
+        if (symbol is null)
+        {
+            var instance = symbols.FirstOrDefault(s => s.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && s.Kind.StartsWith("VAR", StringComparison.Ordinal));
+            if (instance is not null) symbol = symbols.FirstOrDefault(s => s.Name.Equals(instance.Type, StringComparison.OrdinalIgnoreCase) && s.Kind == "FUNCTION_BLOCK");
+        }
         if (symbol is null) return null;
         var args = symbols.Where(s => s.Owner == symbol.Name && s.Kind is "VAR_INPUT" or "VAR_OUTPUT" or "VAR_IN_OUT").Select(s => $"{s.Name} : {s.Type} ({s.Kind.Replace("VAR_", "")})");
         return symbol.Name + "(" + string.Join("; ", args) + ")" + (symbol.Kind == "FUNCTION" ? " : " + symbol.Type : "");

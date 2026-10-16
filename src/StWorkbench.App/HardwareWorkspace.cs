@@ -51,6 +51,7 @@ public sealed partial class MainWindow
         configuredStations.SelectionChanged += (_, _) => { if (!refreshingConfiguration) SelectConfiguredStation(configuredStations.SelectedIndex); };
         panel.Children.Add(new Expander { Header = "选中从站的 PDO（勾选后应用）", IsExpanded = true, Content = stationPdos });
         panel.Children.Add(hardwareConfigurationStatus);
+        panel.Children.Add(new Expander { Header = "通信通道 · Modbus / RS485 / RS232 / TCP", Content = CommunicationPane() });
         hardwareIoAxisExpander.Content = HardwareIoAxisPane(); Register(hardwareIoAxisExpander, "HardwareIoAxisExpander"); panel.Children.Add(hardwareIoAxisExpander);
         var scroll=ScrollPanel(panel);Register(scroll,"HardwareConfigurationScroll");return scroll;
     }
@@ -128,6 +129,7 @@ public sealed partial class MainWindow
     }
     private void RefreshConfigurationViews()
     {
+        RefreshCommunication();
         refreshingConfiguration = true;
         try
         {

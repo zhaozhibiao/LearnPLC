@@ -3,6 +3,7 @@ using System.Text.Json;
 using StWorkbench.Core;
 using StWorkbench.Toolchain;
 
+if (args.Contains("--features-only")) { await FeaturePackageSmoke.RunAsync(); return 0; }
 // When copied to a named directory this executable is a real child-process compiler fixture.
 var fixtureMode = new DirectoryInfo(AppContext.BaseDirectory).Name;
 if (fixtureMode.StartsWith("fake-", StringComparison.Ordinal))
@@ -143,6 +144,8 @@ try
     if (!string.IsNullOrWhiteSpace(realCompiler)) await Test("installed STruCpp compiler smoke", () => RealCompilerSmoke.RunAsync(realCompiler));
     var adapter = Environment.GetEnvironmentVariable("ST_COMPILER_ADAPTER");
     var distribution = Environment.GetEnvironmentVariable("ST_COMPILER_DISTRIBUTION");
+    if (!string.IsNullOrWhiteSpace(adapter) && !string.IsNullOrWhiteSpace(distribution))
+        await Test("real control and communication package", FeaturePackageSmoke.RunAsync);
     if (!string.IsNullOrWhiteSpace(adapter) && !string.IsNullOrWhiteSpace(distribution))
         await Test("real hardware topology package", () => RealHardwarePackageSmoke.RunAsync(adapter, distribution));
     if (!string.IsNullOrWhiteSpace(adapter) && !string.IsNullOrWhiteSpace(distribution))

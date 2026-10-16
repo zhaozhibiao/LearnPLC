@@ -291,10 +291,11 @@ public sealed partial class MainWindow : Window
         compiledBuildHash = candidatePackage.BuildHash;
         var axisRequired = AxisControlBinding.UsesAxisControl(GetSources());
         var offlineAxisProperties = project.Hardware.Axes.Any(a => a.Mechanics is not null);
-        motionDeploymentReady = !offlineAxisProperties && (project.Paths.Count == 0 || result.MotionReady == true) && (project.MotionCycle?.Enabled != true || result.MotionCycleReady == true) && (!axisRequired || result.AxisReady == true);
+        motionDeploymentReady = !offlineAxisProperties && (project.Paths.Count == 0 || result.MotionReady == true) && (project.MotionCycle?.Enabled != true || result.MotionCycleReady == true) && (!axisRequired || result.AxisReady == true) && (!CommunicationBinding.IsUsed(GetSources()) || result.CommunicationReady == true);
         activateButton.IsEnabled = CandidateMatchesProject() && motionDeploymentReady;
-        if (!motionDeploymentReady) AppendLog("运动候选暂不能激活：" + (offlineAxisProperties ? "轴机械与回零参数尚未应用，控制核心缺少参数应用/确认接口。" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? result.MotionCycleMessage : axisRequired && result.AxisReady != true ? result.AxisMessage : result.MotionMessage), true);
+        if (!motionDeploymentReady && !(CommunicationBinding.IsUsed(GetSources()) && result.CommunicationReady != true)) AppendLog("运动候选暂不能激活：" + (offlineAxisProperties ? "轴机械与回零参数尚未应用，控制核心缺少参数应用/确认接口。" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? result.MotionCycleMessage : axisRequired && result.AxisReady != true ? result.AxisMessage : result.MotionMessage), true);
         buildStatus.Text = motionDeploymentReady ? "Linux 编译通过 · 未激活" : offlineAxisProperties ? "Linux 编译通过 · 轴机械与回零参数尚未应用，不可激活" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? "Linux 编译通过 · 轴控周期执行端未就绪，不可激活" : axisRequired && result.AxisReady != true ? "Linux 编译通过 · 基础轴控后端未就绪，不可激活" : "Linux 编译通过 · 连续运动后端未就绪，不可激活";
+        if (CommunicationBinding.IsUsed(GetSources()) && result.CommunicationReady != true) { AppendLog("通信候选暂不能激活：" + result.CommunicationMessage, true); buildStatus.Text = "Linux 编译通过 · 通信工作进程未就绪，不可激活"; }
     }
     private Task ActivateAsync() => DownloadAndApplyAsync(upload: false);
     private IReadOnlyList<SourceDocument> GetSources() => project.Items.Select(i => sources[i.Id]).ToArray();
@@ -521,7 +522,7 @@ public sealed partial class MainWindow : Window
         if (e.Key == Key.Space && e.KeyModifiers == KeyModifiers.Control)
         {
             e.Handled = true; var offset = editor.CaretOffset; var before = editor.Text[..offset]; var prefix = Regex.Match(before, @"[A-Za-z_][A-Za-z0-9_]*$").Value;
-            var window = new CompletionWindow(editor.TextArea) { StartOffset = offset - prefix.Length }; foreach (var symbol in language.Complete(language.Index(GetSources()), prefix)) window.CompletionList.CompletionData.Add(new SymbolCompletion(symbol));
+            var window = new CompletionWindow(editor.TextArea) { StartOffset = offset - prefix.Length }; foreach (var symbol in language.Complete(BuiltinLibraryCatalog.PublicSymbols(WorkbenchSettings.WorkspaceRoot, GetSources(), project.Communication), prefix)) window.CompletionList.CompletionData.Add(new SymbolCompletion(symbol));
             if (window.CompletionList.CompletionData.Count > 0) window.Show();
         }
         else if (e.Key == Key.F12)
@@ -533,7 +534,7 @@ public sealed partial class MainWindow : Window
     private void UpdateHint()
     {
         if (selected is null) return; var before = editor.Text[..Math.Clamp(editor.CaretOffset, 0, editor.Text.Length)]; var match = Regex.Match(before, @"([A-Za-z_][A-Za-z0-9_]*)\s*\([^()]*$");
-        hint.Text = match.Success ? language.Signature(language.Index(GetSources()), match.Groups[1].Value) ?? "Ctrl+Space 补全 · F12 定义" : "Ctrl+Space 补全 · F12 定义 · Ctrl+S 保存 · F7 编译检查";
+        hint.Text = match.Success ? language.Signature(BuiltinLibraryCatalog.PublicSymbols(WorkbenchSettings.WorkspaceRoot, GetSources(), project.Communication), match.Groups[1].Value) ?? "Ctrl+Space 补全 · F12 定义" : "Ctrl+Space 补全 · F12 定义 · Ctrl+S 保存 · F7 编译检查";
     }
     private async Task ConnectAsync()
     {

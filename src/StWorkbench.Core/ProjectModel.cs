@@ -46,6 +46,7 @@ public sealed record AxisConfiguration(string Name, string ControllerAxis, strin
 }
 public sealed class StProject
 {
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] public CommunicationConfiguration? Communication { get; set; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] public NetworkConfiguration? Network { get; set; }
     public int SchemaVersion { get; set; } = 1;
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -62,6 +63,7 @@ public sealed record TaskSnapshot(string Name, Guid ProgramId, int IntervalMilli
 public sealed record BuildSnapshot(Guid ProjectId, string ProjectName, string SourceHash, string HardwareHash,
     IReadOnlyList<SourceDocument> Sources, IReadOnlyList<TaskSnapshot> Tasks)
 {
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] public CommunicationConfiguration? Communication { get; init; }
     [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] public string? HardwareConfigurationJson { get; init; }
     public IReadOnlyList<MotionPathAsset> Paths { get; init; } = [];
     public IReadOnlyList<AxisConfiguration> Axes { get; init; } = [];

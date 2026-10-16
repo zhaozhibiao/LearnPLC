@@ -65,7 +65,7 @@ public sealed class McpTools(WorkspaceService workspace, ConfigurationService co
     [McpServerTool(Name = "st_symbols", ReadOnly = true), Description("Get ST symbols, completion candidates, and optional function/block signature. Engineering symbol index, not proof of successful compilation.")]
     public Task<CallToolResult> Symbols(string sessionId, string prefix = "", string? signatureName = null) => Result(async () =>
     {
-        var view = await workspace.ReadAsync(sessionId); var language = new StLanguageService(); var symbols = language.Index(view.Sources);
+        var view = await workspace.ReadAsync(sessionId); var language = new StLanguageService(); var symbols = BuiltinLibraryCatalog.PublicSymbols(options.RepositoryRoot, view.Sources, view.Project.Communication);
         return new { view.Revision, symbols, completion = language.Complete(symbols, prefix), signature = signatureName is null ? null : language.Signature(symbols, signatureName) };
     });
 
@@ -90,10 +90,13 @@ public sealed class McpTools(WorkspaceService workspace, ConfigurationService co
 
     [McpServerTool(Name = "st_insert_instruction"), Description("Insert a catalog template at a UTF-16 code offset, including required declarations and unique instance names. Uses the same insertion engine as desktop dragging.")]
     public Task<CallToolResult> Insert(string sessionId, string expectedRevision, Guid itemId, int offset, string instructionId) => Result(() =>
-        workspace.EditAsync(sessionId, expectedRevision, (_, sources) =>
+        workspace.EditAsync(sessionId, expectedRevision, (project, sources) =>
         {
             var at = sources.FindIndex(s => s.ItemId == itemId); if (at < 0) throw new ArgumentException("Unknown source.");
-            var instruction = StInstructionCatalog.All.SingleOrDefault(i => i.Id == instructionId) ?? throw new ArgumentException("Unknown instruction ID.");
+            var instruction = StInstructionCatalog.All
+                .Concat(BuiltinLibraryCatalog.ControlInstructions(options.RepositoryRoot, project.Tasks.FirstOrDefault(t => t.Enabled)?.IntervalMilliseconds / 1000.0 ?? 0.01))
+                .Concat(BuiltinLibraryCatalog.CommunicationInstructions(project.Communication))
+                .SingleOrDefault(i => i.Id == instructionId) ?? throw new ArgumentException("Unknown instruction ID.");
             sources[at] = sources[at] with { Text = StSnippetInsertion.Insert(sources[at].Text, offset, instruction).Text };
         }));
 
@@ -106,6 +109,19 @@ public sealed class McpTools(WorkspaceService workspace, ConfigurationService co
 
     [McpServerTool(Name = "io_auto_map"), Description("Allocate IO addresses for an existing engineering station, preserving existing IO addresses. Returns additions and unsupported PDO reasons. Draft only.")]
     public Task<CallToolResult> AutoMap(string sessionId, string expectedRevision, Guid stationId) => Result(() => configuration.AutoMapAsync(sessionId, expectedRevision, stationId));
+
+    [McpServerTool(Name = "communication_configure"), Description("Set offline Linux Modbus-master/serial-point-to-point/TCP-client channels. Server/slave roles are unavailable. Uses draft revision; no port is opened and no device data is written.")]
+    public Task<CallToolResult> ConfigureCommunication(string sessionId, string expectedRevision, CommunicationConfiguration? communication = null) => Result(() => workspace.EditAsync(sessionId, expectedRevision, (project, _) => project.Communication = McpJson.Clone(communication)));
+
+    [McpServerTool(Name = "control_communication_catalog", ReadOnly = true), Description("Get exact original ST control/communication library signatures and executable insertion templates, bound communication constants and offline settings. No physical IO.")]
+    public Task<CallToolResult> LibraryCatalog(string sessionId) => Result(async () =>
+    {
+        var draft = await workspace.ReadAsync(sessionId);
+        var paths = new[] { "tools/control-library/control.st", "tools/communication-bridge/communication.st" };
+        var sources = new List<SourceDocument>(); foreach (var path in paths) sources.Add(new(Guid.NewGuid(), path, await File.ReadAllTextAsync(Path.Combine(options.RepositoryRoot, path))));
+        var symbols = new StLanguageService().Index(sources).Where(s => s.Owner?.StartsWith("CB_", StringComparison.Ordinal) != true && !s.Name.StartsWith("CB_", StringComparison.Ordinal)).ToArray();
+        return new { draft.Revision, draft.Project.Communication, symbols, templates = BuiltinLibraryCatalog.ControlInstructions(options.RepositoryRoot, draft.Project.Tasks.Single(t => t.Enabled).IntervalMilliseconds / 1000.0).Concat(BuiltinLibraryCatalog.CommunicationInstructions(draft.Project.Communication)).ToArray(), constants = draft.Project.Communication is { } c ? CommunicationBinding.Constants(c) : null };
+    });
 
     [McpServerTool(Name = "dxf_preview", ReadOnly = true), Description("Parse workspace DXF using millimetersPerUnit scale. Returns already-scaled contours; selecting another scale requires reparsing original DXF. No stored path changes.")]
     public Task<CallToolResult> Dxf(string sessionId, string expectedRevision, string dxfPath, double millimetersPerUnit = 1) => Result(() => configuration.ImportDxfAsync(sessionId, expectedRevision, dxfPath, millimetersPerUnit));

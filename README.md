@@ -2,6 +2,8 @@
 
 自研 ST 工程站，桌面界面采用 Avalonia，目标运行环境为独立 OpenPLC Runtime v4.3.0。当前只实施 ST；梯形图暂未加入。
 
+已加入 15 个自研控制算法（含位置式、增量式、串级 PID）以及 Linux Modbus TCP/RTU 主站、RS485/RS232 点对点收发和 TCP 客户端。通信通道在硬件组态配置，控制/通信指令可从右侧资源库拖入，也可通过 MCP 配置和插入。见 [控制与通信指南](docs/control-and-communication.md) 和 [示例工程](examples/control-communication/ControlCommunication.stproj)。
+
 工程树支持函数、功能块、全局变量和数据类型拖入代码，自动生成调用及声明，支持实例复用和一次撤销。操作见 [资源拖放说明](docs/project-resource-drag.md)。
 
 新增独立“硬件组态”和“网络组态”：ESI 目录、工程从站、PDO/IO/轴关联、从站顺序、PLC 管理连接和 EtherCAT 网卡配置跨页同步，随工程保存。当前为离线工程组态，连接状态单独读取，尚不下发总线或改写设备网络。见 [组态操作说明](docs/hardware-network.md)。

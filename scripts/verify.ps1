@@ -1,8 +1,10 @@
-﻿param([switch]$Offline)
+param([switch]$Offline, [string]$PythonExecutable = 'python')
 $ErrorActionPreference = 'Stop'
 $workspace = Split-Path -Parent $PSScriptRoot
 Set-Location -LiteralPath $workspace
 $env:AVALONIA_TELEMETRY_OPTOUT = '1'
+& $PythonExecutable -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)'
+if ($LASTEXITCODE -ne 0) { throw 'Python 3.11+ required. Pass -PythonExecutable with a supported interpreter path.' }
 if ($Offline) {
     dotnet restore STWorkbench.slnx --source artifacts/feeds --source artifacts/packages --source "$env:USERPROFILE/.nuget/packages"
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -23,14 +25,16 @@ foreach ($project in @('Core','Toolchain','OpenPlc','Motion','App','Debug','Depl
     dotnet run --project "tests/StWorkbench.$project.Tests" -c Release --no-build
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
-python -m unittest discover -s linux/runtime-install -p 'test*.py'
+& $PythonExecutable -m unittest discover -s linux/runtime-install -p 'test*.py'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-python -m unittest discover -s linux/deployment -p 'test*.py'
+& $PythonExecutable -m unittest discover -s linux/deployment -p 'test*.py'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-python -m unittest discover -s linux/motion -p 'test*.py'
+& $PythonExecutable -m unittest discover -s linux/motion -p 'test*.py'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-python -m unittest discover -s linux/axis -p 'test*.py'
+& $PythonExecutable -m unittest discover -s linux/axis -p 'test*.py'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-python -m unittest discover -s linux/mcp -p 'test_*.py'
+& $PythonExecutable -m unittest discover -s linux/mcp -p 'test_*.py'
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $PythonExecutable -m unittest discover -s linux/communication -p 'test*.py'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 Write-Host '全部本地验证通过；设备联调结果见 docs/verification.md。'

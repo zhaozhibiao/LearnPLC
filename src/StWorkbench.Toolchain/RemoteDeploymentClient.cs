@@ -8,7 +8,7 @@ namespace StWorkbench.Toolchain;
 public sealed record SshTarget(string Host, string User, int Port = 22);
 public sealed record DeploymentRequest(string Action, string RequestId, string? BuildHash = null,
     string? ExpectedActiveBuildHash = null, string? PackageBase64 = null, string? PackageSha256 = null, string? PackagePath = null);
-public sealed record DeploymentResponse(bool Success, string State, string RequestId, string Message, JsonElement? Active, JsonElement? Candidate, string Log = "", bool? MotionReady = null, string MotionMessage = "", bool? MotionCycleReady = null, string MotionCycleMessage = "", JsonElement? Realtime = null, bool? AxisReady = null, string AxisMessage = "");
+public sealed record DeploymentResponse(bool Success, string State, string RequestId, string Message, JsonElement? Active, JsonElement? Candidate, string Log = "", bool? MotionReady = null, string MotionMessage = "", bool? MotionCycleReady = null, string MotionCycleMessage = "", JsonElement? Realtime = null, bool? AxisReady = null, string AxisMessage = "", bool? CommunicationReady = null, string CommunicationMessage = "");
 
 public sealed class RemoteDeploymentClient(string sshExecutable = "ssh", TimeSpan? timeout = null, string? knownHostsPath = null)
 {
@@ -67,7 +67,9 @@ public sealed class RemoteDeploymentClient(string sshExecutable = "ssh", TimeSpa
             JsonElement? realtime = root.TryGetProperty("realtime", out var rt) ? rt.Clone() : null;
             bool? axisReady = root.TryGetProperty("axis_ready", out var axis) ? axis.GetBoolean() : null;
             var axisMessage = root.TryGetProperty("axis_message", out var axisDetail) ? axisDetail.GetString() ?? "" : "";
-            return new(success, state, request.RequestId, message, active, candidate, log, motionReady, motionMessage, cycleReady, cycleMessage, realtime, axisReady, axisMessage);
+            bool? communicationReady = root.TryGetProperty("communication_ready", out var comm) ? comm.GetBoolean() : null;
+            var communicationMessage = root.TryGetProperty("communication_message", out var commDetail) ? commDetail.GetString() ?? "" : "";
+            return new(success, state, request.RequestId, message, active, candidate, log, motionReady, motionMessage, cycleReady, cycleMessage, realtime, axisReady, axisMessage, communicationReady, communicationMessage);
         }
         catch (OperationCanceledException) when (!token.IsCancellationRequested) { return Unknown("Remote request timed out; query actual state before another action."); }
         catch (Exception error) when (error is IOException or JsonException or KeyNotFoundException or InvalidOperationException or System.ComponentModel.Win32Exception)

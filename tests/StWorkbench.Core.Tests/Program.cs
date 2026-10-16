@@ -27,6 +27,7 @@ try
     Check(ProjectValidator.Validate(project, docs).Any(d => d.Message.Contains("重名")), "case insensitive collision");
     Console.WriteLine("PASS: persistence, immutable snapshot, change identity, traversal, failed save, tasks, duplicate names");
     await ConfigurationTests.Run();
+    await CommunicationTests.RunAsync();
     LanguageTests.Run();
     InstructionTests.Run();
     ResourceInsertionTests.Run();
@@ -44,4 +45,3 @@ return 0;
 
 static void Check(bool condition, string name) { if (!condition) throw new Exception("FAIL: " + name); }
 static async Task Reject(Func<Task> operation) { try { await operation(); } catch (InvalidDataException) { return; } throw new Exception("FAIL: invalid save accepted"); }
-

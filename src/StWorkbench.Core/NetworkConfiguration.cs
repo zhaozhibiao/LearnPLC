@@ -7,6 +7,7 @@ public sealed record NetworkConfiguration(string ManagementHost, string SshUser,
 public sealed record EtherCatStation(Guid Id, string Name, Guid DeviceId, ushort AliasAddress, IReadOnlyList<PdoEntry> EnabledEntries);
 public sealed record HardwareConfigurationDocument(HardwareConfiguration Hardware)
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public CommunicationConfiguration? Communication { get; init; }
     public int SchemaVersion { get; init; } = 1;
     public string State { get; init; } = "offline-engineering";
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public NetworkConfiguration? Network { get; init; }

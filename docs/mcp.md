@@ -1,5 +1,7 @@
 # ST Workbench MCP 使用指南
 
+2026-10-16 新增 `communication_configure`、`control_communication_catalog`；`st_insert_instruction` 支持实际控制库和已配置通道模板。现有工具共 43 项。操作方式见 [控制与通信指南](control-and-communication.md)。
+
 本服务让支持 **MCP stdio** 的模型客户端编写 ST、修改工程组态、规划 DXF 路径、编译程序，以及通过已配置设备执行 PLC 和基础轴控操作。它是独立进程，复用原工程格式及编译/运动核心，不需要启动桌面。原始模型 API 需要宿主转接 MCP；只接受远程 HTTP 的云端客户端目前不能直接连接这个 stdio 服务。
 
 ## 首次启动

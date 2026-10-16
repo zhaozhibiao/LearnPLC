@@ -130,6 +130,7 @@ if (Environment.GetEnvironmentVariable("ST_INSTRUCTION_COMPILE_VERIFY") == "1")
     MotionCycleUiTests.Run();
     AxisUiTests.Run();
     ConfigurationUiTests.Run();
+    CommunicationUiTests.Run();
     IoMappingUiTests.Run();
     AxisPropertiesUiTests.Run();
     MultiAxisUiTests.Run();

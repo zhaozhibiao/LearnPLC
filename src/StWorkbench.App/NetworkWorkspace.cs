@@ -30,6 +30,8 @@ public sealed partial class MainWindow
         AddConfigurationButton(buttons,"从当前连接设置读取","ReadNetworkConnection",()=> { networkManagementHost.Text=sshHost.Text; networkSshUser.Text=sshUser.Text; networkRuntimeEndpoint.Text=endpoint.Text; });
         AddConfigurationButton(buttons,"清除工程网络配置","ClearNetworkConfiguration",ClearNetworkConfiguration); panel.Children.Add(buttons);
         panel.Children.Add(networkConfigurationStatus);
+        panel.Children.Add(Label("应用通信端点 · 与硬件组态共享")); panel.Children.Add(networkCommunicationSummary);
+        panel.Children.Add(ActionButton("配置通信通道", () => { NavigateTo(2); return Task.CompletedTask; }));
         panel.Children.Add(Label("工程拓扑（离线设定，未核验实物）")); panel.Children.Add(networkTopology);
         panel.Children.Add(Label("从站连接顺序 · 与硬件组态共享")); panel.Children.Add(networkStations);
         var stationButtons = new WrapPanel();
