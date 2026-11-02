@@ -1,0 +1,11 @@
+
+
+# Workbench fixed, authenticated, read-only task admission capability query.
+@restapi_bp.route("/workbench-task-scheduling", methods=["GET"])
+@jwt_required()
+def workbench_task_scheduling_capability():
+    from webserver.workbench_capabilities import task_scheduling
+    manager = current_app.config.get("RUNTIME_MANAGER")
+    if manager is None:
+        return jsonify({"interface": "workbench-task-scheduling-v1", "supported": False}), 503
+    return jsonify(task_scheduling(manager)), 200

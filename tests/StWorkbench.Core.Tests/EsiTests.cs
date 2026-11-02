@@ -4,6 +4,7 @@ public static class EsiTests
 {
     public static void Run()
     {
+        EsiDetailedTests.Run();
         const string xml = "<EtherCATInfo><Vendor><Id>#x00000002</Id><Name>Vendor</Name></Vendor><Descriptions><Devices><Device><Type ProductCode='#x1234' RevisionNo='#x10'>EL Example</Type><Name>IO</Name><TxPdo><Index>#x1A00</Index><Entry><Index>#x6000</Index><SubIndex>1</SubIndex><BitLen>1</BitLen><Name>Input</Name><DataType>BOOL</DataType></Entry></TxPdo><RxPdo><Index>#x1600</Index><Entry><Index>#x7000</Index><SubIndex>1</SubIndex><BitLen>16</BitLen><Name>Output</Name><DataType>INT</DataType></Entry></RxPdo></Device></Devices></Descriptions></EtherCATInfo>";
         using var input = new MemoryStream(Encoding.UTF8.GetBytes(xml));
         var devices = EsiImporter.Read(input);

@@ -1,0 +1,29 @@
+{
+  "SchemaVersion": 1,
+  "RuntimeCommit": "a9e38d901fb87deb5a8cf778b52639b9387834d0",
+  "Source": "OpenPLC Runtime 4.3.0 with the existing reviewed ST Workbench patches",
+  "License": "MIT; preserve file-level notices",
+  "NativeRevision": "workbench-native-only-v1",
+  "ModifiedFiles": [
+    "core/src/drivers/plugin_driver.c",
+    "core/src/drivers/plugin_driver.h",
+    "core/src/plc_app/plc_main.c",
+    "core/src/plc_app/image_tables.cpp",
+    "core/src/CMakeLists.txt",
+    "CMakeLists.txt"
+  ],
+  "RemovedFeatures": [
+    "Embedded Python interpreter and Python plugin bridge",
+    "Python PLC function loader hook"
+  ],
+  "PreservedFeatures": [
+    "Native plugin lifecycle and symbol loading",
+    "Image and journal callbacks",
+    "Hierarchical debug write callbacks",
+    "Retain hooks",
+    "Native commands and statistics",
+    "Task policy and safe-mode PLC startup"
+  ],
+  "UpstreamOriginalHashRecord": "../runtime-core-overlay/original-sha256.json",
+  "SourceInventory": "source-sha256.txt"
+}

@@ -1,4 +1,5 @@
 #include "native_protocol_server.hpp"
+#include "motion_runtime_version.hpp"
 #include <cmath>
 
 #include <nlohmann/json.hpp>
@@ -224,13 +225,35 @@ json dispatch(
     const auto kind = request.at("kind").get<std::string>();
     const auto& payload = request.at("payload");
 
+    const auto profile = [&](const json& input, RealtimeCommand& c) {
+        if (!input.contains("motionProfileVersion")) return;
+        if (!input.at("motionProfileVersion").is_number_integer()
+            || input.at("motionProfileVersion").get<int>() != 2)
+            throw ProtocolError("invalid_argument", "Unsupported motion profile version.");
+        if ((c.kind == RealtimeCommandKind::MoveAbsolute && !backend.supports_axis_move_profile_v2())
+            || ((c.kind == RealtimeCommandKind::Jog || c.kind == RealtimeCommandKind::Stop) && !backend.supports_axis_velocity_profile_v2())
+            || (c.kind != RealtimeCommandKind::MoveAbsolute && c.kind != RealtimeCommandKind::Jog && c.kind != RealtimeCommandKind::Stop))
+            throw ProtocolError("unsupported_capability", "Axis command profile v2 is not supported.");
+        c.motion_profile_version = 2;
+        c.acceleration = input.value("acceleration", 0.0);
+        c.deceleration = input.value("deceleration", 0.0);
+        c.jerk = input.value("jerk", 0.0);
+        for (double v : {c.acceleration,c.deceleration,c.jerk})
+            if (!std::isfinite(v) || v < 0.0)
+                throw ProtocolError("invalid_argument", "Axis profile values must be finite and nonnegative.");
+    };
     if (kind == "HelloRequest") {
+        auto capabilities = backend.supports_motion_migration()
+            ? json::array({motion_migration_capability,axis_trace_capability}) : json::array();
+        if (backend.supports_axis_move_profile_v2()) capabilities.push_back("workbench_axis_move_profile_v2");
+        if (backend.supports_axis_velocity_profile_v2()) capabilities.push_back("workbench_axis_velocity_profile_v2");
         static_cast<void>(payload.at("clientName").get<std::string>());
         return response(request, "HelloResponse", {{"controllerVersion", controller_version},
             {"protocolVersion", protocol_version}, {"runtimeReady", backend.runtime_ready()},
             {"motionReady", backend.motion_ready()},
             {"ioReady", backend.io_ready()}, {"ethercatTopologyFingerprint",backend.ethercat_topology_fingerprint()}, {"plcScanBatch", true}, {"plcAbiVersion", 3},
             {"plcActionReceipts", true}, {"plcBlockAbiVersions", json::array({4})},
+            {"runtimeCapabilities", capabilities},
             {"plcTypedIo", !backend.io_catalog().fingerprint.empty()}, {"pathResources",true},
             {"autonomousPaths",backend.supports_paths()}});
     }
@@ -283,11 +306,15 @@ json dispatch(
         for (const auto& name : backend.axis_names()) {
             const auto axis = backend.axis_snapshot(name);
             axes.push_back({{"name", axis.name}, {"state", axis.state},
+                {"driveStatusword",axis.drive_statusword_valid ? json(axis.drive_statusword) : json(nullptr)},
                 {"actualPosition", axis.actual_position}, {"actualVelocity", axis.actual_velocity},
                 {"homed", axis.homed}, {"fault", axis.fault.empty() ? json(nullptr) : json(axis.fault)},
                 {"motionId", axis.motion_id}, {"motionTarget", axis.motion_target},
                 {"motionBusy", axis.motion_busy}, {"motionDone", axis.motion_done},
-                {"motionAborted", axis.motion_aborted},{"cycle_target", axis.cycle_target},{"cycle_error", axis.cycle_error},{"peak_error", axis.peak_error},{"max_excess_ms", axis.max_excess_ms},{"feedforward_velocity", axis.feedforward_velocity},{"peak_actual_velocity", axis.peak_actual_velocity},{"timingReady",axis.motion_timing_ready},{"timingFault",axis.motion_timing_fault}});
+                {"motionAborted", axis.motion_aborted},{"cycle_target", axis.cycle_target},{"cycle_error", axis.cycle_error},{"peak_error", axis.peak_error},{"max_excess_ms", axis.max_excess_ms},{"feedforward_velocity", axis.feedforward_velocity},{"peak_actual_velocity", axis.peak_actual_velocity},{"demandPositionError",axis.demand_position_error},{"driveFollowingError",axis.drive_following_error},
+                {"demandDeliveryError",axis.demand_delivery_error},{"demandFeedbackValid",axis.demand_feedback_valid},
+                {"demandDeliveryMismatch",axis.demand_delivery_mismatch},{"demandDeliveryFault",axis.demand_delivery_fault},
+                {"timingReady",axis.motion_timing_ready},{"timingFault",axis.motion_timing_fault}});
         }
         const auto outputs=backend.digital_outputs(), inputs=backend.digital_inputs();
         const auto outputs_safe = backend.outputs_at_safe_state();
@@ -412,6 +439,7 @@ json dispatch(
                 case 7: c.kind=RealtimeCommandKind::GroupArc; break;
                 case 8: c.kind=RealtimeCommandKind::GroupSpatialLine; break;
                 case 9: c.kind=RealtimeCommandKind::GroupSpatialArc; break;
+                case 11: c.kind=RealtimeCommandKind::Jog; break;
                 default: throw ProtocolError("invalid_argument","Unknown scan action.");
             }
             c.axis_index=a.at("axis").get<std::uint16_t>();
@@ -424,12 +452,12 @@ json dispatch(
                 throw ProtocolError("invalid_argument", "Invalid digital output batch.");
             if (kind == 4 && (!std::isfinite(c.position) || !std::isfinite(c.velocity) || c.velocity <= 0))
                 throw ProtocolError("invalid_argument", "Invalid motion target.");
-            if (kind >= 6 && ((kind <= 7 ? c.group_axis_count != 2 : (c.group_axis_count < 3 || c.group_axis_count > 4))
+            if (kind >= 6 && kind <= 9 && ((kind <= 7 ? c.group_axis_count != 2 : (c.group_axis_count < 3 || c.group_axis_count > 4))
                 || !std::isfinite(c.velocity) || c.velocity <= 0
                 || !std::isfinite(c.acceleration) || c.acceleration <= 0
                 || !std::isfinite(c.deceleration) || c.deceleration <= 0))
                 throw ProtocolError("invalid_argument", "Invalid group motion batch.");
-            if(kind>=6) {
+            if(kind>=6 && kind<=9) {
                 const auto ids=a.at("groupAxes").get<std::array<std::uint16_t,4>>();
                 const auto targets=a.at("groupTargets").get<std::array<double,4>>();
                 const auto center=a.at("center").get<std::array<double,3>>();
@@ -439,6 +467,7 @@ json dispatch(
                 c.center_x=center[0]; c.center_y=center[1]; c.center_z=center[2];
                 c.normal_x=normal[0]; c.normal_y=normal[1]; c.normal_z=normal[2]; c.clockwise=a.at("clockwise").get<bool>();
             }
+            profile(a,c);
             commands.push_back(c);
         }
         const auto motion=backend.scan_batch_with_io(commands,axes,outputs,io_writes,deadline);
@@ -480,6 +509,18 @@ json dispatch(
             throw ProtocolError("invalid_state", "Runtime is not ready for motion commands.");
         }
         const auto axis = payload.at("axis").get<std::string>();
+        if (payload.contains("motionProfileVersion")) {
+            RealtimeCommand c;
+            if (command == "MoveAbsolute") c.kind = RealtimeCommandKind::MoveAbsolute;
+            else if (command == "Jog") c.kind = RealtimeCommandKind::Jog;
+            else if (command == "Stop") c.kind = RealtimeCommandKind::Stop;
+            else throw ProtocolError("invalid_argument", "Profile on unsupported axis command.");
+            c.position = payload.value("position",0.0);
+            c.velocity = payload.value("velocity",0.0);
+            profile(payload,c);
+            const auto motion = backend.axis_profile_command(axis,c);
+            return response(request,"CommandResponse",{{"accepted",true},{"message",nullptr},{"motionId",motion}});
+        }
         if (command == "Enable") backend.enable(axis);
         else if (command == "Disable") backend.disable(axis);
         else if (command == "Reset") backend.reset(axis);

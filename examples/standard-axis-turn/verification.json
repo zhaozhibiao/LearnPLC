@@ -1,0 +1,22 @@
+{
+  "SourceSha256": "DD0CBD3A82ABC85830EF803BBEA0A075CC6E45E45B77F9162BA6716875E1F107",
+  "PureMemoryScenariosPassed": [
+    "cold",
+    "sequence",
+    "offset",
+    "unhomed",
+    "limits",
+    "feedback-loss",
+    "cancel"
+  ],
+  "Downloaded": false,
+  "SavedSourceMatches": true,
+  "BuildHash": "A3B9A4BA690198547DD3A2AB2B6E5E6F0A74A82F45288AAE5774B5CAB15E7BA6",
+  "ControllerAxis": "Axis1",
+  "AuthoredSavedBuiltThroughMcp": true,
+  "LinuxGeneratedCppCompiled": true,
+  "AxisReference": "AXIS_X",
+  "Activated": false,
+  "PhysicalMotionTested": false,
+  "EngineeringAxis": "X"
+}

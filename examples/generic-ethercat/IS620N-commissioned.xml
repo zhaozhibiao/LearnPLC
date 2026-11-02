@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MIT. Project-owned fixture reconstructed from recorded IS620N commissioning.
+     This is NOT an Inovance vendor ESI. Identity/PDO/DC values match the tested
+     device; encoder units, homing and protections are explicit engineering data. -->
+<EtherCATInfo><Vendor><Id>#x00100000</Id><Name>Inovance</Name></Vendor><Descriptions><Devices><Device>
+  <Type ProductCode="#x000C0108" RevisionNo="#x00010001">IS620N_ECAT_v2.6.2</Type><Name>IS620N commissioned profile</Name>
+  <Sm>MBoxOut</Sm><Sm>MBoxIn</Sm><Sm Enable="1" Watchdog="1">Outputs</Sm><Sm Enable="1" Watchdog="0">Inputs</Sm>
+  <RxPdo Sm="2"><Index>#x1600</Index><Name>Commissioned Rx</Name>
+    <Entry><Index>#x6040</Index><SubIndex>0</SubIndex><BitLen>16</BitLen><Name>Controlword</Name><DataType>UINT</DataType></Entry>
+    <Entry><Index>#x607A</Index><SubIndex>0</SubIndex><BitLen>32</BitLen><Name>Target position</Name><DataType>DINT</DataType></Entry>
+    <Entry><Index>#x60FF</Index><SubIndex>0</SubIndex><BitLen>32</BitLen><Name>Target velocity</Name><DataType>DINT</DataType></Entry>
+    <Entry><Index>#x6060</Index><SubIndex>0</SubIndex><BitLen>8</BitLen><Name>Mode</Name><DataType>SINT</DataType></Entry>
+  </RxPdo>
+  <TxPdo Sm="3"><Index>#x1A00</Index><Name>Commissioned Tx</Name>
+    <Entry><Index>#x603F</Index><SubIndex>0</SubIndex><BitLen>16</BitLen><Name>Error code</Name><DataType>UINT</DataType></Entry>
+    <Entry><Index>#x6041</Index><SubIndex>0</SubIndex><BitLen>16</BitLen><Name>Statusword</Name><DataType>UINT</DataType></Entry>
+    <Entry><Index>#x6064</Index><SubIndex>0</SubIndex><BitLen>32</BitLen><Name>Actual position</Name><DataType>DINT</DataType></Entry>
+    <Entry><Index>#x606C</Index><SubIndex>0</SubIndex><BitLen>32</BitLen><Name>Actual velocity</Name><DataType>DINT</DataType></Entry>
+    <Entry><Index>#x6061</Index><SubIndex>0</SubIndex><BitLen>8</BitLen><Name>Mode display</Name><DataType>SINT</DataType></Entry>
+  </TxPdo>
+  <Dc><OpMode><Name>DC1ms</Name><AssignActivate>#x0300</AssignActivate><CycleTimeSync0 Factor="1">0</CycleTimeSync0><ShiftTimeSync0>250000</ShiftTimeSync0><CycleTimeSync1>0</CycleTimeSync1></OpMode></Dc>
+</Device></Devices></Descriptions></EtherCATInfo>

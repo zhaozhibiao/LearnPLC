@@ -1,0 +1,8 @@
+{
+  "ProjectPath": "D:\\OPenplc\\examples\\generic-ethercat\\IS620N-Generic.stproj",
+  "BuildHash": "6CFBAEF527BE3A98857D5D95FAD50F2CCB19A28FAA9F5E9AEAAAB00DA2479581",
+  "PackagePath": "D:\\OPenplc\\artifacts\\generic-ethercat-live\\752c6bf157c44e33837c65f791db1478\\program.zip",
+  "TopologyFingerprint": "8ab0676d3a3532efa5ce2453d2b23adabe7c59cabec101c0346af9f9dddc2577",
+  "Purpose": "Read-only ST; applying configuration is separate from PLC activation",
+  "FixtureOrigin": "Project reconstruction from previously recorded IS620N identity/PDO/DC; not vendor-authored ESI"
+}

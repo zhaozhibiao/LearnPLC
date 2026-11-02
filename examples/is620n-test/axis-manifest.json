@@ -1,0 +1,1 @@
+{"SchemaVersion":1,"InterfaceVersion":"workbench-axis-v1","PlcIntervalMilliseconds":10,"Axes":[{"Index":1,"Name":"IS620N","ControllerAxis":"Axis1","Unit":"rev","MinPosition":-1,"MaxPosition":1,"MaximumVelocity":0.01,"MaximumAcceleration":null,"MaximumDeceleration":null,"MaximumJerk":null}]}

@@ -2,8 +2,47 @@ namespace StWorkbench.Core;
 
 public static class AxisControlBinding
 {
-    public static readonly string[] BlockNames = ["MC_Power", "MC_Reset", "MC_Home", "MC_MoveAbsolute", "MC_MoveVelocity", "MC_Stop", "MC_ReadAxisStatus", "MC_ReadActualPosition", "MC_ReadActualVelocity"];
+    public static readonly string[] BlockNames = ["MC_Power", "MC_Reset", "MC_Home", "MC_MoveAbsolute", "MC_MoveVelocity", "MC_Stop", "MC_ReadStatus", "MC_ReadAxisStatus", "MC_ReadActualPosition", "MC_ReadActualVelocity"];
     public static bool UsesAxisControl(IReadOnlyList<SourceDocument> sources) => sources.SelectMany(s => StLanguageService.Scan(s.Text)).Any(t => BlockNames.Contains(t.Text, StringComparer.OrdinalIgnoreCase) || t.Text.Equals("AXIS_REF", StringComparison.OrdinalIgnoreCase));
+    // Resolve actual FB instances in their lexical owner, then inspect only top-level named inputs.
+    public static bool UsesDynamicProfile(IReadOnlyList<SourceDocument> sources) => DetectDynamicProfile(sources, false);
+    public static bool UsesDynamicVelocityProfile(IReadOnlyList<SourceDocument> sources) => UsesDynamicProfile(sources) && DetectDynamicProfile(sources, true);
+    private static bool DetectDynamicProfile(IReadOnlyList<SourceDocument> sources, bool velocityOnly)
+    {
+        var symbols = new StLanguageService().Index(sources);
+        var aliases = symbols.Where(s => s.Kind == "TYPE").GroupBy(s => s.Name, StringComparer.OrdinalIgnoreCase).ToDictionary(g => g.Key, g => g.First().Type, StringComparer.OrdinalIgnoreCase);
+        string Resolve(string type) { var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase); while (aliases.TryGetValue(type, out var next) && seen.Add(type)) type = next; return type; }
+        foreach (var source in sources)
+        {
+            var tokens = StLanguageService.Scan(source.Text); string? owner = null;
+            for (int i = 0; i < tokens.Count; i++)
+            {
+                var word = tokens[i].Text.ToUpperInvariant();
+                if (word is "PROGRAM" or "FUNCTION_BLOCK" or "FUNCTION") { owner = i + 1 < tokens.Count ? tokens[++i].Text : null; continue; }
+                if (word is "END_PROGRAM" or "END_FUNCTION_BLOCK" or "END_FUNCTION") { owner = null; continue; }
+                if (owner is null || i + 1 >= tokens.Count || tokens[i + 1].Text != "(" || i > 0 && tokens[i - 1].Text == ".") continue;
+                var variable = symbols.FirstOrDefault(s => s.File == source.RelativePath && s.Owner?.Equals(owner, StringComparison.OrdinalIgnoreCase) == true && s.Name.Equals(tokens[i].Text, StringComparison.OrdinalIgnoreCase) && s.Kind.StartsWith("VAR", StringComparison.Ordinal))
+                    ?? symbols.FirstOrDefault(s => s.Kind == "VAR_GLOBAL" && s.Name.Equals(tokens[i].Text, StringComparison.OrdinalIgnoreCase));
+                if (variable is null || !new[] { "MC_MoveAbsolute", "MC_MoveVelocity", "MC_Stop" }.Contains(Resolve(variable.Type), StringComparer.OrdinalIgnoreCase)) continue;
+                var type = Resolve(variable.Type);
+                if (velocityOnly)
+                {
+                    if (type.Equals("MC_MoveAbsolute", StringComparison.OrdinalIgnoreCase)) continue;
+                    // Once the image is v2, omitted Jog/Stop parameters still inherit its defaults.
+                    return true;
+                }
+                var parameters = type.Equals("MC_Stop", StringComparison.OrdinalIgnoreCase) ? new[] { "Deceleration", "Jerk" } : new[] { "Acceleration", "Deceleration", "Jerk" };
+                int depth = 1;
+                for (int j = i + 2; j + 2 < tokens.Count && depth > 0; j++)
+                {
+                    if (tokens[j].Text == "(") { depth++; continue; }
+                    if (tokens[j].Text == ")") { depth--; continue; }
+                    if (depth == 1 && (j == i + 2 || tokens[j - 1].Text == ",") && parameters.Contains(tokens[j].Text, StringComparer.OrdinalIgnoreCase) && tokens[j + 1].Text == ":" && tokens[j + 2].Text == "=") return true;
+                }
+            }
+        }
+        return false;
+    }
     public static IReadOnlyList<Diagnostic> Validate(IReadOnlyList<SourceDocument> sources, IReadOnlyList<AxisConfiguration> axes, IReadOnlyList<TaskSnapshot> tasks)
     {
         var errors = new List<Diagnostic>();
@@ -11,6 +50,8 @@ public static class AxisControlBinding
         void Error(string message, string file = "", int line = 0, int column = 0) => errors.Add(new(file, line, column, "error", message));
         if (axes.Count is < 1 or > 64) Error("基础轴控需要配置 1–64 个工程轴。");
         if (tasks.Count(t => t.Enabled) != 1 || tasks.Any(t => t.Enabled && t.IntervalMilliseconds is < 1 or > 1000)) Error("基础轴控程序的 PLC 周期必须为 1–1000 ms，以便有界扫描看门狗检测。");
+        if (UsesDynamicProfile(sources) && axes.Any(a => a.MaximumAcceleration is not > 0 || a.MaximumDeceleration is not > 0 || a.MaximumJerk is null || !double.IsFinite(a.MaximumAcceleration.Value) || !double.IsFinite(a.MaximumDeceleration.Value) || !double.IsFinite(a.MaximumJerk.Value) || a.MaximumJerk < 0))
+            Error("Axis v2 requires explicit positive acceleration/deceleration and nonnegative finite jerk defaults.");
         var constants = axes.Select(a => "AXIS_" + a.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var symbols = new StLanguageService().Index(sources);
         var aliases = symbols.Where(s => s.Kind == "TYPE").GroupBy(s => s.Name, StringComparer.OrdinalIgnoreCase).ToDictionary(g => g.Key, g => g.First().Type, StringComparer.OrdinalIgnoreCase);
@@ -56,7 +97,7 @@ public static class AxisControlBinding
                 if (word is "PROGRAM" or "FUNCTION_BLOCK" or "FUNCTION") { owner = i + 1 < tokens.Count ? tokens[++i].Text : null; continue; }
                 if (word is "END_PROGRAM" or "END_FUNCTION_BLOCK" or "END_FUNCTION") { owner = null; continue; }
                 if (owner is null || i + 1 >= tokens.Count || tokens[i + 1].Text != "(") continue;
-                var variable = symbols.FirstOrDefault(s => s.Owner?.Equals(owner, StringComparison.OrdinalIgnoreCase) == true && s.Name.Equals(token.Text, StringComparison.OrdinalIgnoreCase) && s.Kind.StartsWith("VAR", StringComparison.Ordinal))
+                var variable = symbols.FirstOrDefault(s => s.File == source.RelativePath && s.Owner?.Equals(owner, StringComparison.OrdinalIgnoreCase) == true && s.Name.Equals(token.Text, StringComparison.OrdinalIgnoreCase) && s.Kind.StartsWith("VAR", StringComparison.Ordinal))
                     ?? symbols.FirstOrDefault(s => s.Kind == "VAR_GLOBAL" && s.Name.Equals(token.Text, StringComparison.OrdinalIgnoreCase));
                 if (variable is null || !IsAxis(variable.Type))
                 {

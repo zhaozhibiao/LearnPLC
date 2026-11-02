@@ -56,6 +56,14 @@ struct AxisSnapshot {
     double peak_actual_velocity{};
     bool motion_timing_ready{true};
     bool motion_timing_fault{};
+    double demand_position_error{};
+    double drive_following_error{};
+    double demand_delivery_error{};
+    bool demand_feedback_valid{};
+    bool demand_delivery_mismatch{};
+    bool demand_delivery_fault{};
+    bool drive_statusword_valid{};
+    std::uint16_t drive_statusword{};
 
 };
 struct ScalarIoSnapshot {
@@ -86,6 +94,7 @@ public:
     [[nodiscard]] virtual std::map<std::string, bool> digital_inputs() const { return {}; }
     [[nodiscard]] virtual std::vector<ScalarIoSnapshot> scalar_io() const { return {}; }
     [[nodiscard]] virtual std::string ethercat_topology_fingerprint() const { return {}; }
+    [[nodiscard]] virtual bool supports_motion_migration() const noexcept { return false; }
     [[nodiscard]] virtual IoHardwareCatalog io_catalog() const { return {}; }
     [[nodiscard]] virtual bool outputs_at_safe_state() const {
         for (const auto& [name, value] : digital_outputs()) { static_cast<void>(name); if (value) return false; }
@@ -106,6 +115,11 @@ public:
     virtual void reset(const std::string& axis) = 0;
     virtual void home(const std::string& axis) = 0;
     virtual std::uint64_t move_absolute(const std::string& axis, double position, double velocity) = 0;
+    [[nodiscard]] virtual bool supports_axis_move_profile_v2() const noexcept { return false; }
+    [[nodiscard]] virtual bool supports_axis_velocity_profile_v2() const noexcept { return false; }
+    virtual std::uint64_t axis_profile_command(const std::string&, RealtimeCommand) {
+        throw std::logic_error("Backend does not support axis profile v2.");
+    }
     virtual std::uint64_t move_group(const GroupMotionCommand& command) {
         static_cast<void>(command);
         throw std::logic_error("This backend does not support synchronized group motion.");

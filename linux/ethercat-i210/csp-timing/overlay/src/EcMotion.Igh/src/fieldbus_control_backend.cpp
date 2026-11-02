@@ -85,6 +85,8 @@ AxisSnapshot FieldbusControlBackend::axis_snapshot(const std::string& axis) cons
         fault = message.str();
     } else if (value.software_limit_violation) {
         fault = "Actual position is outside the configured software limits.";
+    } else if (value.demand_delivery_fault) {
+        fault = "Configured command-to-demand delivery diagnostic enforcement failed; reset after delivery recovers.";
     } else if (value.following_error_fault) {
         fault = "Following error exceeded the configured limit and duration.";
     } else if (value.overspeed_fault) {
@@ -98,7 +100,9 @@ AxisSnapshot FieldbusControlBackend::axis_snapshot(const std::string& axis) cons
     }
     return {axis, state_name(value.state), value.actual_position,
         value.actual_velocity, value.homed, std::move(fault), value.motion_id,
-        value.motion_target, value.motion_busy, value.motion_done, value.motion_aborted, value.cycle_target, value.cycle_error, value.peak_error, value.max_excess_ms, value.feedforward_velocity, value.peak_actual_velocity,value.motion_timing_ready,value.motion_timing_fault};
+        value.motion_target, value.motion_busy, value.motion_done, value.motion_aborted, value.cycle_target, value.cycle_error, value.peak_error, value.max_excess_ms, value.feedforward_velocity, value.peak_actual_velocity,value.motion_timing_ready,value.motion_timing_fault,
+        value.demand_position_error,value.drive_following_error,value.demand_delivery_error,
+        value.demand_feedback_valid,value.demand_delivery_mismatch,value.demand_delivery_fault,true,value.statusword};
 }
 
 std::vector<ScalarIoSnapshot> FieldbusControlBackend::scalar_io() const {
@@ -222,6 +226,14 @@ std::uint64_t FieldbusControlBackend::move_absolute(
     const std::string& axis, double position, double velocity) {
     return submit({.kind = RealtimeCommandKind::MoveAbsolute, .axis_index = validate_axis(axis),
         .position = position, .velocity = velocity});
+}
+
+std::uint64_t FieldbusControlBackend::axis_profile_command(const std::string& axis, RealtimeCommand command) {
+    if (command.motion_profile_version != 2 || (command.kind != RealtimeCommandKind::MoveAbsolute
+        && command.kind != RealtimeCommandKind::Jog && command.kind != RealtimeCommandKind::Stop))
+        throw std::invalid_argument("Unsupported axis profile command.");
+    command.axis_index = validate_axis(axis);
+    return submit(command);
 }
 
 std::uint64_t FieldbusControlBackend::move_group(const GroupMotionCommand& command) {

@@ -17,3 +17,22 @@ The .NET PackageBuilder creates a local isolated Runtime staging candidate ZIP p
 The manifest explicitly sets `SafeForDirectUpload=false`, `RuntimeLinkVerified=false`, and `CommercialRedistributionCleared=false`. Original `iec_fault.hpp` and `iec_global.hpp` have no individual runtime-exception license notices, although upstream COPYING assigns the exception to runtime headers as a category. COPYING.RUNTIME applies to files bearing the notice. No notice is added or altered; this discrepancy requires authoritative clarification before commercial redistribution. All copied files retain their original contents and are hashed in the manifest.
 
 Run the real package tests by setting `ST_COMPILER_ADAPTER` to the absolute `compile.mjs` path and `ST_COMPILER_DISTRIBUTION` to the official extracted compiler directory, then running `dotnet run --project tests/StWorkbench.Toolchain.Tests -c Release`. Optional `ST_COMPILER_PATH` enables the native CLI smoke tests too.
+# Task scheduling metadata
+
+All adapters use `task-configuration.mjs` to validate immutable task snapshots.
+`Scheduling` is 0 (ordinary, default) or 1 (realtime), `Priority` is an IEC
+priority from 0 (highest) through 31 (default 10), and `Cpu` is null (unpinned,
+default) or a nonnegative signed 32-bit CPU index. Runtime validates CPU
+availability. Task names, including `Main`, do not override explicit policy.
+
+The base adapter emits one native task and program instance per enabled task.
+Axis, motion, and extended scan bridge adapters reject multiple enabled tasks
+because their shared scan ownership has not been verified for concurrency.
+
+Generated C++ exports `extern "C" int workbench_task_scheduling_v1(unsigned
+resource_index, unsigned task_index, int *policy, int *priority, int *cpu)`.
+Indices follow native resource/task declaration order. Return 1 means found,
+0 means no such index, and -1 means invalid output pointers. Unpinned CPUs use
+-1 in this ABI. The export is compiled into the same candidate plugin as the
+native task tables. Run `npm test` for validation and pinned-compiler CLI tests.
+

@@ -3,7 +3,46 @@ using System.Text.Json;
 using StWorkbench.Core;
 using StWorkbench.Toolchain;
 
+if (args.Contains("--package-acceptance"))
+{
+    var loaded = await new ProjectStore().LoadAsync(Path.GetFullPath("examples/axis-dynamics-v2-acceptance/Acceptance.stproj"));
+    var snapshot = ProjectValidator.Capture(loaded.Project, loaded.Sources);
+    var names = loaded.Project.Items.ToDictionary(i => i.Id, i => i.Name);
+    var builder = new PackageBuilder();
+    var outDir = Path.GetFullPath("artifacts/acceptance-package-build");
+    var res = await builder.BuildAsync(snapshot, names, "node", Path.GetFullPath("tools/compiler-adapter/compile.mjs"), Path.GetFullPath(".tools/strucpp-0.7.0/strucpp"), outDir);
+    Console.WriteLine($"RESULT: Success={res.Success}, PackagePath={res.PackagePath}, BuildHash={res.BuildHash}");
+    if (!res.Success) Console.WriteLine($"ERROR: {res.Compilation?.Log}");
+    return res.Success ? 0 : 1;
+}
+
+if (args.Contains("--package-is620n"))
+{
+    var loaded = await new ProjectStore().LoadAsync(Path.GetFullPath("examples/is620n-runtime-speed-3000/IS620N-Runtime-Migrated.stproj"));
+    var snapshot = ProjectValidator.Capture(loaded.Project, loaded.Sources);
+    var names = loaded.Project.Items.ToDictionary(i => i.Id, i => i.Name);
+    var builder = new PackageBuilder();
+    var outDir = Path.GetFullPath("artifacts/is620n-package-build");
+    var res = await builder.BuildAsync(snapshot, names, "node", Path.GetFullPath("tools/compiler-adapter/compile.mjs"), Path.GetFullPath(".tools/strucpp-0.7.0/strucpp"), outDir);
+    Console.WriteLine($"RESULT: Success={res.Success}, PackagePath={res.PackagePath}, BuildHash={res.BuildHash}");
+    if (!res.Success) Console.WriteLine($"ERROR: {res.Compilation?.Log}");
+    return res.Success ? 0 : 1;
+}
+
+if (args.Contains("--native-bundle-only")) { await NativeWorkerBundleTests.RunAsync(); return 0; }
+
+if (args.Contains("--axis-v2-only")) { await RealAxisV2PackageSmoke.RunAsync(Path.GetFullPath("tools/compiler-adapter/compile.mjs"), Path.GetFullPath(".tools/strucpp-0.7.0/strucpp")); return 0; }
+
+if (args.Contains("--scheduling-only")) { await TaskSchedulingPackageTests.RunAsync(); return 0; }
+
+if (args.Contains("--archive-only")) { EngineeringArchiveTests.Run(); return 0; }
+
 if (args.Contains("--features-only")) { await FeaturePackageSmoke.RunAsync(); return 0; }
+if (args.Contains("--generic-ethercat-only"))
+{
+    await GenericEtherCatPackageSmoke.RunAsync(Path.GetFullPath("tools/compiler-adapter/compile.mjs"), Path.GetFullPath(".tools/strucpp-0.7.0/strucpp"));
+    return 0;
+}
 // When copied to a named directory this executable is a real child-process compiler fixture.
 var fixtureMode = new DirectoryInfo(AppContext.BaseDirectory).Name;
 if (fixtureMode.StartsWith("fake-", StringComparison.Ordinal))
@@ -42,6 +81,7 @@ if (fixtureMode.StartsWith("fake-", StringComparison.Ordinal))
     return 0;
 }
 
+EngineeringArchiveTests.Run();
 var root = Path.Combine(Path.GetTempPath(), "ST compiler tests " + Guid.NewGuid().ToString("N"));
 Directory.CreateDirectory(root);
 var failures = 0;
@@ -145,6 +185,8 @@ try
     var adapter = Environment.GetEnvironmentVariable("ST_COMPILER_ADAPTER");
     var distribution = Environment.GetEnvironmentVariable("ST_COMPILER_DISTRIBUTION");
     if (!string.IsNullOrWhiteSpace(adapter) && !string.IsNullOrWhiteSpace(distribution))
+        await Test("generic EtherCAT runtime package", () => GenericEtherCatPackageSmoke.RunAsync(adapter, distribution));
+    if (!string.IsNullOrWhiteSpace(adapter) && !string.IsNullOrWhiteSpace(distribution))
         await Test("real control and communication package", FeaturePackageSmoke.RunAsync);
     if (!string.IsNullOrWhiteSpace(adapter) && !string.IsNullOrWhiteSpace(distribution))
         await Test("real hardware topology package", () => RealHardwarePackageSmoke.RunAsync(adapter, distribution));
@@ -159,4 +201,3 @@ try
 }
 finally { Directory.Delete(root, true); }
 return failures == 0 ? 0 : 1;
-

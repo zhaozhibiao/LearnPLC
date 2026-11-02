@@ -30,6 +30,9 @@ public sealed class PackageBuilder
         var pathAssets = snapshot.Paths.Select(p => p with { Axes = p.Axes.ToArray(), Segments = p.Segments.ToArray(), Profile = p.Profile with { } }).ToArray();
         var tasks = snapshot.Tasks.ToArray();
         var axisUsed = AxisControlBinding.UsesAxisControl(sources);
+        var axisV2 = AxisControlBinding.UsesDynamicProfile(sources);
+        var axisCapabilities = axisV2 ? (AxisControlBinding.UsesDynamicVelocityProfile(sources) ? new[] { "workbench_axis_move_profile_v2", "workbench_axis_velocity_profile_v2" } : new[] { "workbench_axis_move_profile_v2" }) : Array.Empty<string>();
+        var axisInterface = axisV2 ? "workbench-axis-v2" : "workbench-axis-v1";
         var controlUsed = ControlLibraryBinding.IsUsed(sources);
         var communicationUsed = CommunicationBinding.IsUsed(sources);
         var names = programNames.OrderBy(pair => pair.Key).ToDictionary(pair => pair.Key, pair => pair.Value);
@@ -37,6 +40,7 @@ public sealed class PackageBuilder
         var communication = snapshot.Communication is { } comm ? comm with { Channels = comm.Channels.Select(c => c with { }).ToArray() } : null;
         var frozen = snapshot with { Sources = sources, Tasks = tasks, Paths = pathAssets, Axes = snapshot.Axes.ToArray(), MotionCycle = cycle, Communication = communication };
         BuildResult? compilation = null;
+        EtherCatRuntimeCompilation? etherCatRuntime = null;
         try
         {
             token.ThrowIfCancellationRequested();
@@ -45,7 +49,7 @@ public sealed class PackageBuilder
                 if (ProjectValidator.Hash(hardwareJson) != frozen.HardwareHash) throw new InvalidDataException("Hardware configuration differs from captured identity.");
                 var configuration = JsonSerializer.Deserialize<HardwareConfigurationDocument>(hardwareJson) ?? throw new InvalidDataException("Hardware configuration is empty.");
                 if (configuration.SchemaVersion != 1 || configuration.State != "offline-engineering" ||
-                    configuration.Network is null && configuration.Hardware?.Stations is null && configuration.Hardware?.Axes.Any(a => a.Mechanics is not null) != true && configuration.Communication is null)
+                    configuration.Network is null && configuration.Hardware?.Stations is null && configuration.Hardware?.Runtime is null && configuration.Hardware?.Axes.Any(a => a.Mechanics is not null) != true && configuration.Communication is null)
                     throw new InvalidDataException("Unsupported hardware configuration document.");
                 var item = new ProjectItem();
                 var configuredProject = new StProject { Items = [item], Tasks = [new PlcTask { ProgramId = item.Id }], Hardware = configuration.Hardware!, Network = configuration.Network, MotionCycle = configuration.MotionCycle, Communication = configuration.Communication };
@@ -54,6 +58,11 @@ public sealed class PackageBuilder
                 if (JsonSerializer.Serialize(configuration.Hardware!.Axes) != JsonSerializer.Serialize(frozen.Axes) || JsonSerializer.Serialize(configuration.MotionCycle) != JsonSerializer.Serialize(cycle))
                     throw new InvalidDataException("Hardware configuration axis/cycle metadata differs from captured snapshot.");
                 if (JsonSerializer.Serialize(configuration.Communication) != JsonSerializer.Serialize(communication)) throw new InvalidDataException("Communication metadata differs from captured snapshot.");
+                if (configuration.Hardware!.Runtime is not null)
+                {
+                    etherCatRuntime = EtherCatRuntimeCompiler.Compile(configuredProject);
+                    if (!etherCatRuntime.ReadyForRuntime) throw new InvalidDataException("EtherCAT runtime configuration blocked:\n" + string.Join("\n", etherCatRuntime.Blockers));
+                }
             }
             var cycleErrors = MotionCycleValidator.Validate(cycle, frozen.Axes, pathAssets);
             if (cycleErrors.Count > 0) throw new InvalidDataException(string.Join("\n", cycleErrors));
@@ -61,16 +70,21 @@ public sealed class PackageBuilder
             if (bindingErrors.Count > 0) throw new InvalidDataException(string.Join("\n", bindingErrors.Select(e => e.Message)));
             var axisErrors = AxisControlBinding.Validate(sources, frozen.Axes, tasks);
             if (axisErrors.Count > 0) throw new InvalidDataException(string.Join("\n", axisErrors.Select(e => e.Message)));
-            var libraryErrors = ControlLibraryBinding.Validate(sources).Concat(CommunicationBinding.Validate(communication, sources, tasks.Select(t => new PlcTask { Name = t.Name, ProgramId = t.ProgramId, IntervalMilliseconds = t.IntervalMilliseconds, Enabled = t.Enabled }).ToArray())).ToArray();
+            var libraryErrors = ControlLibraryBinding.Validate(sources).Concat(CommunicationBinding.Validate(communication, sources, tasks.Select(t => new PlcTask { Name = t.Name, ProgramId = t.ProgramId, IntervalMilliseconds = t.IntervalMilliseconds, Enabled = t.Enabled, Scheduling = t.Scheduling, Priority = t.Priority, Cpu = t.Cpu }).ToArray())).ToArray();
             if (libraryErrors.Length > 0) throw new InvalidDataException(string.Join("\n", libraryErrors.Select(e => e.Message)));
             if (axisUsed)
             {
                 var mappingErrors = MotionCycleValidator.Validate(new() { Enabled = true, AxisNames = frozen.Axes.Select(a => a.Name).ToArray() }, frozen.Axes, []);
                 if (mappingErrors.Count > 0) throw new InvalidDataException(string.Join("\n", mappingErrors));
             }
-            if (sources.Length == 0 || tasks.Count(task => task.Enabled) != 1) throw new InvalidOperationException("Exactly one enabled task and ST sources are required.");
-            var activeTask = tasks.Single(task => task.Enabled);
-            if (activeTask.IntervalMilliseconds <= 0 || !sources.Any(source => source.ItemId == activeTask.ProgramId) || !names.ContainsKey(activeTask.ProgramId))
+            var enabledTasks = tasks.Where(task => task.Enabled).ToArray();
+            if (sources.Length == 0 || enabledTasks.Length == 0) throw new InvalidOperationException("Enabled tasks and ST sources are required.");
+            if (enabledTasks.Any(t => !Enum.IsDefined(t.Scheduling) || t.Priority is < 0 or > 31 || t.Cpu is < 0 or > 1023) || enabledTasks.Select(t => t.ProgramId).Distinct().Count() != enabledTasks.Length)
+                throw new InvalidOperationException("Invalid task scheduling or duplicate program assignment.");
+            if (enabledTasks.Length > 1 && (axisUsed || pathAssets.Length > 0 || controlUsed || communicationUsed))
+                throw new InvalidOperationException("Multi-task shared axis/path/control/communication scan ownership is not supported yet.");
+            var activeTask = enabledTasks[0]; // Extension bridges are validated single-owner above.
+            if (enabledTasks.Any(t => t.IntervalMilliseconds is < 1 or > 60000 || !sources.Any(source => source.ItemId == t.ProgramId) || !names.ContainsKey(t.ProgramId)))
                 throw new InvalidOperationException("Task interval or source/program mapping is invalid.");
             var packageRoot = Path.Combine(Path.GetFullPath(buildRoot), Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(packageRoot);
@@ -78,36 +92,37 @@ public sealed class PackageBuilder
             if (controlUsed || communicationUsed) effectiveAdapter = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(adapterPath))!, "compile-extended.mjs");
             var controlDirectory = Path.GetFullPath(Path.Combine(runtimeCompatibilityDirectory, "..", "control-library"));
             var communicationDirectory = Path.GetFullPath(Path.Combine(runtimeCompatibilityDirectory, "..", "communication-bridge"));
-            var communicationWorker = Path.GetFullPath(Path.Combine(runtimeCompatibilityDirectory, "..", "..", "linux", "communication"));
+            var nativeDirectory = Path.GetFullPath(Path.Combine(runtimeCompatibilityDirectory, "..", "..", "linux", "native"));
+            var nativeTargets = new List<string>();
+            if (axisUsed) nativeTargets.Add("st-axis-worker");
+            if (communicationUsed) nativeTargets.Add("st-communication-worker");
+            if (pathAssets.Length > 0) nativeTargets.Add("st-path-worker");
+            var nativeBundle = nativeTargets.Count == 0 ? null : await NativeWorkerBundle.CaptureAsync(nativeDirectory, nativeTargets, token);
+            var nativeIdentity = nativeBundle?.Identity();
             var extensionFiles = new SortedDictionary<string, string>(StringComparer.Ordinal);
             if (controlUsed) foreach (var file in new[] { "control.st", "LICENSE" }) extensionFiles.Add("control/" + file, await FileHashAsync(Path.Combine(controlDirectory, file), token));
             if (communicationUsed)
             {
                 if (communication is null) throw new InvalidDataException("Communication channel configuration required.");
-                var errors = CommunicationBinding.Validate(communication, sources, tasks.Select(t => new PlcTask { Name = t.Name, ProgramId = t.ProgramId, IntervalMilliseconds = t.IntervalMilliseconds, Enabled = t.Enabled }).ToArray());
+                var errors = CommunicationBinding.Validate(communication, sources, tasks.Select(t => new PlcTask { Name = t.Name, ProgramId = t.ProgramId, IntervalMilliseconds = t.IntervalMilliseconds, Enabled = t.Enabled, Scheduling = t.Scheduling, Priority = t.Priority, Cpu = t.Cpu }).ToArray());
                 if (errors.Count > 0) throw new InvalidDataException(string.Join("; ", errors.Select(e => e.Message)));
                 foreach (var file in new[] { "communication.st", "communication_bridge.hpp", "communication_bridge.cpp", "generated_communication_scan_shim.cpp", "communication_lifecycle.inc", "LICENSE" }) extensionFiles.Add(file, await FileHashAsync(Path.Combine(communicationDirectory, file), token));
-                foreach (var file in new[] { "communication_worker.py", "LICENSE" }) extensionFiles.Add("communication/" + file, await FileHashAsync(Path.Combine(communicationWorker, file), token));
             }
             var communicationConstants = Path.Combine(packageRoot, "communication-constants.st");
             if (communicationUsed) await File.WriteAllTextAsync(communicationConstants, CommunicationBinding.Constants(communication!), token);
-            var axisDirectory = Path.GetFullPath(Path.Combine(runtimeCompatibilityDirectory, "..", "axis-bridge"));
-            var axisWorkerDirectory = Path.GetFullPath(Path.Combine(runtimeCompatibilityDirectory, "..", "..", "linux", "axis"));
+            var axisDirectory = Path.GetFullPath(Path.Combine(runtimeCompatibilityDirectory, "..", axisV2 ? "axis-bridge-v2" : "axis-bridge"));
             var axisFiles = new SortedDictionary<string, string>(StringComparer.Ordinal);
             var constantsPath = Path.Combine(packageRoot, "axis-constants.st");
             if (axisUsed)
             {
                 foreach (var file in new[] { "axis_control.st", "axis_bridge.hpp", "axis_bridge.cpp", "generated_axis_scan_shim.cpp", "axis_lifecycle.inc" }) axisFiles.Add(file, await FileHashAsync(Path.Combine(axisDirectory, file), token));
-                axisFiles.Add("axis_worker.py", await FileHashAsync(Path.Combine(axisWorkerDirectory, "axis_worker.py"), token));
                 await File.WriteAllTextAsync(constantsPath, AxisControlBinding.Constants(frozen.Axes), token);
             }
             var motionDirectory = Path.GetFullPath(Path.Combine(runtimeCompatibilityDirectory, "..", "motion-bridge"));
-            var workerDirectory = Path.GetFullPath(Path.Combine(runtimeCompatibilityDirectory, "..", "..", "linux", "motion"));
             var motionFiles = new SortedDictionary<string, string>(StringComparer.Ordinal);
             if (pathAssets.Length > 0)
             {
                 foreach (var file in new[] { "continuous_path.st", "motion_bridge.hpp", "motion_bridge.cpp", "generated_scan_shim.cpp", "runtime_lifecycle.inc" }) motionFiles.Add(file, await FileHashAsync(Path.Combine(motionDirectory, file), token));
-                motionFiles.Add("virtual_worker.py", await FileHashAsync(Path.Combine(workerDirectory, "virtual_worker.py"), token));
                 if (!File.Exists(effectiveAdapter)) throw new InvalidOperationException("Motion compiler adapter is missing.");
             }
             var distribution = Path.GetFullPath(compilerDistributionDirectory);
@@ -147,11 +162,14 @@ public sealed class PackageBuilder
             var inputIdentity = JsonSerializer.Serialize(new { snapshot.ProjectId, snapshot.SourceHash, snapshot.HardwareHash, Sources = sources,
                 Tasks = tasks, ProgramNames = names, CompilerVersion = "0.7.0", RuntimeCommit, RuntimeHeaderHashes = runtimeHeaderHashes,
                 CompilerLibraryHashes = libraryHashes, RuntimeCompatibilityLicenseHash = await FileHashAsync(compatibilityLicense, token),
-                AdapterHash = await FileHashAsync(effectiveAdapter, token) });
+                AdapterHash = await FileHashAsync(effectiveAdapter, token), TaskConfigurationHash = await FileHashAsync(Path.Combine(Path.GetDirectoryName(Path.GetFullPath(effectiveAdapter))!, "task-configuration.mjs"), token) });
             if (cycle is not null) inputIdentity = JsonSerializer.Serialize(new { Base = inputIdentity, MotionCycle = cycle });
-            if (axisUsed) inputIdentity = JsonSerializer.Serialize(new { Base = inputIdentity, AxisInterfaceVersion = "workbench-axis-v1", Files = axisFiles, Axes = frozen.Axes.OrderBy(a => a.Name, StringComparer.Ordinal).ToArray() });
+            if (nativeIdentity is not null) inputIdentity = JsonSerializer.Serialize(new { Base = inputIdentity, NativeWorkers = nativeIdentity });
+            if (axisUsed) inputIdentity = JsonSerializer.Serialize(new { Base = inputIdentity, AxisInterfaceVersion = axisInterface, Files = axisFiles, Axes = frozen.Axes.OrderBy(a => a.Name, StringComparer.Ordinal).ToArray() });
             if (pathAssets.Length > 0) inputIdentity = JsonSerializer.Serialize(new { Base = inputIdentity, MotionInterfaceVersion = "workbench-continuous-v1", Files = motionFiles, Paths = pathAssets });
             if (controlUsed || communicationUsed) inputIdentity = JsonSerializer.Serialize(new { Base = inputIdentity, ExtensionFiles = extensionFiles, Communication = communicationUsed ? communication : null });
+            if (etherCatRuntime is not null) inputIdentity = JsonSerializer.Serialize(new { Base = inputIdentity, EtherCatRuntimeInterfaceVersion = "workbench-ethercat-v1",
+                EtherCatTopologySha256 = ProjectValidator.Hash(etherCatRuntime.TopologyJson), MachineConfigurationSha256 = ProjectValidator.Hash(etherCatRuntime.MachineJson), IoMapSha256 = ProjectValidator.Hash(etherCatRuntime.IoMapJson) });
             var programMd5 = Convert.ToHexString(MD5.HashData(Encoding.UTF8.GetBytes(inputIdentity))).ToLowerInvariant();
             var requestPath = Path.Combine(packageRoot, "request.json");
             await File.WriteAllTextAsync(requestPath, JsonSerializer.Serialize(new { Sources = sources, Tasks = tasks, ProgramNames = names,
@@ -162,6 +180,8 @@ public sealed class PackageBuilder
                 .CompileAsync(frozen, nodeExecutable, packageRoot, token);
             if (!compilation.Success) return new(compilation, "", "", "");
             var output = compilation.OutputDirectory;
+            if (nativeBundle is not null) await nativeBundle.WriteAsync(output, token);
+            await File.WriteAllTextAsync(Path.Combine(output, "task-scheduling.json"), JsonSerializer.Serialize(new { SchemaVersion = 1, InterfaceVersion = "workbench-task-scheduling-v1", Tasks = tasks }), token);
             if (controlUsed)
             {
                 Directory.CreateDirectory(Path.Combine(output, "control"));
@@ -172,19 +192,20 @@ public sealed class PackageBuilder
                 foreach (var file in new[] { "communication.st", "communication_bridge.hpp", "communication_bridge.cpp", "generated_communication_scan_shim.cpp", "communication_lifecycle.inc" }) File.Copy(Path.Combine(communicationDirectory, file), Path.Combine(output, file));
                 File.Copy(communicationConstants, Path.Combine(output, "communication-constants.st"));
                 await File.WriteAllTextAsync(Path.Combine(output, "communication-manifest.json"), CommunicationBinding.Manifest(communication!, activeTask.IntervalMilliseconds), token);
-                Directory.CreateDirectory(Path.Combine(output, "communication"));
-                foreach (var file in new[] { "communication_worker.py", "LICENSE" }) File.Copy(Path.Combine(communicationWorker, file), Path.Combine(output, "communication", file));
             }
             if (frozen.HardwareConfigurationJson is { } hardwareConfiguration)
                 await File.WriteAllTextAsync(Path.Combine(output, "hardware-configuration.json"), hardwareConfiguration, token);
+            if (etherCatRuntime is not null)
+            {
+                await File.WriteAllTextAsync(Path.Combine(output, "ethercat-runtime.json"), etherCatRuntime.TopologyJson, new UTF8Encoding(false), token);
+                await File.WriteAllTextAsync(Path.Combine(output, "machine-config.json"), etherCatRuntime.MachineJson, new UTF8Encoding(false), token);
+                await File.WriteAllTextAsync(Path.Combine(output, "io-map.json"), etherCatRuntime.IoMapJson, new UTF8Encoding(false), token);
+            }
             if (axisUsed)
             {
                 foreach (var file in new[] { "axis_control.st", "axis_bridge.hpp", "axis_bridge.cpp", "generated_axis_scan_shim.cpp", "axis_lifecycle.inc" }) File.Copy(Path.Combine(axisDirectory, file), Path.Combine(output, file));
                 File.Copy(constantsPath, Path.Combine(output, "axis-constants.st"));
-                var axesDirectory = Path.Combine(output, "axes"); Directory.CreateDirectory(axesDirectory);
-                File.Copy(Path.Combine(axisWorkerDirectory, "axis_worker.py"), Path.Combine(axesDirectory, "axis_worker.py"));
-                File.Copy(Path.Combine(axisWorkerDirectory, "LICENSE"), Path.Combine(axesDirectory, "LICENSE"));
-                await File.WriteAllTextAsync(Path.Combine(output, "axis-manifest.json"), JsonSerializer.Serialize(new { SchemaVersion = 1, InterfaceVersion = "workbench-axis-v1", PlcIntervalMilliseconds = activeTask.IntervalMilliseconds,
+                var axisManifest = JsonSerializer.Serialize(new { SchemaVersion = 1, InterfaceVersion = axisInterface, PlcIntervalMilliseconds = activeTask.IntervalMilliseconds,
                     Axes = frozen.Axes.OrderBy(a => a.Name, StringComparer.Ordinal).Select((a, i) =>
                     {
                         var axis = new Dictionary<string, object?>
@@ -194,9 +215,18 @@ public sealed class PackageBuilder
                             ["MaximumVelocity"] = a.MaximumVelocity, ["MaximumAcceleration"] = a.MaximumAcceleration,
                             ["MaximumDeceleration"] = a.MaximumDeceleration, ["MaximumJerk"] = a.MaximumJerk
                         };
-                        if (a.Mechanics is not null) axis.Add("Mechanics", a.Mechanics);
+                        if (a.Mechanics is not null && etherCatRuntime is null) axis.Add("Mechanics", a.Mechanics);
                         return axis;
-                    }) }), token);
+                    }) });
+                if (axisV2)
+                {
+                    var axisNode = System.Text.Json.Nodes.JsonNode.Parse(axisManifest)!;
+                    axisNode["CommandBytes"] = 4112;
+                    axisNode["FeedbackBytes"] = 6656;
+                    axisNode["RequiredRuntimeCapabilities"] = JsonSerializer.SerializeToNode(axisCapabilities);
+                    axisManifest = axisNode.ToJsonString();
+                }
+                await File.WriteAllTextAsync(Path.Combine(output, "axis-manifest.json"), axisManifest, token);
             }
             if (cycle is not null)
                 await File.WriteAllTextAsync(Path.Combine(output, "motion-cycle.json"), JsonSerializer.Serialize(new
@@ -212,7 +242,6 @@ public sealed class PackageBuilder
                 if (Encoding.UTF8.GetByteCount(payload) > 16 * 1024 * 1024) throw new InvalidDataException("Prepared trajectory bundle exceeds the 16 MiB archive member limit; split the path.");
                 await File.WriteAllTextAsync(Path.Combine(pathDirectory, "motion-manifest.json"), payload, token);
                 foreach (var file in new[] { "continuous_path.st", "motion_bridge.hpp", "motion_bridge.cpp", "generated_scan_shim.cpp", "runtime_lifecycle.inc" }) File.Copy(Path.Combine(motionDirectory, file), Path.Combine(output, file));
-                File.Copy(Path.Combine(workerDirectory, "virtual_worker.py"), Path.Combine(pathDirectory, "virtual_worker.py"));
                 await File.WriteAllTextAsync(Path.Combine(pathDirectory, "LICENSE"), "SPDX-License-Identifier: MIT\nCopyright (c) 2026 ST Workbench contributors\nSee RUNTIME-COMPAT-LICENSE for the complete MIT license.\n", token);
             }
             foreach (var file in new[] { "generated_debug.cpp", "debug-map.json", "configuration.st" })
@@ -227,6 +256,7 @@ public sealed class PackageBuilder
             foreach (var license in new[] { "COPYING", "COPYING.RUNTIME", "LICENSE" }) File.Copy(Path.Combine(distribution, license), Path.Combine(output, license));
             File.Copy(compatibilityLicense, Path.Combine(output, "RUNTIME-COMPAT-LICENSE"));
             var symbolHash = await FileHashAsync(Path.Combine(output, "debug-map.json"), token);
+            await File.WriteAllTextAsync(Path.Combine(output, "engineering-archive.json"), JsonSerializer.Serialize(EngineeringArchive.Create(frozen)), token);
             var inventory = new SortedDictionary<string, string>(StringComparer.Ordinal);
             foreach (var file in Directory.GetFiles(output, "*", SearchOption.AllDirectories))
             {
@@ -244,18 +274,38 @@ public sealed class PackageBuilder
                 Configuration = "CONFIG0", Resource = "RES0", Instance = "INSTANCE0", Tasks = tasks,
                 ArtifactKind = "isolated-runtime-staging-candidate", LinuxCompilationVerified = false, SafeForDirectUpload = false,
                 RuntimeLinkVerified = false, CommercialRedistributionCleared = false, UnmarkedRuntimeHeaders = unmarkedHeaders,
-                RuntimeHeaderRedistributionCleared = true,
+                RuntimeHeaderRedistributionCleared = true, TaskSchedulingInterfaceVersion = "workbench-task-scheduling-v1",
                 RuntimeHeaderReplacements = replacements.Select(pair => new { Path = pair.Key, Sha256 = pair.Value, License = "MIT" }).ToArray(),
                 LicensingAuditBlocker = "", CommercialProductAuditStatus = "pending",
+                NativeWorkerInterfaceVersion = nativeIdentity?.InterfaceVersion,
+                NativeSourceBundleSha256 = nativeIdentity?.SourceBundleSha256,
+                NativeSources = nativeIdentity?.Sources, NativeWorkerTargets = nativeIdentity?.Targets,
                 MotionInterfaceVersion = pathAssets.Length == 0 ? null : "workbench-continuous-v1", Files = inventory
             }, new JsonSerializerOptions { WriteIndented = true });
-            if (cycle is not null || axisUsed || communicationUsed || controlUsed)
+            if (cycle is not null || axisUsed || communicationUsed || controlUsed || etherCatRuntime is not null)
             {
                 var node = System.Text.Json.Nodes.JsonNode.Parse(manifestJson)!;
                 if (cycle is not null) node["MotionCycleInterfaceVersion"] = "workbench-motion-cycle-v1";
-                if (axisUsed) node["AxisInterfaceVersion"] = "workbench-axis-v1";
+                if (axisUsed) node["AxisInterfaceVersion"] = axisInterface;
                 if (communicationUsed) node["CommunicationInterfaceVersion"] = CommunicationBinding.Interface;
                 if (controlUsed) node["ControlLibraryVersion"] = "1.0.0";
+                if (etherCatRuntime is not null)
+                {
+                    node["EtherCatRuntimeInterfaceVersion"] = "workbench-ethercat-v1";
+                    node["EtherCatTopologyFingerprint"] = etherCatRuntime.TopologyFingerprint;
+                    using var machineRequirements = JsonDocument.Parse(etherCatRuntime.MachineJson);
+                    if (machineRequirements.RootElement.TryGetProperty("requiredRuntimeCapabilities", out var required))
+                        node["RequiredRuntimeCapabilities"] = System.Text.Json.Nodes.JsonNode.Parse(required.GetRawText());
+                }
+                if (axisV2)
+                {
+                    node["AxisExportMarker"] = "workbench_axis_v2";
+                    node["AxisCommandBytes"] = 4112;
+                    node["AxisFeedbackBytes"] = 6656;
+                    var capabilities = node["RequiredRuntimeCapabilities"]?.AsArray().Select(c => c!.GetValue<string>()).ToList() ?? [];
+                    capabilities.AddRange(axisCapabilities);
+                    node["RequiredRuntimeCapabilities"] = JsonSerializer.SerializeToNode(capabilities.Distinct().ToArray());
+                }
                 manifestJson = node.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
             }
             await File.WriteAllTextAsync(Path.Combine(output, "build-manifest.json"), manifestJson, token);
@@ -291,4 +341,3 @@ public sealed class PackageBuilder
         return Convert.ToHexString(await SHA256.HashDataAsync(stream, token));
     }
 }
-

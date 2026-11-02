@@ -1,0 +1,26 @@
+{
+  "upstream": "OpenPLC Runtime v4.3.0",
+  "license": "MIT (upstream SPDX/copyright retained)",
+  "files": {
+    "core/src/plc_app/debug_handler.c": {
+      "before_sha256": "d7f3d8a0a45d5e46841ce76c8350d69f7cd623f40774ef9fa018273ccfa4d641",
+      "after_sha256": "60f095ae696a985fa75f3059802732029e2d410e35ecda4b5a301f173fe3819b"
+    },
+    "core/src/plc_app/debug_handler.h": {
+      "before_sha256": "4c82787bd44f5660235d6a11544566cfd1b8df92d28c91548994050952c4dcf7",
+      "after_sha256": "f310c488cd341c86dcac74b0ad27fec168edcba02d2490db5e717a688d1b380b"
+    },
+    "core/src/plc_app/image_tables.cpp": {
+      "before_sha256": "7a8e637534126bafd8c5cd917af7376d4a77192e1ff431fa59fe47e9a3b69f2b",
+      "after_sha256": "00d865b93d4a56a214bbf3c62fc7aaa54c7b5136dc5ffe11f62b115c5d6df68f"
+    },
+    "core/src/plc_app/plc_state_manager.cpp": {
+      "before_sha256": "17b843342f411ed283cb90186321dd2d7b054effe45b56bc95461bf4585c57c2",
+      "after_sha256": "c574733bf5f78047a576cfb8b544c08ca4287a33d628b6299fe3492da86db67b"
+    },
+    "core/src/plc_app/workbench_task_scheduling.h": {
+      "before_sha256": null,
+      "after_sha256": "b456d778c8894c8f57b33c7d4b8862184ded1c2eb863f3289f91eb1d7e1df19a"
+    }
+  }
+}

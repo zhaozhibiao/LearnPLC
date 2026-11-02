@@ -33,6 +33,17 @@ try
     var socket = new ScriptedSocket();
     await using var client = new DebugSocketClient(new Uri("https://localhost:8443"), transport: socket);
     await client.ConnectAsync("test-token");
+    var writesBefore = socket.Commands.Count;
+    await client.WriteBooleanAsync("0123456789abcdef0123456789abcdef", new(0, 258, 1), true);
+    Check(socket.Commands[writesBefore] == "46 00", "write capability must be probed before modifying variable");
+    var boolPdu = socket.Commands[writesBefore + 1].Split(' ').Select(x => Convert.ToByte(x, 16)).ToArray();
+    Check(boolPdu.Length == 38 && boolPdu[0] == 0x46 && boolPdu[1] == 1 && boolPdu[34] == 0 && boolPdu[35] == 1 && boolPdu[36] == 2 && boolPdu[37] == 1, "single BOOL packet differs from bounded protocol");
+    Check(Encoding.ASCII.GetString(boolPdu, 2, 32) == "0123456789abcdef0123456789abcdef", "write must bind exact program identity");
+    Check(socket.Commands.Skip(writesBefore).All(c => !c.StartsWith("42")), "single write must never use force/unforce");
+    await Expect<ArgumentException>(() => client.WriteBooleanAsync("bad", new(0, 0, 1), true));
+    await Expect<ArgumentException>(() => client.WriteBooleanAsync("0123456789abcdef0123456789abcdef", new(0, 0, 4), true));
+    Console.WriteLine("PASS identity-bound BOOL single-write packet and no force fallback");
+    var readStart = socket.Commands.Count;
     Check(client.IsConnected && socket.Sent.Contains("40/api/debug,{\"token\":\"test-token\"}"), "Exact namespace auth handshake");
     var md5 = await client.GetProgramMd5Async();
     Check(md5.Md5 == "0123456789abcdef0123456789abcdef" && md5.LittleEndian, "Source verified MD5 and endian sentinel");
@@ -41,7 +52,7 @@ try
     Check(values.Tick == 25 && values.Values.Count == 2 && values.Values[0].Bytes.Span.SequenceEqual(new byte[] { 123, 0, 0, 0 }) && values.Values[1].Bytes.Span[0] == 1, "FC44 exact metadata based split");
     Check(socket.Sent.Contains("3"), "EngineIO ping serviced");
     Check(socket.Commands.Contains("44 00 02 00 00 01 01 00 02"), "Array + BE element addressing");
-    Check(socket.Commands.All(c => c.StartsWith("41") || c.StartsWith("44") || c.StartsWith("45")), "Only read PDUs");
+    Check(socket.Commands.Skip(readStart).All(c => c.StartsWith("41") || c.StartsWith("44") || c.StartsWith("45")), "Only read PDUs after explicit single-write test");
     Console.WriteLine("PASS exact auth namespace, MD5, counts, FC44 addressing, native values, ping, read whitelist");
     await using (var rejected = new DebugSocketClient(new Uri("https://localhost"), transport: new ScriptedSocket { RejectAuth = true }))
         await Expect<UnauthorizedAccessException>(() => rejected.ConnectAsync("token"));
@@ -76,6 +87,18 @@ try
         await Expect<InvalidDataException>(() => incomplete.ReadVariablesAsync([new(0, 1, 4)]));
     }
     Console.WriteLine("PASS request limits and response metadata mismatch");
+    foreach (var mode in new[] { "unsupported", "identity", "timeout" })
+    {
+        var writeSocket = new ScriptedSocket { SupportsWrite = mode != "unsupported", WriteStatus = mode == "identity" ? (byte)0x84 : (byte)0x7e, SilentWrite = mode == "timeout" };
+        await using var writer = new DebugSocketClient(new Uri("https://localhost"), timeout:TimeSpan.FromMilliseconds(150), transport:writeSocket);
+        await writer.ConnectAsync("token");
+        if (mode == "timeout") await Expect<TimeoutException>(() => writer.WriteBooleanAsync("0123456789abcdef0123456789abcdef", new(0, 1, 1), false));
+        else await Expect<InvalidDataException>(() => writer.WriteBooleanAsync("0123456789abcdef0123456789abcdef", new(0, 1, 1), false));
+        Check(!writer.IsConnected, "write rejection/unknown must invalidate binding");
+        Check(writeSocket.Commands.Count(c => c.StartsWith("46 01")) == (mode == "unsupported" ? 0 : 1), "write retried or unsupported runtime was modified");
+        Check(writeSocket.Commands.All(c => !c.StartsWith("42")), "write failure used force fallback");
+    }
+    Console.WriteLine("PASS unsupported write, changed identity and unknown timeout never force or retry");
 }
 catch (Exception error) { Console.Error.WriteLine(error.Message); return 1; }
 return 0;
@@ -92,6 +115,9 @@ sealed class ScriptedSocket : WebSocket
     public List<string> Commands { get; } = [];
     public bool RejectAuth { get; init; }
     public bool Silent { get; init; }
+    public bool SupportsWrite { get; init; } = true;
+    public byte WriteStatus { get; init; } = 0x7e;
+    public bool SilentWrite { get; init; }
     public string? ReplyOverride { get; init; }
     public string? AuthReplyOverride { get; init; }
     private byte[]? current;
@@ -124,8 +150,11 @@ sealed class ScriptedSocket : WebSocket
         if (text.StartsWith("42/api/debug,")) {
             using var json = JsonDocument.Parse(text[13..]); var command = json.RootElement[1].GetProperty("command").GetString()!; Commands.Add(command);
             if (Silent) return Task.CompletedTask;
+            if (SilentWrite && command.StartsWith("46 01")) return Task.CompletedTask;
             if (ReplyOverride is not null) { received.Writer.TryWrite(ReplyOverride); return Task.CompletedTask; }
-            var bytes = command.StartsWith("45") ? new byte[] { 0x45, 0x7e }.Concat(Encoding.ASCII.GetBytes("0123456789abcdef0123456789abcdef")).Concat(new byte[] { 0xad, 0xde }).ToArray()
+            var bytes = command == "46 00" ? (SupportsWrite ? new byte[] { 0x46, 0x7e, 1 } : new byte[] { 0x46, 0x81 })
+                : command.StartsWith("46 01") ? new byte[] { 0x46, WriteStatus }
+                : command.StartsWith("45") ? new byte[] { 0x45, 0x7e }.Concat(Encoding.ASCII.GetBytes("0123456789abcdef0123456789abcdef")).Concat(new byte[] { 0xad, 0xde }).ToArray()
                 : command.StartsWith("41") ? [0x41, 2, 0x7e, 0, 2, 0, 3]
                 : new byte[] { 0x44, 0x7e, 0, 1, 0, 0, 0, 25, 0, 5, 123, 0, 0, 0, 1 };
             received.Writer.TryWrite("42/api/debug," + JsonSerializer.Serialize(new object[] { "debug_response", new { success = true, data = string.Join(" ", bytes.Select(b => b.ToString("X2"))) } }));

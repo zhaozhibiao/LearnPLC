@@ -21,11 +21,12 @@ try
     Check(await File.ReadAllTextAsync(path) == original, "failed save protects original");
     main.SourcePath = docs[0].RelativePath;
     project.Tasks.Add(new PlcTask { Name = "Other", ProgramId = main.Id });
-    Check(ProjectValidator.Validate(project, docs).Any(d => d.Message.Contains("一个")), "multi task rejection");
+    Check(ProjectValidator.Validate(project, docs).Any(d => d.Message.Contains("同一个程序")), "concurrent program binding rejection");
     project.Tasks.RemoveAt(1);
     project.Items.Add(new ProjectItem { Name = "main", SourcePath = "sources/Other.st" });
     Check(ProjectValidator.Validate(project, docs).Any(d => d.Message.Contains("重名")), "case insensitive collision");
     Console.WriteLine("PASS: persistence, immutable snapshot, change identity, traversal, failed save, tasks, duplicate names");
+    TaskSchedulingTests.Run();
     await ConfigurationTests.Run();
     await CommunicationTests.RunAsync();
     LanguageTests.Run();
@@ -36,6 +37,7 @@ try
     AxisMechanicsTests.Run();
     await PathAssetTests.Run();
     EsiTests.Run();
+    EtherCatRuntimeTests.Run();
     IoAutoMappingTests.Run();
     await RegressionTests.Run();
 }

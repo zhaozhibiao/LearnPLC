@@ -1,0 +1,10 @@
+[Unit]
+Description=ST Workbench native axis dynamics bridge
+PartOf=stworkbench-openplc.service
+
+[Service]
+Type=simple
+ExecStart=/home/a/.local/share/st-workbench/axis-v2/st-axis-worker --manifest /home/a/.local/share/st-workbench/axis-v2/axis-manifest.json --socket /home/a/.local/share/st-workbench/axis-v2/axis.sock --controller-socket /run/st-workbench-is620n/controller.sock --backend EcMotion
+Restart=no
+UMask=0077
+NoNewPrivileges=yes

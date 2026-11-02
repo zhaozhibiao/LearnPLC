@@ -1,0 +1,36 @@
+{
+  "upgrade": {
+    "success": true,
+    "previousState": "running",
+    "finalState": "running",
+    "activeProgramUnchanged": true,
+    "binarySha256": "66dbd3aa386e923cf403399beddaadeafd76ff5059232b70e45b4e3baff357b5",
+    "axisState": "Disabled",
+    "acceptedMotionCommands": 0
+  },
+  "authenticatedWriteAndReadback": {
+    "Md5": "cfec57221a6be6a64c649b063059d3b8",
+    "Authenticated": true,
+    "FalseSingleWriteAccepted": true,
+    "TrueWrites": 0,
+    "ControlValues": [
+      {
+        "Path": "INSTANCE0.RUNONCE",
+        "Value": false
+      },
+      {
+        "Path": "INSTANCE0.PARAMETERSCONFIRMED",
+        "Value": false
+      },
+      {
+        "Path": "INSTANCE0.ACTIVE",
+        "Value": false
+      }
+    ],
+    "Tick": 2108
+  },
+  "nativeHandlerAssertionsPassed": 252,
+  "physicalMotionTested": false,
+  "forcedVariables": false,
+  "protocol": "FC46v1 soft write, no FC42 fallback"
+}

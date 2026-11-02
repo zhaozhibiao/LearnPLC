@@ -1,0 +1,23 @@
+{
+  "source": {
+    "title": "Inovance IS620N Series User Guide A04, data code 19010456",
+    "url": "https://www.remontservo.ru/toljatti/pages/publications/article-475/img-article/is620n_series.pdf",
+    "provenance": "manufacturer-authored guide at third-party mirror; inspected by parent agent",
+    "pages": {
+      "U2Encoder20Bit": 8,
+      "encoder1048576PulsesPerRevolution": [69, 90],
+      "customRxPdo1600ReadWriteCount0To10": 98,
+      "customTxPdo1A00ReadWriteCount0To10": 100,
+      "velocity606CReferenceUnitsPerSecond": 126
+    }
+  },
+  "customPdoReadWrite": true,
+  "maximumCustomPdoEntries": 10,
+  "velocityActualUnit": "encoder-counts-per-second",
+  "motorModel": "ISMH1-10B30CB-U230Z",
+  "motorModelEvidence": "User supplied actual motor nameplate; U2 denotes 20-bit encoder. Online 0x6091 reads 1/1.",
+  "encoderCountsPerMotorRevolution": 1048576,
+  "dcAssignActivateCandidate": 768,
+  "dcSync1CycleNanoseconds": 0,
+  "dcEvidence": "Standard ESC Sync0 activation candidate 0x0300; online 0x1C32/0x1C33 report type 2 and supported bit 2; minimum 125000 ns. Manufacturer activation mask not documented; acceptance must be checked during disabled startup."
+}

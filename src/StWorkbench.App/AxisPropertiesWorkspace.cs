@@ -56,7 +56,7 @@ public sealed partial class MainWindow
         Number(axisHomeForm, "HomeLatchVelocity", "回零慢速 / 工程单位每秒", "0.2");
         axisMechanicalForm.Children.Add(axisHomeForm);
         axisMechanicalForm.Children.Add(axisConversionPreview);
-        axisMechanicalForm.Children.Add(Label("机械与回零属性尚未应用到设备。当前运动核心缺少参数应用/确认接口；带这些新属性的候选可编译，但不能激活执行。"));
+        axisMechanicalForm.Children.Add(Label("机械与回零参数需通过通用 EtherCAT 运行组态应用，并核对设备实际加载指纹后才能激活；未启用通用组态时仅作离线配置。"));
         foreach (var combo in new[] { axisKind, axisFeedbackUnit, axisRotaryMode, axisHomeMode, axisHomeDirection })
             combo.SelectionChanged += (_, _) =>
             {
@@ -139,4 +139,52 @@ public sealed partial class MainWindow
         catch (InvalidDataException error) { axisConversionPreview.Text = "待修正：" + error.Message; }
         catch (ArgumentException error) { axisConversionPreview.Text = "待修正：" + error.Message; }
     }
+    private readonly Dictionary<string, TextBox> motionMigrationNumbers = new();
+    private readonly Dictionary<string, CheckBox> motionMigrationFlags = new();
+    private void AddMotionMigrationProperties(StackPanel panel)
+    {
+        panel.Children.Add(Label("平滑定位：上方加加速度上限（工程单位/s³）留空沿用旧规划。以下空白/未定保留旧工程行为。"));
+        foreach (var (key, title) in new[] {
+            ("DriveDemandProtection", "启用驱动需求 / 60F4 辅助监控（需明确 PDO 与比例）"),
+            ("DriveErrorOnly", "辅助保护只比较驱动 60F4，原始位置差保留诊断"),
+            ("DemandDeliveryEnforced", "交付历史偏差触发保护（未定沿用旧策略）") })
+        {
+            var box = new CheckBox { Content = title, IsThreeState = true, IsChecked = null };
+            motionMigrationFlags[key] = box; Register(box, "Runtime" + key); panel.Children.Add(box);
+        }
+        foreach (var (key, title) in new[] {
+            ("DemandDeliveryTolerance", "交付诊断容差 / 工程单位"),
+            ("FollowingErrorRawPerUnit", "60F4 原始计数 / 工程单位"),
+            ("PositionDemandRawPerUnit", "6062 原始计数 / 工程单位"),
+            ("VelocityFeedbackRawPerUnitPerSecond", "606C 原始值 / (工程单位/s)"),
+            ("VelocityOffsetRawPerUnitPerSecond", "60B1/60FF 原始值 / (工程单位/s)"),
+            ("VelocityFeedforwardGain", "速度前馈增益 / 无量纲"),
+            ("DriveFollowingErrorWindowRaw", "驱动6065跟随窗口 / 原始计数（空白不写，IS620N）") })
+        {
+            var box = new TextBox { Width = 150, PlaceholderText = "沿用旧配置", Tag = title };
+            motionMigrationNumbers[key] = box; Register(box, "Runtime" + key);
+            panel.Children.Add(new WrapPanel { Children = { Label(title), box } });
+        }
+        panel.Children.Add(Label("6065 仅生成易失启动写入，不写 EEPROM；应用后须读回确认。IS620N 不假定支持6066内部延时。"));
+    }
+    private EtherCatAxisRuntimeSettings ApplyMotionMigrationProperties(EtherCatAxisRuntimeSettings runtime)
+    {
+        double? N(string key) => string.IsNullOrWhiteSpace(motionMigrationNumbers[key].Text) ? null : ReadFinite(motionMigrationNumbers[key], key);
+        return runtime with {
+            DriveDemandProtection = motionMigrationFlags["DriveDemandProtection"].IsChecked,
+            DriveErrorOnly = motionMigrationFlags["DriveErrorOnly"].IsChecked,
+            DemandDeliveryEnforced = motionMigrationFlags["DemandDeliveryEnforced"].IsChecked,
+            DemandDeliveryTolerance = N("DemandDeliveryTolerance"), FollowingErrorRawPerUnit = N("FollowingErrorRawPerUnit"), PositionDemandRawPerUnit = N("PositionDemandRawPerUnit"),
+            VelocityFeedbackRawPerUnitPerSecond = N("VelocityFeedbackRawPerUnitPerSecond"), VelocityOffsetRawPerUnitPerSecond = N("VelocityOffsetRawPerUnitPerSecond"), VelocityFeedforwardGain = N("VelocityFeedforwardGain"),
+            DriveFollowingErrorWindowRaw = string.IsNullOrWhiteSpace(motionMigrationNumbers["DriveFollowingErrorWindowRaw"].Text) ? null : ReadUInt(motionMigrationNumbers["DriveFollowingErrorWindowRaw"], "6065驱动窗口")
+        };
+    }
+    private void LoadMotionMigrationProperties(EtherCatAxisRuntimeSettings? runtime)
+    {
+        foreach (var (key, box) in motionMigrationNumbers)
+            box.Text = Convert.ToString(typeof(EtherCatAxisRuntimeSettings).GetProperty(key)!.GetValue(runtime ?? new()), CultureInfo.InvariantCulture) ?? "";
+        foreach (var (key, box) in motionMigrationFlags)
+            box.IsChecked = (bool?)typeof(EtherCatAxisRuntimeSettings).GetProperty(key)!.GetValue(runtime ?? new());
+    }
+
 }

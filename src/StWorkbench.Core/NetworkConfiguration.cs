@@ -4,7 +4,10 @@ using System.Text.RegularExpressions;
 namespace StWorkbench.Core;
 
 public sealed record NetworkConfiguration(string ManagementHost, string SshUser, string RuntimeEndpoint, string EtherCatInterface);
-public sealed record EtherCatStation(Guid Id, string Name, Guid DeviceId, ushort AliasAddress, IReadOnlyList<PdoEntry> EnabledEntries);
+public sealed record EtherCatStation(Guid Id, string Name, Guid DeviceId, ushort AliasAddress, IReadOnlyList<PdoEntry> EnabledEntries)
+{
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public EtherCatStationRuntimeSettings? Runtime { get; init; }
+}
 public sealed record HardwareConfigurationDocument(HardwareConfiguration Hardware)
 {
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public CommunicationConfiguration? Communication { get; init; }
@@ -89,5 +92,3 @@ public static class NetworkTopologyValidator
         return compatible && width == entry.BitLength;
     }
 }
-
-

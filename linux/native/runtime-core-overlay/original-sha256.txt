@@ -1,0 +1,5 @@
+81eea451374ae9cbc50279f712a15d2d2d7fb14cf03ef76e055c00de43222573  core/src/drivers/plugin_driver.c
+df5477ee8bc250bd317de8c1b98a8f61ec5af35f094955fff5a07ec5d5febf92  core/src/drivers/plugin_driver.h
+f65ba4f316b724d837069cef675518325f49a0f71ffafc58a512e252b8c67465  core/src/plc_app/plc_main.c
+00d865b93d4a56a214bbf3c62fc7aaa54c7b5136dc5ffe11f62b115c5d6df68f  core/src/plc_app/image_tables.cpp
+829311bdf99339de6612f681a73add3698384ded8a81ae991b6e42279d4e5e47  core/src/CMakeLists.txt

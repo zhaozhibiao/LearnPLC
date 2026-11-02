@@ -8,10 +8,13 @@ public static class BuiltinLibraryCatalog
     public static IReadOnlyList<StSymbol> PublicSymbols(string repository, IReadOnlyList<SourceDocument> sources, CommunicationConfiguration? communication)
     {
         var documents = sources.ToList();
-        foreach (var path in new[] { "tools/control-library/control.st", "tools/communication-bridge/communication.st" })
+        foreach (var path in new[] { "tools/control-library/control.st", "tools/communication-bridge/communication.st", "tools/axis-bridge-v2/axis_control.st" })
             documents.Add(new(Guid.Empty, path, File.ReadAllText(Path.Combine(repository, path))));
         if (communication is not null) documents.Add(new(Guid.Empty, "communication-constants.st", CommunicationBinding.Constants(communication)));
-        return new StLanguageService().Index(documents).Where(s => !s.Name.StartsWith("CB_", StringComparison.OrdinalIgnoreCase) && s.Owner?.StartsWith("CB_", StringComparison.OrdinalIgnoreCase) != true).ToArray();
+        return new StLanguageService().Index(documents)
+            .Where(s => !s.Name.StartsWith("CB_", StringComparison.OrdinalIgnoreCase) && s.Owner?.StartsWith("CB_", StringComparison.OrdinalIgnoreCase) != true && !s.Name.StartsWith("AB_", StringComparison.OrdinalIgnoreCase) && s.Owner?.StartsWith("AB_", StringComparison.OrdinalIgnoreCase) != true)
+            .Where(s => s.File != "tools/axis-bridge-v2/axis_control.st" || s.Kind is "TYPE" or "FUNCTION_BLOCK" or "VAR_INPUT" or "VAR_OUTPUT" or "VAR_IN_OUT")
+            .ToArray();
     }
     public static IEnumerable<StInstruction> ControlInstructions(string repository, double cycleSeconds)
     {

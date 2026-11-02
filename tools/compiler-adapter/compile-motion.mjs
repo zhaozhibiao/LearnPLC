@@ -2,6 +2,7 @@
 // Copyright (c) 2026 ST Workbench contributors
 // Separate GPL command-line tool; no compiler code is linked into the desktop application.
 import { readFile, writeFile } from 'node:fs/promises';
+import { createTaskConfiguration } from './task-configuration.mjs';
 import { dirname, join, basename } from 'node:path';
 import { compile, parse, getVersion, discoverStlibs } from 'strucpp/node';
 
@@ -30,13 +31,8 @@ try {
     if (mapped && !parsed.ast.programs.some(program => program.name.toUpperCase() === mapped.toUpperCase()))
       throw new Error(`Program mapping '${mapped}' does not match source ${basename(sources[index].fileName)}`);
   }
-  const task = request.Tasks.filter(task => task.Enabled);
-  if (task.length !== 1) throw new Error('Exactly one enabled task is supported');
-  const programName = request.ProgramNames[task[0].ProgramId];
-  if (!programName || !/^[A-Za-z_][A-Za-z0-9_]*$/.test(programName)) throw new Error('Task program mapping missing or invalid');
-  if (!Number.isSafeInteger(task[0].IntervalMilliseconds) || task[0].IntervalMilliseconds <= 0) throw new Error('Invalid task interval');
-  const taskName = 'TASK_' + task[0].Name.replace(/[^A-Za-z0-9_]/g, '_').toUpperCase();
-  const config = `CONFIGURATION Config0\nRESOURCE Res0 ON PLC\nTASK ${taskName}(INTERVAL := T#${task[0].IntervalMilliseconds}ms, PRIORITY := 0);\nPROGRAM Instance0 WITH ${taskName} : ${programName};\nEND_RESOURCE\nEND_CONFIGURATION\n`;
+  const { tasks, config, metadataCpp } = createTaskConfiguration(request, { singleTask: true });
+  const programName = tasks[0].programName;
   const result = compile(sources[0].source, {
     fileName: sources[0].fileName, headerFileName: 'generated.hpp', md5: request.ProgramMd5,
     additionalSources: [...sources.slice(1), { fileName: '__workbench_motion.st', source: await readFile(request.MotionLibraryPath, 'utf8') }, { fileName: '__workbench_configuration.st', source: config }],
@@ -51,7 +47,7 @@ try {
   if (result.cppCode.split(entry).length !== 2) throw new Error("Motion scan hook requires one authoritative program run entry");
   const guard = `\n    struct MotionScanGuard { int exceptions = std::uncaught_exceptions(); ~MotionScanGuard() { workbench_motion_after_scan(std::uncaught_exceptions() == exceptions); } } motionScanGuard;\n`;
   const hooked = "#include <exception>\n#include \"motion_bridge.hpp\"\n" + result.cppCode.replace(entry, entry + guard);
-  await writeFile(args[outputIndex + 1], hooked);
+  await writeFile(args[outputIndex + 1], hooked + metadataCpp);
   await writeFile(join(directory, 'generated.hpp'), result.headerCode);
   await writeFile(join(directory, 'generated_debug.cpp'), result.debugTableCpp);
   await writeFile(join(directory, 'debug-map.json'), JSON.stringify(result.debugMap, null, 2));

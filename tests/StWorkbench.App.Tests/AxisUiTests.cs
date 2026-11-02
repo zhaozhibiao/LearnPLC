@@ -22,7 +22,10 @@ public static class AxisUiTests
             try { window.InsertInstruction("MC_MoveAbsolute", unchanged.IndexOf("END_PROGRAM", StringComparison.Ordinal)); throw new Exception("FAIL: stale legacy axis template inserted"); }
             catch (InvalidOperationException error) { if (!error.Message.Contains("工程轴")) throw; }
             if (window.FindControl<TextEditor>("SourceEditor")!.Text != unchanged) throw new Exception("FAIL: missing-axis insertion changed source");
-            project.Hardware.Axes.Add(new("X", "Axis1", "mm", -100, 100));
+            project.Hardware.Axes.Add(new("X", "Axis1", "mm", -100, 100)
+            {
+                MaximumAcceleration = 10, MaximumDeceleration = 10, MaximumJerk = 100
+            });
             Method("RefreshHardware").Invoke(window, null);
             var tree = (TreeView)Field("tree").GetValue(window)!;
             var hardware = ((IEnumerable<TreeViewItem>)tree.ItemsSource!).Single(g => Equals(g.Header, "硬件"));

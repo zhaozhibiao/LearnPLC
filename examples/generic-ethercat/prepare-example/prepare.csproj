@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../../src/StWorkbench.Core/StWorkbench.Core.csproj" /><ProjectReference Include="../../../src/StWorkbench.Toolchain/StWorkbench.Toolchain.csproj" /></ItemGroup>
+</Project>

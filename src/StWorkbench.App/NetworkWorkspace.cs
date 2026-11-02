@@ -40,7 +40,7 @@ public sealed partial class MainWindow
         AddConfigurationButton(stationButtons,"打开从站硬件属性","OpenStationHardware",()=>NavigateTo(2)); panel.Children.Add(stationButtons);
         networkStations.SelectionChanged += (_,_)=> { if(!refreshingConfiguration)SelectConfiguredStation(networkStations.SelectedIndex); };
         panel.Children.Add(Label("实际管理连接")); panel.Children.Add(networkActualConnection);
-        var connect = ActionButton("SSH 连接 Runtime（免密码）",ConnectConfiguredRuntimeAsync); Register(connect,"NetworkConnectRuntime");panel.Children.Add(connect);
+        var connect = ActionButton("连接工程服务（免 SSH）",ConnectConfiguredRuntimeAsync); Register(connect,"NetworkConnectRuntime");panel.Children.Add(connect);
         panel.Children.Add(Label("应用按钮只保存工程配置并更新本次连接目标；不会改写设备 IP、路由或网卡，不会启动运动服务或下载总线参数。密码和密钥不保存在工程内。"));
         var scroll=ScrollPanel(panel);Register(scroll,"NetworkConfigurationScroll");return scroll;
     }
@@ -77,7 +77,7 @@ public sealed partial class MainWindow
         var draft=new NetworkConfiguration(networkManagementHost.Text?.Trim()??"",networkSshUser.Text?.Trim()??"",networkRuntimeEndpoint.Text?.Trim()??"",etherCatInterface.Text?.Trim()??"");
         if(draft!=expected)throw new InvalidOperationException("网络组态有尚未应用的修改，请先点击“应用网络组态到工程”。");
         UseProjectNetworkTarget();
-        try { await ConnectPrivateRuntimeAsync(); }
+        try { await ConnectEngineeringAsync(); }
         finally { RefreshNetworkTopology(); }
     }
     private void RestoreNetworkConfiguration()

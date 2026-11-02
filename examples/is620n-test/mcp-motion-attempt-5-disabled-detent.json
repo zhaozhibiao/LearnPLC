@@ -1,0 +1,4943 @@
+[
+  {
+    "utc": "2026-10-19T03:11:06.252708+00:00",
+    "tool": "project_open",
+    "arguments": {
+      "projectPath": "examples/is620n-test/IS620N.stproj"
+    },
+    "isError": false,
+    "response": {
+      "SessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "ProjectPath": "examples/is620n-test/IS620N.stproj",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "HasUnsavedChanges": false,
+      "Project": {
+        "Network": {
+          "ManagementHost": "192.168.1.31",
+          "SshUser": "a",
+          "RuntimeEndpoint": "",
+          "EtherCatInterface": "enp3s0"
+        },
+        "SchemaVersion": 1,
+        "Id": "f8d1f254-c49b-41c9-8e78-daa4f5f4e078",
+        "Name": "IS620N \u7A7A\u8F7D\u5355\u6B21\u5F80\u8FD4\u6D4B\u8BD5\uFF08\u5F85\u5B9E\u673A\u9002\u914D\uFF09",
+        "Items": [
+          {
+            "Id": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "Name": "Main",
+            "Kind": "Program",
+            "SourcePath": "sources/Main.st"
+          }
+        ],
+        "Tasks": [
+          {
+            "Name": "Cyclic",
+            "ProgramId": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "IntervalMilliseconds": 10,
+            "Enabled": true
+          }
+        ],
+        "Hardware": {
+          "Stations": [
+            {
+              "Id": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "Name": "IS620NDrive",
+              "DeviceId": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "AliasAddress": 0,
+              "EnabledEntries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24760,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeFunction",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24830,
+                  "SubIndex": 1,
+                  "BitLength": 32,
+                  "Name": "DigitalOutputs",
+                  "Type": "UDINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24695,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ActualTorque",
+                  "Type": "INT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24820,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "FollowingError",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24761,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeStatus",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24762,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe1PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24764,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe2PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24829,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "DigitalInputs",
+                  "Type": "UDINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Devices": [
+            {
+              "Id": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "Name": "IS620N_ECAT_v2.6.2 (online PDO)",
+              "VendorId": 1048576,
+              "ProductCode": 786696,
+              "Revision": 65537,
+              "Entries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24760,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeFunction",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24830,
+                  "SubIndex": 1,
+                  "BitLength": 32,
+                  "Name": "DigitalOutputs",
+                  "Type": "UDINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24695,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ActualTorque",
+                  "Type": "INT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24820,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "FollowingError",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24761,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeStatus",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24762,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe1PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24764,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe2PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24829,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "DigitalInputs",
+                  "Type": "UDINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Io": [],
+          "Axes": [
+            {
+              "Name": "IS620N",
+              "ControllerAxis": "Axis1",
+              "Unit": "rev",
+              "MinPosition": -1,
+              "MaxPosition": 1,
+              "StationId": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "MaximumVelocity": 0.01
+            }
+          ]
+        },
+        "Paths": []
+      },
+      "Sources": [
+        {
+          "ItemId": "91104fdc-745d-49de-88ac-0e2d24052797",
+          "RelativePath": "sources/Main.st",
+          "Text": "PROGRAM Main\nVAR\n    (* One rising edge requests one unloaded-motor round trip.\n       These stay FALSE until the actual controller uses verified rev units.\n       Current-position homing needs the commissioned method-35 controller profile.\n       No alarm reset or switch-search homing is performed. *)\n    RunOnce : BOOL := FALSE;\n    ParametersConfirmed : BOOL := FALSE;\n    EstablishTemporaryZero : BOOL := TRUE;\n    CancelTest : BOOL := FALSE;\n    Acknowledge : BOOL := FALSE;\n    DistanceRev : LREAL := 0.01;\n    VelocityRevPerSecond : LREAL := 0.01;\n    PositionToleranceRev : LREAL := 0.0001;\n    State : UINT := 0;\n    Active : BOOL;\n    Passed : BOOL;\n    Failed : BOOL;\n    OutcomeUnknown : BOOL;\n    DiagnosticCode : UDINT;\n    ReadyForTest : BOOL;\n    NeedsReference : BOOL;\n    ActualPositionRev : LREAL;\n    ActualVelocityRevPerSecond : LREAL;\n    StartPositionRev : LREAL;\n    OutwardPositionRev : LREAL;\n    CompletedRoundTrips : UINT;\n    PreviousRun : BOOL;\n    StartEdge : BOOL;\n    PowerDemand : BOOL;\n    Returned : BOOL;\n    ReadStatus : MC_ReadAxisStatus;\n    ReadPosition : MC_ReadActualPosition;\n    ReadVelocity : MC_ReadActualVelocity;\n    Power : MC_Power;\n    Home : MC_Home;\n    MoveOut : MC_MoveAbsolute;\n    MoveBack : MC_MoveAbsolute;\n    StopAxis : MC_Stop;\n    TotalTimer : TON;\n    DwellTimer : TON;\n    StopTimer : TON;\n    DisableTimer : TON;\nEND_VAR\n\nReadStatus(Axis := AXIS_IS620N, Enable := TRUE);\nReadPosition(Axis := AXIS_IS620N, Enable := TRUE);\nReadVelocity(Axis := AXIS_IS620N, Enable := TRUE);\nActualPositionRev := ReadPosition.Position;\nActualVelocityRevPerSecond := ReadVelocity.Velocity;\nNeedsReference := ReadStatus.Valid AND NOT ReadStatus.Homed;\nReadyForTest := ParametersConfirmed AND ReadStatus.Valid AND ReadPosition.Valid\n    AND ReadVelocity.Valid AND (ReadStatus.Homed OR EstablishTemporaryZero) AND NOT ReadStatus.ErrorStop\n    AND (ReadStatus.Disabled OR ReadStatus.Standstill)\n    AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) AND NOT CancelTest;\nStartEdge := RunOnce AND NOT PreviousRun;\nPreviousRun := RunOnce;\n\nIF Acknowledge AND NOT RunOnce AND NOT Active THEN\n    State := 0; Passed := FALSE; Failed := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\nEND_IF;\n\nIF StartEdge AND (State = 0) THEN\n    Passed := FALSE; Failed := FALSE; Returned := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\n    IF CancelTest THEN DiagnosticCode := 7110;\n    ELSIF NOT ParametersConfirmed THEN DiagnosticCode := 7101;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid THEN DiagnosticCode := 7103;\n    ELSIF NOT ReadStatus.Homed AND NOT EstablishTemporaryZero THEN DiagnosticCode := 7102;\n    ELSIF ReadStatus.ErrorStop THEN DiagnosticCode := 7104;\n    ELSIF NOT (ReadStatus.Disabled OR ReadStatus.Standstill)\n        OR NOT (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN DiagnosticCode := 7106;\n    ELSIF NOT (DistanceRev \u003E 0.0) OR NOT (DistanceRev \u003C= 0.01)\n        OR NOT (VelocityRevPerSecond \u003E 0.0) OR NOT (VelocityRevPerSecond \u003C= 0.01)\n        OR NOT (PositionToleranceRev \u003E 0.0) OR NOT (PositionToleranceRev \u003C= DistanceRev / 4.0)\n        OR NOT (ABS(ActualPositionRev) \u002B DistanceRev \u003C= 1.0) THEN DiagnosticCode := 7105;\n    ELSE\n        StartPositionRev := ActualPositionRev;\n        OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n        Active := TRUE; State := 10;\n    END_IF;\n    IF DiagnosticCode \u003C\u003E 0 THEN Failed := TRUE; State := 900; END_IF;\nEND_IF;\n\nTotalTimer(IN := Active, PT := T#10s);\nDwellTimer(IN := (State = 40) OR (State = 60), PT := T#250ms);\nStopTimer(IN := State = 80, PT := T#2s);\nDisableTimer(IN := State = 90, PT := T#2s);\n\nIF Active AND (State \u003C 80) THEN\n    IF CancelTest THEN DiagnosticCode := 7110; Failed := TRUE; State := 80;\n    ELSIF TotalTimer.Q THEN DiagnosticCode := 7111; Failed := TRUE; State := 80;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid\n        OR ReadStatus.ErrorStop THEN DiagnosticCode := 7112; Failed := TRUE; State := 80;\n    ELSIF (State \u003E= 30) AND (ABS(ActualPositionRev - StartPositionRev) \u003E DistanceRev * 1.5) THEN\n        DiagnosticCode := 7113; Failed := TRUE; State := 80;\n    END_IF;\nEND_IF;\n\n(* Only reads execute before a verified start. There is no cold-start disable command. *)\nIF Active THEN\n    PowerDemand := State \u003C 90;\n    StopAxis(Axis := AXIS_IS620N, Execute := State = 80);\n    Power(Axis := AXIS_IS620N, Enable := PowerDemand);\n    Home(Axis := AXIS_IS620N, Execute := State = 20);\n    MoveOut(Axis := AXIS_IS620N, Execute := State = 30,\n        Position := OutwardPositionRev, Velocity := VelocityRevPerSecond);\n    MoveBack(Axis := AXIS_IS620N, Execute := State = 50,\n        Position := StartPositionRev, Velocity := VelocityRevPerSecond);\n\n    IF (State \u003C 80) AND (Power.Error OR Home.Error OR MoveOut.Error OR MoveBack.Error\n        OR ((State = 20) AND Home.CommandAborted)\n        OR ((State = 30) AND MoveOut.CommandAborted)\n        OR ((State = 50) AND MoveBack.CommandAborted)) THEN\n        DiagnosticCode := 7114; Failed := TRUE; State := 80;\n    END_IF;\n\n    CASE State OF\n    10:\n        IF Power.Status AND NOT Power.Busy AND ReadStatus.Standstill THEN\n            IF EstablishTemporaryZero THEN State := 20; ELSE State := 30; END_IF;\n        END_IF;\n    20:\n        IF Home.Done AND ReadStatus.Valid AND ReadStatus.Homed AND ReadStatus.Standstill THEN\n            StartPositionRev := ActualPositionRev;\n            OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n            State := 30;\n        END_IF;\n    30:\n        IF MoveOut.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - OutwardPositionRev) \u003C= PositionToleranceRev) THEN State := 40; END_IF;\n    40:\n        IF DwellTimer.Q THEN State := 50; END_IF;\n    50:\n        IF MoveBack.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - StartPositionRev) \u003C= PositionToleranceRev) THEN\n            Returned := TRUE; State := 60;\n        END_IF;\n    60:\n        IF DwellTimer.Q THEN State := 80; END_IF;\n    80:\n        IF StopAxis.Done AND ReadVelocity.Valid AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN State := 90;\n        ELSIF StopAxis.Error OR StopTimer.Q THEN\n            DiagnosticCode := 7115; Failed := TRUE; OutcomeUnknown := TRUE; State := 90;\n        END_IF;\n    90:\n        IF ReadStatus.Valid AND ReadStatus.Disabled AND NOT Power.Busy THEN\n            Active := FALSE;\n            IF Returned AND NOT Failed AND NOT OutcomeUnknown THEN\n                Passed := TRUE; CompletedRoundTrips := CompletedRoundTrips \u002B 1; State := 100;\n            ELSE Failed := TRUE; State := 900;\n            END_IF;\n        ELSIF Power.Error OR DisableTimer.Q THEN\n            DiagnosticCode := 7116; Failed := TRUE; OutcomeUnknown := TRUE;\n            Active := FALSE; State := 999;\n        END_IF;\n    END_CASE;\nEND_IF;\nEND_PROGRAM\n"
+        }
+      ],
+      "Notice": "MCP edits a saved-project draft. Save then reload in the desktop; resolve unsaved desktop edits first."
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.6456911+00:00",
+    "tool": "motion_capabilities",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "24bc939872d34fb19d49fd665fd6af74",
+      "success": true,
+      "state": "Ready",
+      "capabilities": {
+        "SchemaVersion": 1,
+        "InterfaceVersion": "workbench-axis-v1",
+        "ManifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+        "Backend": "EcMotion",
+        "PID": 12701,
+        "ControllerReady": true,
+        "PhysicalBasicAxis": true,
+        "SimulatorBasicAxis": false,
+        "Continuous": false,
+        "MotionCycleApplied": false
+      },
+      "leaseHeld": false,
+      "maximumControlMilliseconds": 30000,
+      "minimumJogMilliseconds": 250,
+      "maximumJogMilliseconds": 30000,
+      "PhysicalTimedJog": false,
+      "SimulatorTimedJog": false
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.649992+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "9445b4ba56d843e2b239bc27f2997e7c",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38108,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.009871482849121094,
+            "actualVelocity": -0.0149993896484375,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.6579826+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "2a61b65157f3494a957057c19ee6cbfb",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38116,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.009871482849121094,
+            "actualVelocity": -0.0149993896484375,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.697621+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "30e1c21d45bf4ff1aa935de1c85e8f2c",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38156,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.009871482849121094,
+            "actualVelocity": -0.0149993896484375,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.7299129+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "39f8a199e77946a78d63ea12f66afe16",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38187,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.009871482849121094,
+            "actualVelocity": -0.0149993896484375,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.7608975+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "9f1dfc2e897744d98d0f0afe132481d3",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38218,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.009871482849121094,
+            "actualVelocity": -0.0149993896484375,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.7918296+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "0b6bcda4714a46ce84f92e65ab598ad5",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38249,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0098724365234375,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.8224692+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "ec078ae008c442339291798db296ff93",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38280,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0098724365234375,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.8532862+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "9761639fd2324835861a2a068ed248bd",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38310,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0098724365234375,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.8850307+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "b576f24dcc8f4a999c41e32c8cd8b5c7",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38342,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0098724365234375,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.9159795+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "5358fbbe9f854f58b57dac79447f0bd5",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38373,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0098724365234375,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.9551487+00:00",
+    "tool": "motion_acquire",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "sessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "durationMilliseconds": 1000
+    },
+    "isError": false,
+    "response": {
+      "requestId": "731e41f52ff442d0abb2a1a4186268d4",
+      "success": true,
+      "state": "Acquired",
+      "remainingMilliseconds": 30000
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:06.9842597+00:00",
+    "tool": "motion_prepare",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "sessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "axis": "IS620N",
+      "kind": "Enable",
+      "position": 0,
+      "velocity": 0
+    },
+    "isError": false,
+    "response": {
+      "PlanId": "b1b314500e5c4345a04a0e19abe32c0b",
+      "DeviceId": "is620n-test",
+      "SessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "ManifestHash": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "Axis": "IS620N",
+      "Unit": "rev",
+      "Kind": "Enable",
+      "Position": 0,
+      "Velocity": 0,
+      "DurationMilliseconds": 1000,
+      "ExpiresAt": "2026-10-19T03:11:26.9792189\u002B00:00"
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.0092627+00:00",
+    "tool": "motion_execute",
+    "arguments": {
+      "planId": "b1b314500e5c4345a04a0e19abe32c0b"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "ccd3e56cb8954310af5249e8680b2eb4",
+      "success": true,
+      "state": "Accepted",
+      "operation": {
+        "operationId": "b1b314500e5c4345a04a0e19abe32c0b",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Enable",
+        "state": "Accepted",
+        "motionId": 0,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 38465,
+        "submittedCycle": 38465
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.073376+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "b1b314500e5c4345a04a0e19abe32c0b"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "bf18d9d9a7cc4baca72a7d1f32cda65b",
+      "success": true,
+      "state": "Completed",
+      "operation": {
+        "operationId": "b1b314500e5c4345a04a0e19abe32c0b",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Enable",
+        "state": "Completed",
+        "motionId": 0,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 38493,
+        "submittedCycle": 38465,
+        "sample": {
+          "actualPosition": 0.009871482849121094,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": false,
+          "motionAborted": false,
+          "motionBusy": false,
+          "motionDone": false,
+          "motionId": 0,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.0776161+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "888eaafc89964015b5909f966d8ca764",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38535,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0098724365234375,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.1207893+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "0d3485fceb454c849adaf2ec584657f3",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38578,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0098724365234375,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.1518193+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "fe43a15a44d5485b9f4127160c60c341",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38609,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.009870529174804688,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.1826137+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "ec6b990039f0498f985a712b5f5ef85c",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38640,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.009871482849121094,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.2128268+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "a65a44b632c2454ebb2f711c331865e8",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38670,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.009873390197753906,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.2447261+00:00",
+    "tool": "motion_prepare",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "sessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "axis": "IS620N",
+      "kind": "Home",
+      "position": 0,
+      "velocity": 0
+    },
+    "isError": false,
+    "response": {
+      "PlanId": "f4157500ba9b48c1a7f7e215c4dd4e24",
+      "DeviceId": "is620n-test",
+      "SessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "ManifestHash": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "Axis": "IS620N",
+      "Unit": "rev",
+      "Kind": "Home",
+      "Position": 0,
+      "Velocity": 0,
+      "DurationMilliseconds": 1000,
+      "ExpiresAt": "2026-10-19T03:11:27.2441917\u002B00:00"
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.259049+00:00",
+    "tool": "motion_execute",
+    "arguments": {
+      "planId": "f4157500ba9b48c1a7f7e215c4dd4e24"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "ef53861ce6b045248c92c64ed1622bc2",
+      "success": true,
+      "state": "Accepted",
+      "operation": {
+        "operationId": "f4157500ba9b48c1a7f7e215c4dd4e24",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Home",
+        "state": "Accepted",
+        "motionId": 2,
+        "appliedCycle": 38717,
+        "backend": "EcMotion",
+        "sampleCycle": 38715,
+        "submittedCycle": 38715
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.323525+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "f4157500ba9b48c1a7f7e215c4dd4e24"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "b83b531494af483687e7f44576ef8f3a",
+      "success": true,
+      "state": "Completed",
+      "operation": {
+        "operationId": "f4157500ba9b48c1a7f7e215c4dd4e24",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Home",
+        "state": "Completed",
+        "motionId": 2,
+        "appliedCycle": 38717,
+        "backend": "EcMotion",
+        "sampleCycle": 38743,
+        "submittedCycle": 38715,
+        "sample": {
+          "actualPosition": 0.0,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": false,
+          "motionDone": false,
+          "motionId": 0,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.3276778+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "b13ae1686f9e402bb664476f0e1b6f52",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38785,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": -1.9073486328125e-06,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.3715414+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "8a848566f05d418fa23e82a230278e90",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38829,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 9.5367431640625e-07,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.4035206+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "1eae959ee4e441ce81cfb3e945f34b03",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38861,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.4346868+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "0e5566e75d0d4918bfad2e80ad19de2e",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38892,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 9.5367431640625e-07,
+            "actualVelocity": 0.0149993896484375,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.4651297+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "cbb3ad2e4f7043a4a6f95f17060248a0",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38922,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": -1.9073486328125e-06,
+            "actualVelocity": -0.0149993896484375,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.4972531+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "fecdfcb039fc437a8ed8232b614c6c66",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38955,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 9.5367431640625e-07,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.5289799+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "94b582ca38454dadba1c8355fcccb9cb",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 38986,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 9.5367431640625e-07,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.5615654+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "7799dd9c91b34fc2b85cbfcaaac59313",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 39019,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 9.5367431640625e-07,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.5928508+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "9dc05291fa66464ca816902d28117425",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 39050,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 9.5367431640625e-07,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.6251159+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "ba80f4ec1d054cde9ec256ce39ed57e8",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 39082,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 9.5367431640625e-07,
+            "actualVelocity": 0.0149993896484375,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.6570894+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "40ec43401ad94c1cbc9120819fa33bdb",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 39114,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.6892059+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "019ec0bc13054bf28981eb16f5d5fdb8",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 39146,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 9.5367431640625e-07,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.7207058+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "af3ebb5c736b4c96b450cdaeedb87515",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 39178,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.7519177+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "a687ea7f8b9849fda7fece442b651b97",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 39209,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 9.5367431640625e-07,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.7828421+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "a1c0f201950a4ff5ba5dc0439410aa55",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 39240,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.0,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.7961586+00:00",
+    "tool": "motion_prepare",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "sessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "axis": "IS620N",
+      "kind": "MoveAbsolute",
+      "position": 0.01,
+      "velocity": 0.01
+    },
+    "isError": false,
+    "response": {
+      "PlanId": "66880315e53a4d5985f8fe9696868379",
+      "DeviceId": "is620n-test",
+      "SessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "ManifestHash": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "Axis": "IS620N",
+      "Unit": "rev",
+      "Kind": "MoveAbsolute",
+      "Position": 0.01,
+      "Velocity": 0.01,
+      "DurationMilliseconds": 1000,
+      "ExpiresAt": "2026-10-19T03:11:27.7956918\u002B00:00"
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.8131135+00:00",
+    "tool": "motion_execute",
+    "arguments": {
+      "planId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "7190fdf8fc0f43dd969b496450927a99",
+      "success": true,
+      "state": "Accepted",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Accepted",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39270,
+        "submittedCycle": 39270
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.8760742+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "5e4035a4d61c4f1091606d53394052fc",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39323,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.0,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:07.9397295+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "2878f5f7d06c4cb9beb0a7e3d229ce9c",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39386,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 4.76837158203125e-06,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.0035742+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "8eb5abb013d14f8096cdbe6b32f5c414",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39450,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 2.384185791015625e-05,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.0670551+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "4c498576920a4f1d844b3ff84bc24e0c",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39514,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 8.678436279296875e-05,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.1277929+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "d93cf6d6d56c46a98be0a3c6525027f0",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39577,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.00048160552978515625,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.1917701+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "846eaafbd949454d9d138cdee2c815e8",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39638,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.0018520355224609375,
+          "actualVelocity": 0.029999732971191406,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.2548957+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "f9e49ac10cb44338a742943f43d6af26",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39702,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.003101348876953125,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.3188296+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "17ffe7811f8140e78a53de3e1cae5bfc",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39765,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.0036792755126953125,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.3822473+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "02baa60c86c94781914f816f29cc0b18",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39830,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.004260063171386719,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.4451153+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "39e6025dc46a4470a66e62018a10a8b3",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39892,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.004879951477050781,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.5090558+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "fc4492fe479040f5a4e1c62ef62c5f67",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 39955,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.005480766296386719,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.5718399+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "764f325bc62c40c6a75eefbe9166be76",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40019,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.006171226501464844,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.6351686+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "45571398576d423bb4469dac08103b03",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40082,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.00681304931640625,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.6991079+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "b5fea5b307764eb58d656b94bd44aec4",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40146,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.007411003112792969,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.7614441+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "4c29c6af1ae147368b54279b3599be88",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40209,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.008030891418457031,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.824675+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "7fff29e811f84120844e951f2bf6238f",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40272,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.008709907531738281,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.8888317+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "713549b7b23f4d0a8e89b8d3dd968136",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40335,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.009290695190429688,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:08.9519894+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "6e9131d52ec74f0c83aa976b4fc3810a",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40399,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.009716987609863281,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.0155065+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "a97d2f8d85fc497198cdf60efa09a693",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40462,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.009972572326660156,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.0777227+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "06e4bb39136f4eff84254c5de1f16c02",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40526,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010095596313476562,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.1416187+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "221c21d6cf4b473783f89625e4ef3588",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40588,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010168075561523438,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.2049775+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "db68f194db764410acedf31851086ecb",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40652,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010181427001953125,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.2673579+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "a48b7d6c338d4932b9f7115a1bdccf85",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40715,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.01018524169921875,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.3310066+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "dd886ee7c82142839c2061dec228c1fb",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40777,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010175704956054688,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.39398+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "43d7a16cc57b425a8c40d611cdff9baf",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40842,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010175704956054688,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.456136+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "89dd9068675a4ad0a99a231dc0966425",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40904,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010169029235839844,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.51902+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "a2174159bce348c69f23562ceba8956b",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 40966,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010164260864257812,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.582658+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "67bc84485312424fb0cc5285e2d10be9",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 41029,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010157585144042969,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.6465403+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "12c8511c69ba42509086e71c063c17b8",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 41093,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010150909423828125,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.7091868+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "f91181d7bf1e4ed88c4448cbe7a67e13",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 41157,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010144233703613281,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.7737803+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "b1fca8b105324358a5d612a412528e31",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 41220,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010135650634765625,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.8365444+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "67ee8778269d4c38ba2612cc84d62365",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 41283,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.01012420654296875,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.8990574+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "936a68ccb6214873996b82589bdad412",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 41347,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.0101165771484375,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:09.962787+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "1b88ddb270fb4520a38dba64cd623f09",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 41409,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010099411010742188,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.0269958+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "a6dcee037bda4a0495ce343b9efc108c",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 41473,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010077476501464844,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.0904287+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "66880315e53a4d5985f8fe9696868379"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "b2d16905f50047559dd7bc76066d4254",
+      "success": true,
+      "state": "Completed",
+      "operation": {
+        "operationId": "66880315e53a4d5985f8fe9696868379",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Completed",
+        "motionId": 3,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 41511,
+        "submittedCycle": 39270,
+        "sample": {
+          "actualPosition": 0.010066986083984375,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": false,
+          "motionDone": true,
+          "motionId": 3,
+          "motionTarget": 0.01,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.0944767+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "275795d821d54abba94201f7465279f1",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 41552,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.010061264038085938,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": true,
+            "motionId": 3,
+            "motionTarget": 0.01,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.3610204+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "cbdfd5aae8c64c4fb2f8b4bc986b0943",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 41818,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.010014533996582031,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": true,
+            "motionId": 3,
+            "motionTarget": 0.01,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.3918569+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "63578d91d29f4a8496be9cf0fbc323b2",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 41849,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.010011672973632812,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": true,
+            "motionId": 3,
+            "motionTarget": 0.01,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.4237646+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "095061d5cc3943dc824adeeb4989b9a2",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 41881,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.010013580322265625,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": true,
+            "motionId": 3,
+            "motionTarget": 0.01,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.4553536+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "a4333bb60bee426393eedb6ebb4d6f14",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 41913,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.010007858276367188,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": true,
+            "motionId": 3,
+            "motionTarget": 0.01,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.4863938+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "8acc029527564a36b21281ce60b4a6cb",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 41944,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 0.010008811950683594,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": true,
+            "motionId": 3,
+            "motionTarget": 0.01,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.5087266+00:00",
+    "tool": "motion_prepare",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "sessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "axis": "IS620N",
+      "kind": "MoveAbsolute",
+      "position": 0,
+      "velocity": 0.01
+    },
+    "isError": false,
+    "response": {
+      "PlanId": "accb5a13ad10417ba3e688e9dee3a3e8",
+      "DeviceId": "is620n-test",
+      "SessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "ManifestHash": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "Axis": "IS620N",
+      "Unit": "rev",
+      "Kind": "MoveAbsolute",
+      "Position": 0,
+      "Velocity": 0.01,
+      "DurationMilliseconds": 1000,
+      "ExpiresAt": "2026-10-19T03:11:30.5083768\u002B00:00"
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.5338264+00:00",
+    "tool": "motion_execute",
+    "arguments": {
+      "planId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "2c119c75fff84d44b16ddd2007d8b1c5",
+      "success": true,
+      "state": "Accepted",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Accepted",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 41990,
+        "submittedCycle": 41990
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.5970861+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "3148d63a97ce4bb199792830cf2bf8ab",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42044,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.010000228881835938,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.6580487+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "838b26023e034307a7fc8539ecd1a9e2",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42108,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.009985923767089844,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.7201435+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "1b802794214041faba565f83deb973c4",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42168,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.009930610656738281,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.7837295+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "bed58229aabc424c9f5a51e5de76dad0",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42231,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.009735107421875,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.8461053+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "9295259299f74befa44db0870e7876dd",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42294,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.009321212768554688,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.9096247+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "25dccc6961db4ed3b3bf216a20c10070",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42356,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.008878707885742188,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:10.9723253+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "c6bf8419ff5041a792977edd85a73523",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42420,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.008272171020507812,
+          "actualVelocity": -0.029999732971191406,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.0354024+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "2691486074b64b049582336b3bf05310",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42482,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.007266998291015625,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.098197+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "1cf60cb570eb4c51a30c9ad79c5d8df1",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42546,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.005726814270019531,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.160724+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "0443a106d13c443a9ae0a5b419b132e8",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42609,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.005190849304199219,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.2245548+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "7703df5c0e66455bae474d142b9c7ebc",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42671,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.00481414794921875,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.2880981+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "0f04ece13c014d0d9ed3c5e81210ef72",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42735,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.004326820373535156,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.3515805+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "3414212bddfd402a8633aae5063a9c7f",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42798,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.00363922119140625,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.4140322+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "1c8ecaf96869415fb1f7eb5448ccb9d4",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42862,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.0028257369995117188,
+          "actualVelocity": -0.029999732971191406,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.4762175+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "354856d2595c4d1d9950e08c4e09b3db",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42925,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.0019245147705078125,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.5396177+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "738b5d04c6fa4bebb8fc56602fc4bbee",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 42986,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.0013799667358398438,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.6039051+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "3c1429ea1faf495a8f2a802f6b70b458",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43050,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.0008668899536132812,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.666999+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "53ece10dd9984bd6bdf3708a150e1671",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43114,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 0.00034046173095703125,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "DiscreteMotion"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.7304194+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "9c863f79fcf14306beac23d2aa3c168c",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43177,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": 5.626678466796875e-05,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.7940152+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "87e578f5150944478d954c652c931749",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43241,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -6.580352783203125e-05,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.8575448+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "508830b8a5654533916bee904eb36d04",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43305,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.000133514404296875,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.9215131+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "945ae5c4c3154904b9f1796d5b719bb2",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43368,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.000156402587890625,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:11.9857754+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "c54324ff6ae641fc8dd60e81b7fe095a",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43432,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.00017261505126953125,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.0486103+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "7fde010df8cb4f27b6337adb75240c17",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43496,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.00016307830810546875,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.1118659+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "d85ffd00e9824fd6a62e5f4435b272dd",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43559,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.000156402587890625,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.175671+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "b244dd9f0a70436894feaedf7d1e59a3",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43623,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.00015735626220703125,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.2384878+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "789aac3ebe2a428bbc3c880a1183b745",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43686,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.000148773193359375,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.3020724+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "a3068bc6ca2a4d85a1ebc68c46f230e4",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43749,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.00014400482177734375,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.3655662+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "7cb51247737a4993b2982be2d5920b47",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43812,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.00013446807861328125,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.4287079+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "8a3cd21ddee94513a0254552101d7427",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43876,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.00013256072998046875,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.4912547+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "7c5c878008e644e29683fe5e93d1d5f3",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 43939,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.00012493133544921875,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.5547553+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "f12a853bb33f442096f53e44b8e03ba9",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 44002,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.000118255615234375,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.6178873+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "b6b9fa2437df438d8ee159f12e454594",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 44065,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -0.00010395050048828125,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.6799757+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "00ea0be60bc940da88314cdc33dadb83",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 44128,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -8.487701416015625e-05,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.742456+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "ff9a62a9206c4b1ab4ad6c97274de5fc",
+      "success": true,
+      "state": "Running",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Running",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 44190,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -7.62939453125e-05,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": true,
+          "motionDone": false,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.8065713+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "accb5a13ad10417ba3e688e9dee3a3e8"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "77f21d8869654cd8a200e4c78c40d8c3",
+      "success": true,
+      "state": "Completed",
+      "operation": {
+        "operationId": "accb5a13ad10417ba3e688e9dee3a3e8",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "MoveAbsolute",
+        "state": "Completed",
+        "motionId": 4,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 44227,
+        "submittedCycle": 41990,
+        "sample": {
+          "actualPosition": -6.580352783203125e-05,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": false,
+          "motionDone": true,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:12.8106902+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "5b5678b144ab460da6eea28b611e0d1b",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 44268,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": -5.7220458984375e-05,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": true,
+            "motionId": 4,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:13.0770194+00:00",
+    "tool": "motion_stop",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "axis": "IS620N"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "7d16be9abe1b4d73857ee528049c16c6",
+      "success": true,
+      "state": "Accepted",
+      "operation": {
+        "operationId": "24b438ec39a248b8b6b0fe983e1e6505",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Stop",
+        "state": "Accepted",
+        "motionId": 0,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 44533,
+        "submittedCycle": 44533
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:13.136668+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "24b438ec39a248b8b6b0fe983e1e6505"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "e364be721f8d4cceab6267e88ad1fa85",
+      "success": true,
+      "state": "Completed",
+      "operation": {
+        "operationId": "24b438ec39a248b8b6b0fe983e1e6505",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Stop",
+        "state": "Completed",
+        "motionId": 0,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 44535,
+        "submittedCycle": 44533,
+        "sample": {
+          "actualPosition": -2.288818359375e-05,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": false,
+          "motionDone": true,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:13.1460979+00:00",
+    "tool": "motion_prepare",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "sessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "axis": "IS620N",
+      "kind": "Disable",
+      "position": 0,
+      "velocity": 0
+    },
+    "isError": false,
+    "response": {
+      "PlanId": "a285f2682c1949f087735ab4fd753a05",
+      "DeviceId": "is620n-test",
+      "SessionId": "35c6f10f014942c1b1e7c84e08c3d05a",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "ManifestHash": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "Axis": "IS620N",
+      "Unit": "rev",
+      "Kind": "Disable",
+      "Position": 0,
+      "Velocity": 0,
+      "DurationMilliseconds": 1000,
+      "ExpiresAt": "2026-10-19T03:11:33.1458666\u002B00:00"
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:13.1578981+00:00",
+    "tool": "motion_execute",
+    "arguments": {
+      "planId": "a285f2682c1949f087735ab4fd753a05"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "77cd4ddc53184c0fbd3065cdca553d8b",
+      "success": true,
+      "state": "Accepted",
+      "operation": {
+        "operationId": "a285f2682c1949f087735ab4fd753a05",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Disable",
+        "state": "Accepted",
+        "motionId": 0,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 44614,
+        "submittedCycle": 44614
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:13.2162117+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "a285f2682c1949f087735ab4fd753a05"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "5aa6bd6327c3419b80902fda45ec832f",
+      "success": true,
+      "state": "Failed",
+      "operation": {
+        "operationId": "a285f2682c1949f087735ab4fd753a05",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Disable",
+        "state": "Failed",
+        "motionId": 0,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 44642,
+        "submittedCycle": 44614,
+        "sample": {
+          "actualPosition": 0.0013685226440429688,
+          "actualVelocity": 0.0,
+          "fault": "Actual velocity exceeded the configured motion safety limit.",
+          "homed": false,
+          "motionAborted": false,
+          "motionBusy": false,
+          "motionDone": true,
+          "motionId": 4,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "ErrorStop"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:13.2226257+00:00",
+    "tool": "motion_stop",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "axis": "IS620N"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "f3e58f6b9e70430595fc287929ee305c",
+      "success": true,
+      "state": "Accepted",
+      "operation": {
+        "operationId": "bc8355cf52074e8a9350ba517e4e4182",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Stop",
+        "state": "Accepted",
+        "motionId": 0,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 44679,
+        "submittedCycle": 44679
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:13.2308401+00:00",
+    "tool": "motion_release",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "fc15b467efa94badbddcc2e4a90d0f70",
+      "success": true,
+      "state": "Released"
+    }
+  },
+  {
+    "utc": "2026-10-19T03:11:13.2724925+00:00",
+    "tool": "motion_close",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "success": true
+    }
+  }
+]

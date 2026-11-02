@@ -50,6 +50,8 @@ struct RealtimeCommand {
     double velocity{};
     double acceleration{};
     double deceleration{};
+    double jerk{};
+    std::uint8_t motion_profile_version{};
     double center_x{};
     double center_y{};
     double center_z{};
@@ -94,6 +96,12 @@ struct RealtimeAxisSnapshot {
     double max_excess_ms{};
     double feedforward_velocity{};
     double peak_actual_velocity{};
+    double demand_position_error{};
+    double drive_following_error{};
+    double demand_delivery_error{};
+    bool demand_feedback_valid{};
+    bool demand_delivery_mismatch{};
+    bool demand_delivery_fault{};
 
     RealtimeAxisState state{RealtimeAxisState::Disabled};
     double actual_position{};
@@ -208,6 +216,12 @@ private:
         std::atomic<double> max_excess_ms{};
         std::atomic<double> feedforward_velocity{};
         std::atomic<double> peak_actual_velocity{};
+        std::atomic<double> demand_position_error{};
+        std::atomic<double> drive_following_error{};
+        std::atomic<double> demand_delivery_error{};
+        std::atomic_bool demand_feedback_valid{};
+        std::atomic_bool demand_delivery_mismatch{};
+        std::atomic_bool demand_delivery_fault{};
 
         std::atomic<RealtimeAxisState> state{RealtimeAxisState::Disabled};
         std::atomic<double> position{};

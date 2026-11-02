@@ -1,0 +1,13 @@
+{
+  "ProjectPath": "D:\\OPenplc\\examples/standard-axis-turn/StandardAxis.stproj",
+  "OutputDirectory": "D:\\OPenplc\\.st-mcp-builds\\a59fe867037c4c819132f6f06d701473\\c2e25b7694a9429b9d68acd3c917931a\\output",
+  "PackagePath": "D:\\OPenplc\\.st-mcp-builds\\a59fe867037c4c819132f6f06d701473\\program.zip",
+  "BuildHash": "A3B9A4BA690198547DD3A2AB2B6E5E6F0A74A82F45288AAE5774B5CAB15E7BA6",
+  "AuthoredThroughMcp": true,
+  "SavedThroughMcp": true,
+  "CompiledThroughMcp": true,
+  "Downloaded": false,
+  "Activated": false,
+  "PhysicalMotionTested": false,
+  "Phase": "final"
+}

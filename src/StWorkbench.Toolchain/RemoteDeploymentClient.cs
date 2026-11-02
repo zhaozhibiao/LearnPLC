@@ -7,18 +7,22 @@ namespace StWorkbench.Toolchain;
 
 public sealed record SshTarget(string Host, string User, int Port = 22);
 public sealed record DeploymentRequest(string Action, string RequestId, string? BuildHash = null,
-    string? ExpectedActiveBuildHash = null, string? PackageBase64 = null, string? PackageSha256 = null, string? PackagePath = null);
-public sealed record DeploymentResponse(bool Success, string State, string RequestId, string Message, JsonElement? Active, JsonElement? Candidate, string Log = "", bool? MotionReady = null, string MotionMessage = "", bool? MotionCycleReady = null, string MotionCycleMessage = "", JsonElement? Realtime = null, bool? AxisReady = null, string AxisMessage = "", bool? CommunicationReady = null, string CommunicationMessage = "");
+    string? ExpectedActiveBuildHash = null, string? PackageBase64 = null, string? PackageSha256 = null, string? PackagePath = null,
+    [property: System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] string? ConfigurationIdentity = null)
+{
+    public override string ToString() => $"DeploymentRequest {{ Action = {Action}, RequestId = {RequestId}, BuildHash = {BuildHash} }}";
+}
+public sealed record DeploymentResponse(bool Success, string State, string RequestId, string Message, JsonElement? Active, JsonElement? Candidate, string Log = "", bool? MotionReady = null, string MotionMessage = "", bool? MotionCycleReady = null, string MotionCycleMessage = "", JsonElement? Realtime = null, bool? AxisReady = null, string AxisMessage = "", bool? CommunicationReady = null, string CommunicationMessage = "", bool? HardwareMatchesActive = null, JsonElement? ConfigurationPlan = null, JsonElement? Transfer = null);
 
 public sealed class RemoteDeploymentClient(string sshExecutable = "ssh", TimeSpan? timeout = null, string? knownHostsPath = null)
 {
-    public const string RemoteCommand = "python3 /home/a/st-workbench-deployment/coordinator.py";
+    public const string RemoteCommand = "/home/a/st-workbench-deployment/st-deployment-coordinator";
     private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
     public async Task<DeploymentResponse> ExecuteAsync(SshTarget target, DeploymentRequest request, CancellationToken token = default)
     {
         if (!Regex.IsMatch(target.Host, @"^[A-Za-z0-9][A-Za-z0-9.-]{0,252}$") || !Regex.IsMatch(target.User, @"^[A-Za-z_][A-Za-z0-9_-]{0,31}$") || target.Port is < 1 or > 65535)
             throw new ArgumentException("Invalid SSH host, user, or port.");
-        if (request.Action is not ("stage" or "compile" or "status" or "realtime-status" or "adopt-baseline" or "adopt-empty-baseline" or "activate" or "recover" or "start" or "stop") || !Regex.IsMatch(request.RequestId, @"^[A-Za-z0-9_-]{1,80}$"))
+        if (!DeploymentActions.IsSupported(request.Action) || !Regex.IsMatch(request.RequestId, @"^[A-Za-z0-9_-]{1,80}$"))
             throw new ArgumentException("Unsupported action or request identity.");
         if (request.PackageBase64?.Length > 44739248) throw new ArgumentException("Package exceeds transport limit.");
         token.ThrowIfCancellationRequested();
@@ -69,7 +73,10 @@ public sealed class RemoteDeploymentClient(string sshExecutable = "ssh", TimeSpa
             var axisMessage = root.TryGetProperty("axis_message", out var axisDetail) ? axisDetail.GetString() ?? "" : "";
             bool? communicationReady = root.TryGetProperty("communication_ready", out var comm) ? comm.GetBoolean() : null;
             var communicationMessage = root.TryGetProperty("communication_message", out var commDetail) ? commDetail.GetString() ?? "" : "";
-            return new(success, state, request.RequestId, message, active, candidate, log, motionReady, motionMessage, cycleReady, cycleMessage, realtime, axisReady, axisMessage, communicationReady, communicationMessage);
+            bool? hardwareMatches = root.TryGetProperty("hardware_matches_active", out var hardware) ? hardware.GetBoolean() : null;
+            JsonElement? configurationPlan = root.TryGetProperty("configuration_plan", out var plan) ? plan.Clone() : null;
+            JsonElement? transfer = root.TryGetProperty("transfer", out var transferValue) ? transferValue.Clone() : null;
+            return new(success, state, request.RequestId, message, active, candidate, log, motionReady, motionMessage, cycleReady, cycleMessage, realtime, axisReady, axisMessage, communicationReady, communicationMessage, hardwareMatches, configurationPlan, transfer);
         }
         catch (OperationCanceledException) when (!token.IsCancellationRequested) { return Unknown("Remote request timed out; query actual state before another action."); }
         catch (Exception error) when (error is IOException or JsonException or KeyNotFoundException or InvalidOperationException or System.ComponentModel.Win32Exception)

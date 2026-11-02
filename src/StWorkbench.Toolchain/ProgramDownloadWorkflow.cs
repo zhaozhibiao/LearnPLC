@@ -3,7 +3,20 @@ using System.Text.Json;
 namespace StWorkbench.Toolchain;
 
 public sealed record ProgramDownloadRequest(string BuildHash, string PackageBase64, string PackageSha256);
-public sealed record ProgramRestartNotice(bool WasRunning, bool RequiresCoreRestart, string? ActiveBuildHash);
+public sealed record ProgramRestartNotice(bool WasRunning, bool RequiresCoreRestart, string? ActiveBuildHash, string ConfigurationChange = "none");
+public sealed record ProgramConfigurationPlan(string BuildHash, string Kind, string Identity)
+{
+    public static ProgramConfigurationPlan Read(DeploymentResponse response, string buildHash, string state)
+    {
+        if (!response.Success || response.State != state || response.ConfigurationPlan is not { ValueKind: JsonValueKind.Object } plan ||
+            !plan.TryGetProperty("build_hash", out var build) || build.ValueKind != JsonValueKind.String ||
+            !string.Equals(build.GetString(), buildHash, StringComparison.OrdinalIgnoreCase) ||
+            !plan.TryGetProperty("kind", out var kind) || kind.ValueKind != JsonValueKind.String || kind.GetString() is not ("none" or "axis" or "hardware") ||
+            !plan.TryGetProperty("identity", out var id) || id.ValueKind != JsonValueKind.String || id.GetString() is not { Length: 64 } identity || !identity.All(Uri.IsHexDigit))
+            throw new InvalidOperationException("Configuration plan was not verified; refresh actual state. " + response.Message);
+        return new(buildHash.ToLowerInvariant(), kind.GetString()!, identity.ToLowerInvariant());
+    }
+}
 public enum ProgramDownloadState { Activated, AlreadyActive, Cancelled, Blocked }
 public sealed record ProgramDownloadOutcome(ProgramDownloadState State, DeploymentResponse? Status = null);
 
@@ -11,10 +24,15 @@ public interface IProgramDownloadHost
 {
     bool IsCurrent { get; }
     bool CanApply { get; }
+    bool RequiresConfigurationCheck => false;
+    bool CanApplyAfterConfiguration => CanApply;
     Task<DeploymentResponse> SendAsync(string action, string? packageBase64 = null, string? packageHash = null);
     void ApplyCompilation(DeploymentResponse result);
     Task<bool> ConfirmRestartAsync(ProgramRestartNotice notice);
     Task BeforeProgramChangeAsync();
+    Task<DeploymentResponse> ApplyConfigurationAsync(string identity) => throw new NotSupportedException();
+    void ApplyConfiguration(DeploymentResponse result) => throw new NotSupportedException();
+    void ReportConfigurationMismatch(ProgramConfigurationPlan plan) { }
 }
 
 public static class ProgramDownloadWorkflow
@@ -33,13 +51,25 @@ public static class ProgramDownloadWorkflow
     public static async Task<ProgramDownloadOutcome> ApplyCompiledAsync(string buildHash, IProgramDownloadHost host)
     {
         EnsureCurrent(host);
-        if (!host.CanApply) return new(ProgramDownloadState.Blocked);
+        ProgramConfigurationPlan? plan = null;
+        if (host.RequiresConfigurationCheck)
+        {
+            if (!host.CanApplyAfterConfiguration) return new(ProgramDownloadState.Blocked);
+            plan = ProgramConfigurationPlan.Read(await SendAsync(host, "configuration-plan"), buildHash, "configuration-planned");
+        }
+        if (plan is { Kind: not "none" })
+        {
+            host.ReportConfigurationMismatch(plan);
+            return new(ProgramDownloadState.Blocked);
+        }
+        bool CanProceed() => host.CanApply;
+        if (!CanProceed()) return new(ProgramDownloadState.Blocked);
 
         var initial = await SendAsync(host, "status");
         var baseline = ReadActiveHash(initial, "running", "stopped");
         if (SameHash(baseline, buildHash)) return new(ProgramDownloadState.AlreadyActive, initial);
         var wasRunning = initial.State == "running";
-        var accepted = await host.ConfirmRestartAsync(new(wasRunning, true, baseline));
+        var accepted = await host.ConfirmRestartAsync(new(wasRunning, true, baseline, plan?.Kind ?? "none"));
         EnsureCurrent(host);
         if (!accepted) return new(ProgramDownloadState.Cancelled, initial);
 
@@ -47,10 +77,13 @@ public static class ProgramDownloadWorkflow
         var confirmedHash = ReadActiveHash(confirmed, "running", "stopped");
         Require(SameHash(baseline, confirmedHash) && confirmed.State == initial.State,
             "The active program or running state changed during confirmation; refresh status before applying.");
-        if (!host.CanApply) return new(ProgramDownloadState.Blocked, confirmed);
+        if (plan is not null)
+            Require(ProgramConfigurationPlan.Read(await SendAsync(host, "configuration-plan"), buildHash, "configuration-planned") == plan,
+                "Configuration changed during confirmation; refresh the plan before applying.");
+        if (!CanProceed()) return new(ProgramDownloadState.Blocked, confirmed);
         await host.BeforeProgramChangeAsync();
         EnsureCurrent(host);
-        if (!host.CanApply) return new(ProgramDownloadState.Blocked, confirmed);
+        if (!CanProceed()) return new(ProgramDownloadState.Blocked, confirmed);
 
         if (wasRunning)
         {

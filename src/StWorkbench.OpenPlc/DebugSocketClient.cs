@@ -30,7 +30,7 @@ public sealed class DebugSocketClient : IAsyncDisposable
     private volatile bool authenticated;
 
     // The supplied test transport must already be open; real connections always use WSS.
-    public DebugSocketClient(Uri endpoint, string? certificateSha256 = null, TimeSpan? timeout = null, WebSocket? transport = null)
+    public DebugSocketClient(Uri endpoint, string? certificateSha256 = null, TimeSpan? timeout = null, WebSocket? transport = null, string? engineeringToken = null)
     {
         if (!endpoint.IsAbsoluteUri || endpoint.Scheme != "https" || endpoint.AbsolutePath != "/" ||
             endpoint.UserInfo.Length > 0 || endpoint.Query.Length > 0 || endpoint.Fragment.Length > 0)
@@ -42,6 +42,7 @@ public sealed class DebugSocketClient : IAsyncDisposable
         else
         {
             var client = new ClientWebSocket();
+            if (engineeringToken is not null) client.Options.SetRequestHeader("X-Engineering-Token", engineeringToken);
             if (endpoint.IsLoopback) client.Options.Proxy = null;
             if (!string.IsNullOrWhiteSpace(certificateSha256))
                 client.Options.RemoteCertificateValidationCallback = (_, certificate, _, errors) =>
@@ -135,10 +136,34 @@ public sealed class DebugSocketClient : IAsyncDisposable
         return new(BinaryPrimitives.ReadUInt32BigEndian(data.AsSpan(4, 4)), Array.AsReadOnly(values));
     }
 
+    // One-shot soft write. FC42 forcing is deliberately not exposed.
+    // Success means queued at the dispatcher boundary; readback is separate.
+    public async Task WriteBooleanAsync(string expectedProgramMd5, DebugVariableAddress address, bool value, CancellationToken cancellationToken = default)
+    {
+        if (expectedProgramMd5 is null || expectedProgramMd5.Length != 32 || expectedProgramMd5.Any(c => !Uri.IsHexDigit(c)))
+            throw new ArgumentException("A matched program MD5 is required.", nameof(expectedProgramMd5));
+        if (address is null || address.ByteSize != 1) throw new ArgumentException("BOOL writes require the matched one-byte debug address.", nameof(address));
+        var capability = await RequestAsync([0x46, 0], cancellationToken);
+        if (!capability.AsSpan().SequenceEqual(new byte[] { 0x46, 0x7e, 1 }))
+            throw ProtocolError("Runtime does not support identity-bound single writes; no force fallback is allowed.");
+        var pdu = new byte[38]; pdu[0] = 0x46; pdu[1] = 1;
+        Encoding.ASCII.GetBytes(expectedProgramMd5.ToLowerInvariant()).CopyTo(pdu, 2);
+        pdu[34] = address.ArrayIndex;
+        BinaryPrimitives.WriteUInt16BigEndian(pdu.AsSpan(35, 2), address.ElementIndex);
+        pdu[37] = value ? (byte)1 : (byte)0;
+        var result = await RequestAsync(pdu, cancellationToken);
+        if (!result.AsSpan().SequenceEqual(new byte[] { 0x46, 0x7e }))
+            throw ProtocolError(result.Length == 2 && result[0] == 0x46 && result[1] == 0x84
+                ? "Program identity changed; the single write was rejected. Rebind monitoring."
+                : result.Length == 2 && result[0] == 0x46 && result[1] == 0x83
+                ? "PLC 未运行或程序未加载，单次写入未提交；请先运行 PLC 并重新绑定监视。"
+                : "Runtime did not acknowledge the single write; query actual value before any further action.");
+    }
+
     private async Task<byte[]> RequestAsync(byte[] pdu, CancellationToken cancellationToken)
     {
-        // Private strict whitelist: no public raw-PDU entry point, force/write/trace unavailable.
-        if (pdu[0] is not (0x41 or 0x44 or 0x45)) throw new InvalidOperationException("Read-only PDU required.");
+        // No public raw PDU or force API. Only read operations and the bounded FC46 helper above.
+        if (pdu[0] is not (0x41 or 0x44 or 0x45 or 0x46)) throw new InvalidOperationException("Unsupported debug operation.");
         ObjectDisposedException.ThrowIf(disposed, this);
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, lifetime.Token);
         deadline.CancelAfter(timeout);
@@ -158,7 +183,7 @@ public sealed class DebugSocketClient : IAsyncDisposable
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested && !disposed && Volatile.Read(ref failure) is not null)
         { ExceptionDispatchInfo.Capture(Volatile.Read(ref failure)!).Throw(); throw; }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested && !disposed)
-        { Fail(new TimeoutException("Debug read timed out; reconnect before further reads.")); throw new TimeoutException("Debug read timed out; reconnect before further reads."); }
+        { Fail(new TimeoutException("Debug request timed out; outcome may be unknown. Reconnect before further operations.")); throw new TimeoutException("Debug request timed out; outcome may be unknown. Reconnect before further operations."); }
         catch (Exception error) { if (acquired) Fail(error); throw; }
         finally { if (acquired) { Volatile.Write(ref pending, null); operations.Release(); } }
     }
@@ -189,7 +214,7 @@ public sealed class DebugSocketClient : IAsyncDisposable
                 if (name == "connected") continue;
                 if (name != "debug_response") throw new InvalidDataException("Unexpected debug event.");
                 var completion = Volatile.Read(ref pending) ?? throw new InvalidDataException("Uncorrelated debug response.");
-                if (!root[1].GetProperty("success").GetBoolean()) throw new IOException("Runtime rejected the read-only debug request.");
+                if (!root[1].GetProperty("success").GetBoolean()) throw new IOException("Runtime rejected the debug request.");
                 var hex = root[1].GetProperty("data").GetString() ?? throw new InvalidDataException("Empty debug data.");
                 var words = hex.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
                 if (words.Length is < 1 or > 4096 || words.Any(w => w.Length != 2 || w.Any(c => !Uri.IsHexDigit(c)))) throw new InvalidDataException("Malformed or oversized debug PDU.");

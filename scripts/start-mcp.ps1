@@ -1,4 +1,4 @@
-param([string]$ConfigPath)
+﻿param([string]$ConfigPath)
 $ErrorActionPreference = 'Stop'
 $mcpRepository = Split-Path -Parent $PSScriptRoot
 if (-not $ConfigPath) { $ConfigPath = Join-Path $mcpRepository 'artifacts/mcp-server.json' }

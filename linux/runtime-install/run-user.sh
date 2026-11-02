@@ -7,6 +7,5 @@ export OPENPLC_PERSISTENT_DATA_DIR="$prefix/data"
 mkdir -p "$OPENPLC_RUNTIME_DIR" "$OPENPLC_PERSISTENT_DATA_DIR"
 cd "$prefix/source"
 test -x build/plc_main
-# Exact committed identity only; pending transactions and unknown libraries refuse startup.
-python3 "$prefix/launcher-gate.py"
-exec venvs/runtime/bin/python3 -m webserver.app
+"$prefix/native/bin/st-runtime-startup-gate"
+exec "$prefix/native/bin/st-runtime-host"

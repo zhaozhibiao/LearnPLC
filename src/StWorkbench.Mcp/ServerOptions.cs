@@ -38,7 +38,7 @@ public sealed class DeviceOptions
     public bool AllowMotion { get; init; }
     public string Backend { get; init; } = "EcMotion";
     public string[] AllowedAxes { get; init; } = [];
-    public string GatewayPath { get; init; } = "/home/a/st-workbench-mcp/motion_gateway.py";
+    public string GatewayPath { get; init; } = "/home/a/st-workbench-mcp/st-motion-gateway";
     public string AxisManifestPath { get; init; } = "/home/a/st-workbench-mcp/axis-manifest.json";
     public string ControllerSocket { get; init; } = "/run/ecmotion/controller.sock";
     public SshTarget Target => new(Host, User, Port);

@@ -1,0 +1,29 @@
+
+ return nullptr;
+}
+void reset() {
+ static Task tasks[2]={{0,"MAIN",10,0,0},{0,"FAST",0,0,0}};
+ plc_tasks=tasks;plc_task_count=2;scheduling_getter=use_metadata;
+ scheduling={{0,10,-1},{1,0,-1}};
+ plc_state=0;creates=joins=frees=publishes=cpu_calls=scheduling_calls=0;
+ create_error=schedule_error=affinity_error=-1;
+}
+void rejected(int expected_joins) {
+ assert(plc_state==PLC_STATE_ERROR && publishes==0 && joins==expected_joins);
+ assert(plc_tasks==nullptr && plc_task_count==0 && frees==1);
+}
+int main() {
+ reset();startup();assert(plc_state==PLC_STATE_RUNNING&&publishes==1&&joins==0);
+ assert(recorded_policy[0]==SCHED_OTHER&&recorded_priority[0]==0);
+ assert(recorded_policy[1]==SCHED_FIFO&&recorded_priority[1]==49);
+ assert(recorded_policy[2]==SCHED_OTHER&&recorded_priority[2]==0);
+ reset();create_error=1;startup();rejected(1);
+ reset();schedule_error=0;startup();rejected(1);
+ reset();schedule_error=1;startup();rejected(2);
+ reset();scheduling[1].cpu=2;affinity_error=0;startup();rejected(2);assert(cpu_calls==1);
+ reset();scheduling[1].cpu=2;startup();assert(cpu_calls==1&&publishes==1);
+ reset();schedule_error=2;startup();assert(plc_state==PLC_STATE_ERROR&&publishes==0&&joins==2);
+ use_metadata=false;reset();schedule_error=0;startup();assert(publishes==1);
+ assert(recorded_policy[2]==SCHED_FIFO&&recorded_priority[2]==98);
+ puts("runtime startup: ordinary/RT, affinity, partial creation, fail-closed and legacy tests passed");
+}

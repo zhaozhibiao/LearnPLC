@@ -1,0 +1,1437 @@
+[
+  {
+    "tool": "workbench_info",
+    "arguments": {},
+    "result": "success",
+    "response": {
+      "name": "ST Workbench MCP",
+      "version": "1.0.0",
+      "transport": "stdio",
+      "workspace": "D:\\OPenplc",
+      "workflow": "project_open/create \u2192 project_read \u2192 edit with expectedRevision \u2192 project_validate \u2192 project_save \u2192 build_start \u2192 build_status \u2192 device_prepare \u2192 device_execute \u2192 operation_status",
+      "motionWorkflow": "motion_capabilities/status \u2192 motion_manifest \u2192 install approved manifest separately \u2192 motion_acquire \u2192 motion_prepare \u2192 motion_execute \u2192 motion_operation \u2192 motion_stop/release",
+      "devices": [],
+      "limits": {
+        "drafts": 16,
+        "sourcesPerProject": 256,
+        "sourceBytes": 1048576,
+        "draftBytes": 12582912,
+        "buildJobs": 32,
+        "jobs": 64,
+        "planSeconds": 20,
+        "controlSeconds": 30
+      },
+      "notes": [
+        "MCP edits saved-project drafts; save and reload desktop after resolving unsaved desktop edits.",
+        "Accepted never means motion completed; Unknown must not be replayed.",
+        "Mechanical/rotary apply, physical timed Jog and continuous machining are capability-gated and currently unsupported.",
+        "MCP is supervisory; Linux core retains realtime control. Stop is ordinary controlled stop, not safety-rated emergency stop."
+      ]
+    }
+  },
+  {
+    "tool": "project_open",
+    "arguments": {
+      "projectPath": "examples/is620n-test/IS620N.stproj"
+    },
+    "result": "success",
+    "response": {
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "ProjectPath": "examples/is620n-test/IS620N.stproj",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "HasUnsavedChanges": false,
+      "Project": {
+        "Network": {
+          "ManagementHost": "192.168.1.31",
+          "SshUser": "a",
+          "RuntimeEndpoint": "",
+          "EtherCatInterface": "enp3s0"
+        },
+        "SchemaVersion": 1,
+        "Id": "f8d1f254-c49b-41c9-8e78-daa4f5f4e078",
+        "Name": "IS620N \u7A7A\u8F7D\u5355\u6B21\u5F80\u8FD4\u6D4B\u8BD5\uFF08\u5F85\u5B9E\u673A\u9002\u914D\uFF09",
+        "Items": [
+          {
+            "Id": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "Name": "Main",
+            "Kind": "Program",
+            "SourcePath": "sources/Main.st"
+          }
+        ],
+        "Tasks": [
+          {
+            "Name": "Cyclic",
+            "ProgramId": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "IntervalMilliseconds": 10,
+            "Enabled": true
+          }
+        ],
+        "Hardware": {
+          "Stations": [
+            {
+              "Id": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "Name": "IS620NDrive",
+              "DeviceId": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "AliasAddress": 0,
+              "EnabledEntries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24760,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeFunction",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24830,
+                  "SubIndex": 1,
+                  "BitLength": 32,
+                  "Name": "DigitalOutputs",
+                  "Type": "UDINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24695,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ActualTorque",
+                  "Type": "INT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24820,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "FollowingError",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24761,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeStatus",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24762,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe1PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24764,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe2PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24829,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "DigitalInputs",
+                  "Type": "UDINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Devices": [
+            {
+              "Id": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "Name": "IS620N_ECAT_v2.6.2 (online PDO)",
+              "VendorId": 1048576,
+              "ProductCode": 786696,
+              "Revision": 65537,
+              "Entries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24760,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeFunction",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24830,
+                  "SubIndex": 1,
+                  "BitLength": 32,
+                  "Name": "DigitalOutputs",
+                  "Type": "UDINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24695,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ActualTorque",
+                  "Type": "INT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24820,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "FollowingError",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24761,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeStatus",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24762,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe1PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24764,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe2PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24829,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "DigitalInputs",
+                  "Type": "UDINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Io": [],
+          "Axes": [
+            {
+              "Name": "IS620N",
+              "ControllerAxis": "Axis1",
+              "Unit": "rev",
+              "MinPosition": -1,
+              "MaxPosition": 1,
+              "StationId": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "MaximumVelocity": 0.01
+            }
+          ]
+        },
+        "Paths": []
+      },
+      "Sources": [
+        {
+          "ItemId": "91104fdc-745d-49de-88ac-0e2d24052797",
+          "RelativePath": "sources/Main.st",
+          "Text": "PROGRAM Main\nVAR\n    (* One rising edge requests one unloaded-motor round trip.\n       These stay FALSE until the actual controller uses verified rev units.\n       Current-position homing needs the commissioned method-35 controller profile.\n       No alarm reset or switch-search homing is performed. *)\n    RunOnce : BOOL := FALSE;\n    ParametersConfirmed : BOOL := FALSE;\n    EstablishTemporaryZero : BOOL := TRUE;\n    CancelTest : BOOL := FALSE;\n    Acknowledge : BOOL := FALSE;\n    DistanceRev : LREAL := 0.01;\n    VelocityRevPerSecond : LREAL := 0.01;\n    PositionToleranceRev : LREAL := 0.0001;\n    State : UINT := 0;\n    Active : BOOL;\n    Passed : BOOL;\n    Failed : BOOL;\n    OutcomeUnknown : BOOL;\n    DiagnosticCode : UDINT;\n    ReadyForTest : BOOL;\n    NeedsReference : BOOL;\n    ActualPositionRev : LREAL;\n    ActualVelocityRevPerSecond : LREAL;\n    StartPositionRev : LREAL;\n    OutwardPositionRev : LREAL;\n    CompletedRoundTrips : UINT;\n    PreviousRun : BOOL;\n    StartEdge : BOOL;\n    PowerDemand : BOOL;\n    Returned : BOOL;\n    ReadStatus : MC_ReadAxisStatus;\n    ReadPosition : MC_ReadActualPosition;\n    ReadVelocity : MC_ReadActualVelocity;\n    Power : MC_Power;\n    Home : MC_Home;\n    MoveOut : MC_MoveAbsolute;\n    MoveBack : MC_MoveAbsolute;\n    StopAxis : MC_Stop;\n    TotalTimer : TON;\n    DwellTimer : TON;\n    StopTimer : TON;\n    DisableTimer : TON;\nEND_VAR\n\nReadStatus(Axis := AXIS_IS620N, Enable := TRUE);\nReadPosition(Axis := AXIS_IS620N, Enable := TRUE);\nReadVelocity(Axis := AXIS_IS620N, Enable := TRUE);\nActualPositionRev := ReadPosition.Position;\nActualVelocityRevPerSecond := ReadVelocity.Velocity;\nNeedsReference := ReadStatus.Valid AND NOT ReadStatus.Homed;\nReadyForTest := ParametersConfirmed AND ReadStatus.Valid AND ReadPosition.Valid\n    AND ReadVelocity.Valid AND (ReadStatus.Homed OR EstablishTemporaryZero) AND NOT ReadStatus.ErrorStop\n    AND (ReadStatus.Disabled OR ReadStatus.Standstill)\n    AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) AND NOT CancelTest;\nStartEdge := RunOnce AND NOT PreviousRun;\nPreviousRun := RunOnce;\n\nIF Acknowledge AND NOT RunOnce AND NOT Active THEN\n    State := 0; Passed := FALSE; Failed := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\nEND_IF;\n\nIF StartEdge AND (State = 0) THEN\n    Passed := FALSE; Failed := FALSE; Returned := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\n    IF CancelTest THEN DiagnosticCode := 7110;\n    ELSIF NOT ParametersConfirmed THEN DiagnosticCode := 7101;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid THEN DiagnosticCode := 7103;\n    ELSIF NOT ReadStatus.Homed AND NOT EstablishTemporaryZero THEN DiagnosticCode := 7102;\n    ELSIF ReadStatus.ErrorStop THEN DiagnosticCode := 7104;\n    ELSIF NOT (ReadStatus.Disabled OR ReadStatus.Standstill)\n        OR NOT (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN DiagnosticCode := 7106;\n    ELSIF NOT (DistanceRev \u003E 0.0) OR NOT (DistanceRev \u003C= 0.01)\n        OR NOT (VelocityRevPerSecond \u003E 0.0) OR NOT (VelocityRevPerSecond \u003C= 0.01)\n        OR NOT (PositionToleranceRev \u003E 0.0) OR NOT (PositionToleranceRev \u003C= DistanceRev / 4.0)\n        OR NOT (ABS(ActualPositionRev) \u002B DistanceRev \u003C= 1.0) THEN DiagnosticCode := 7105;\n    ELSE\n        StartPositionRev := ActualPositionRev;\n        OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n        Active := TRUE; State := 10;\n    END_IF;\n    IF DiagnosticCode \u003C\u003E 0 THEN Failed := TRUE; State := 900; END_IF;\nEND_IF;\n\nTotalTimer(IN := Active, PT := T#10s);\nDwellTimer(IN := (State = 40) OR (State = 60), PT := T#250ms);\nStopTimer(IN := State = 80, PT := T#2s);\nDisableTimer(IN := State = 90, PT := T#2s);\n\nIF Active AND (State \u003C 80) THEN\n    IF CancelTest THEN DiagnosticCode := 7110; Failed := TRUE; State := 80;\n    ELSIF TotalTimer.Q THEN DiagnosticCode := 7111; Failed := TRUE; State := 80;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid\n        OR ReadStatus.ErrorStop THEN DiagnosticCode := 7112; Failed := TRUE; State := 80;\n    ELSIF (State \u003E= 30) AND (ABS(ActualPositionRev - StartPositionRev) \u003E DistanceRev * 1.5) THEN\n        DiagnosticCode := 7113; Failed := TRUE; State := 80;\n    END_IF;\nEND_IF;\n\n(* Only reads execute before a verified start. There is no cold-start disable command. *)\nIF Active THEN\n    PowerDemand := State \u003C 90;\n    StopAxis(Axis := AXIS_IS620N, Execute := State = 80);\n    Power(Axis := AXIS_IS620N, Enable := PowerDemand);\n    Home(Axis := AXIS_IS620N, Execute := State = 20);\n    MoveOut(Axis := AXIS_IS620N, Execute := State = 30,\n        Position := OutwardPositionRev, Velocity := VelocityRevPerSecond);\n    MoveBack(Axis := AXIS_IS620N, Execute := State = 50,\n        Position := StartPositionRev, Velocity := VelocityRevPerSecond);\n\n    IF (State \u003C 80) AND (Power.Error OR Home.Error OR MoveOut.Error OR MoveBack.Error\n        OR ((State = 20) AND Home.CommandAborted)\n        OR ((State = 30) AND MoveOut.CommandAborted)\n        OR ((State = 50) AND MoveBack.CommandAborted)) THEN\n        DiagnosticCode := 7114; Failed := TRUE; State := 80;\n    END_IF;\n\n    CASE State OF\n    10:\n        IF Power.Status AND NOT Power.Busy AND ReadStatus.Standstill THEN\n            IF EstablishTemporaryZero THEN State := 20; ELSE State := 30; END_IF;\n        END_IF;\n    20:\n        IF Home.Done AND ReadStatus.Valid AND ReadStatus.Homed AND ReadStatus.Standstill THEN\n            StartPositionRev := ActualPositionRev;\n            OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n            State := 30;\n        END_IF;\n    30:\n        IF MoveOut.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - OutwardPositionRev) \u003C= PositionToleranceRev) THEN State := 40; END_IF;\n    40:\n        IF DwellTimer.Q THEN State := 50; END_IF;\n    50:\n        IF MoveBack.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - StartPositionRev) \u003C= PositionToleranceRev) THEN\n            Returned := TRUE; State := 60;\n        END_IF;\n    60:\n        IF DwellTimer.Q THEN State := 80; END_IF;\n    80:\n        IF StopAxis.Done AND ReadVelocity.Valid AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN State := 90;\n        ELSIF StopAxis.Error OR StopTimer.Q THEN\n            DiagnosticCode := 7115; Failed := TRUE; OutcomeUnknown := TRUE; State := 90;\n        END_IF;\n    90:\n        IF ReadStatus.Valid AND ReadStatus.Disabled AND NOT Power.Busy THEN\n            Active := FALSE;\n            IF Returned AND NOT Failed AND NOT OutcomeUnknown THEN\n                Passed := TRUE; CompletedRoundTrips := CompletedRoundTrips \u002B 1; State := 100;\n            ELSE Failed := TRUE; State := 900;\n            END_IF;\n        ELSIF Power.Error OR DisableTimer.Q THEN\n            DiagnosticCode := 7116; Failed := TRUE; OutcomeUnknown := TRUE;\n            Active := FALSE; State := 999;\n        END_IF;\n    END_CASE;\nEND_IF;\nEND_PROGRAM\n"
+        }
+      ],
+      "Notice": "MCP edits a saved-project draft. Save then reload in the desktop; resolve unsaved desktop edits first."
+    }
+  },
+  {
+    "tool": "configuration_update",
+    "arguments": {
+      "sessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "hardware": {
+        "Stations": [
+          {
+            "Id": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+            "Name": "IS620NDrive",
+            "DeviceId": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+            "AliasAddress": 0,
+            "EnabledEntries": [
+              {
+                "Index": 24640,
+                "SubIndex": 0,
+                "BitLength": 16,
+                "Name": "Controlword",
+                "Type": "UINT",
+                "IsInput": false
+              },
+              {
+                "Index": 24698,
+                "SubIndex": 0,
+                "BitLength": 32,
+                "Name": "TargetPosition",
+                "Type": "DINT",
+                "IsInput": false
+              },
+              {
+                "Index": 24831,
+                "SubIndex": 0,
+                "BitLength": 32,
+                "Name": "TargetVelocity",
+                "Type": "DINT",
+                "IsInput": false
+              },
+              {
+                "Index": 24672,
+                "SubIndex": 0,
+                "BitLength": 8,
+                "Name": "ModeOfOperation",
+                "Type": "SINT",
+                "IsInput": false
+              },
+              {
+                "Index": 24639,
+                "SubIndex": 0,
+                "BitLength": 16,
+                "Name": "ErrorCode",
+                "Type": "UINT",
+                "IsInput": true
+              },
+              {
+                "Index": 24641,
+                "SubIndex": 0,
+                "BitLength": 16,
+                "Name": "Statusword",
+                "Type": "UINT",
+                "IsInput": true
+              },
+              {
+                "Index": 24676,
+                "SubIndex": 0,
+                "BitLength": 32,
+                "Name": "ActualPosition",
+                "Type": "DINT",
+                "IsInput": true
+              },
+              {
+                "Index": 24684,
+                "SubIndex": 0,
+                "BitLength": 32,
+                "Name": "ActualVelocity",
+                "Type": "DINT",
+                "IsInput": true
+              },
+              {
+                "Index": 24673,
+                "SubIndex": 0,
+                "BitLength": 8,
+                "Name": "ModeDisplay",
+                "Type": "SINT",
+                "IsInput": true
+              }
+            ]
+          }
+        ],
+        "Devices": [
+          {
+            "Id": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+            "Name": "IS620N_ECAT_v2.6.2 (commissioned 1600/1A00 PDO)",
+            "VendorId": 1048576,
+            "ProductCode": 786696,
+            "Revision": 65537,
+            "Entries": [
+              {
+                "Index": 24640,
+                "SubIndex": 0,
+                "BitLength": 16,
+                "Name": "Controlword",
+                "Type": "UINT",
+                "IsInput": false
+              },
+              {
+                "Index": 24698,
+                "SubIndex": 0,
+                "BitLength": 32,
+                "Name": "TargetPosition",
+                "Type": "DINT",
+                "IsInput": false
+              },
+              {
+                "Index": 24831,
+                "SubIndex": 0,
+                "BitLength": 32,
+                "Name": "TargetVelocity",
+                "Type": "DINT",
+                "IsInput": false
+              },
+              {
+                "Index": 24672,
+                "SubIndex": 0,
+                "BitLength": 8,
+                "Name": "ModeOfOperation",
+                "Type": "SINT",
+                "IsInput": false
+              },
+              {
+                "Index": 24639,
+                "SubIndex": 0,
+                "BitLength": 16,
+                "Name": "ErrorCode",
+                "Type": "UINT",
+                "IsInput": true
+              },
+              {
+                "Index": 24641,
+                "SubIndex": 0,
+                "BitLength": 16,
+                "Name": "Statusword",
+                "Type": "UINT",
+                "IsInput": true
+              },
+              {
+                "Index": 24676,
+                "SubIndex": 0,
+                "BitLength": 32,
+                "Name": "ActualPosition",
+                "Type": "DINT",
+                "IsInput": true
+              },
+              {
+                "Index": 24684,
+                "SubIndex": 0,
+                "BitLength": 32,
+                "Name": "ActualVelocity",
+                "Type": "DINT",
+                "IsInput": true
+              },
+              {
+                "Index": 24673,
+                "SubIndex": 0,
+                "BitLength": 8,
+                "Name": "ModeDisplay",
+                "Type": "SINT",
+                "IsInput": true
+              }
+            ]
+          }
+        ],
+        "Io": [],
+        "Axes": [
+          {
+            "Name": "IS620N",
+            "ControllerAxis": "Axis1",
+            "Unit": "rev",
+            "MinPosition": -1,
+            "MaxPosition": 1,
+            "StationId": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+            "MaximumVelocity": 0.01
+          }
+        ]
+      },
+      "tasks": [
+        {
+          "Name": "Cyclic",
+          "ProgramId": "91104fdc-745d-49de-88ac-0e2d24052797",
+          "IntervalMilliseconds": 10,
+          "Enabled": true
+        }
+      ],
+      "network": {
+        "ManagementHost": "192.168.1.31",
+        "SshUser": "a",
+        "RuntimeEndpoint": "",
+        "EtherCatInterface": "enp3s0"
+      }
+    },
+    "result": "success",
+    "response": {
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "ProjectPath": "examples/is620n-test/IS620N.stproj",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "HasUnsavedChanges": true,
+      "Project": {
+        "Network": {
+          "ManagementHost": "192.168.1.31",
+          "SshUser": "a",
+          "RuntimeEndpoint": "",
+          "EtherCatInterface": "enp3s0"
+        },
+        "SchemaVersion": 1,
+        "Id": "f8d1f254-c49b-41c9-8e78-daa4f5f4e078",
+        "Name": "IS620N \u7A7A\u8F7D\u5355\u6B21\u5F80\u8FD4\u6D4B\u8BD5\uFF08\u5F85\u5B9E\u673A\u9002\u914D\uFF09",
+        "Items": [
+          {
+            "Id": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "Name": "Main",
+            "Kind": "Program",
+            "SourcePath": "sources/Main.st"
+          }
+        ],
+        "Tasks": [
+          {
+            "Name": "Cyclic",
+            "ProgramId": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "IntervalMilliseconds": 10,
+            "Enabled": true
+          }
+        ],
+        "Hardware": {
+          "Stations": [
+            {
+              "Id": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "Name": "IS620NDrive",
+              "DeviceId": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "AliasAddress": 0,
+              "EnabledEntries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24831,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetVelocity",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24672,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeOfOperation",
+                  "Type": "SINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24684,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualVelocity",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24673,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeDisplay",
+                  "Type": "SINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Devices": [
+            {
+              "Id": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "Name": "IS620N_ECAT_v2.6.2 (commissioned 1600/1A00 PDO)",
+              "VendorId": 1048576,
+              "ProductCode": 786696,
+              "Revision": 65537,
+              "Entries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24831,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetVelocity",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24672,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeOfOperation",
+                  "Type": "SINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24684,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualVelocity",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24673,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeDisplay",
+                  "Type": "SINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Io": [],
+          "Axes": [
+            {
+              "Name": "IS620N",
+              "ControllerAxis": "Axis1",
+              "Unit": "rev",
+              "MinPosition": -1,
+              "MaxPosition": 1,
+              "StationId": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "MaximumVelocity": 0.01
+            }
+          ]
+        },
+        "Paths": []
+      },
+      "Sources": [
+        {
+          "ItemId": "91104fdc-745d-49de-88ac-0e2d24052797",
+          "RelativePath": "sources/Main.st",
+          "Text": "PROGRAM Main\nVAR\n    (* One rising edge requests one unloaded-motor round trip.\n       These stay FALSE until the actual controller uses verified rev units.\n       Current-position homing needs the commissioned method-35 controller profile.\n       No alarm reset or switch-search homing is performed. *)\n    RunOnce : BOOL := FALSE;\n    ParametersConfirmed : BOOL := FALSE;\n    EstablishTemporaryZero : BOOL := TRUE;\n    CancelTest : BOOL := FALSE;\n    Acknowledge : BOOL := FALSE;\n    DistanceRev : LREAL := 0.01;\n    VelocityRevPerSecond : LREAL := 0.01;\n    PositionToleranceRev : LREAL := 0.0001;\n    State : UINT := 0;\n    Active : BOOL;\n    Passed : BOOL;\n    Failed : BOOL;\n    OutcomeUnknown : BOOL;\n    DiagnosticCode : UDINT;\n    ReadyForTest : BOOL;\n    NeedsReference : BOOL;\n    ActualPositionRev : LREAL;\n    ActualVelocityRevPerSecond : LREAL;\n    StartPositionRev : LREAL;\n    OutwardPositionRev : LREAL;\n    CompletedRoundTrips : UINT;\n    PreviousRun : BOOL;\n    StartEdge : BOOL;\n    PowerDemand : BOOL;\n    Returned : BOOL;\n    ReadStatus : MC_ReadAxisStatus;\n    ReadPosition : MC_ReadActualPosition;\n    ReadVelocity : MC_ReadActualVelocity;\n    Power : MC_Power;\n    Home : MC_Home;\n    MoveOut : MC_MoveAbsolute;\n    MoveBack : MC_MoveAbsolute;\n    StopAxis : MC_Stop;\n    TotalTimer : TON;\n    DwellTimer : TON;\n    StopTimer : TON;\n    DisableTimer : TON;\nEND_VAR\n\nReadStatus(Axis := AXIS_IS620N, Enable := TRUE);\nReadPosition(Axis := AXIS_IS620N, Enable := TRUE);\nReadVelocity(Axis := AXIS_IS620N, Enable := TRUE);\nActualPositionRev := ReadPosition.Position;\nActualVelocityRevPerSecond := ReadVelocity.Velocity;\nNeedsReference := ReadStatus.Valid AND NOT ReadStatus.Homed;\nReadyForTest := ParametersConfirmed AND ReadStatus.Valid AND ReadPosition.Valid\n    AND ReadVelocity.Valid AND (ReadStatus.Homed OR EstablishTemporaryZero) AND NOT ReadStatus.ErrorStop\n    AND (ReadStatus.Disabled OR ReadStatus.Standstill)\n    AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) AND NOT CancelTest;\nStartEdge := RunOnce AND NOT PreviousRun;\nPreviousRun := RunOnce;\n\nIF Acknowledge AND NOT RunOnce AND NOT Active THEN\n    State := 0; Passed := FALSE; Failed := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\nEND_IF;\n\nIF StartEdge AND (State = 0) THEN\n    Passed := FALSE; Failed := FALSE; Returned := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\n    IF CancelTest THEN DiagnosticCode := 7110;\n    ELSIF NOT ParametersConfirmed THEN DiagnosticCode := 7101;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid THEN DiagnosticCode := 7103;\n    ELSIF NOT ReadStatus.Homed AND NOT EstablishTemporaryZero THEN DiagnosticCode := 7102;\n    ELSIF ReadStatus.ErrorStop THEN DiagnosticCode := 7104;\n    ELSIF NOT (ReadStatus.Disabled OR ReadStatus.Standstill)\n        OR NOT (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN DiagnosticCode := 7106;\n    ELSIF NOT (DistanceRev \u003E 0.0) OR NOT (DistanceRev \u003C= 0.01)\n        OR NOT (VelocityRevPerSecond \u003E 0.0) OR NOT (VelocityRevPerSecond \u003C= 0.01)\n        OR NOT (PositionToleranceRev \u003E 0.0) OR NOT (PositionToleranceRev \u003C= DistanceRev / 4.0)\n        OR NOT (ABS(ActualPositionRev) \u002B DistanceRev \u003C= 1.0) THEN DiagnosticCode := 7105;\n    ELSE\n        StartPositionRev := ActualPositionRev;\n        OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n        Active := TRUE; State := 10;\n    END_IF;\n    IF DiagnosticCode \u003C\u003E 0 THEN Failed := TRUE; State := 900; END_IF;\nEND_IF;\n\nTotalTimer(IN := Active, PT := T#10s);\nDwellTimer(IN := (State = 40) OR (State = 60), PT := T#250ms);\nStopTimer(IN := State = 80, PT := T#2s);\nDisableTimer(IN := State = 90, PT := T#2s);\n\nIF Active AND (State \u003C 80) THEN\n    IF CancelTest THEN DiagnosticCode := 7110; Failed := TRUE; State := 80;\n    ELSIF TotalTimer.Q THEN DiagnosticCode := 7111; Failed := TRUE; State := 80;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid\n        OR ReadStatus.ErrorStop THEN DiagnosticCode := 7112; Failed := TRUE; State := 80;\n    ELSIF (State \u003E= 30) AND (ABS(ActualPositionRev - StartPositionRev) \u003E DistanceRev * 1.5) THEN\n        DiagnosticCode := 7113; Failed := TRUE; State := 80;\n    END_IF;\nEND_IF;\n\n(* Only reads execute before a verified start. There is no cold-start disable command. *)\nIF Active THEN\n    PowerDemand := State \u003C 90;\n    StopAxis(Axis := AXIS_IS620N, Execute := State = 80);\n    Power(Axis := AXIS_IS620N, Enable := PowerDemand);\n    Home(Axis := AXIS_IS620N, Execute := State = 20);\n    MoveOut(Axis := AXIS_IS620N, Execute := State = 30,\n        Position := OutwardPositionRev, Velocity := VelocityRevPerSecond);\n    MoveBack(Axis := AXIS_IS620N, Execute := State = 50,\n        Position := StartPositionRev, Velocity := VelocityRevPerSecond);\n\n    IF (State \u003C 80) AND (Power.Error OR Home.Error OR MoveOut.Error OR MoveBack.Error\n        OR ((State = 20) AND Home.CommandAborted)\n        OR ((State = 30) AND MoveOut.CommandAborted)\n        OR ((State = 50) AND MoveBack.CommandAborted)) THEN\n        DiagnosticCode := 7114; Failed := TRUE; State := 80;\n    END_IF;\n\n    CASE State OF\n    10:\n        IF Power.Status AND NOT Power.Busy AND ReadStatus.Standstill THEN\n            IF EstablishTemporaryZero THEN State := 20; ELSE State := 30; END_IF;\n        END_IF;\n    20:\n        IF Home.Done AND ReadStatus.Valid AND ReadStatus.Homed AND ReadStatus.Standstill THEN\n            StartPositionRev := ActualPositionRev;\n            OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n            State := 30;\n        END_IF;\n    30:\n        IF MoveOut.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - OutwardPositionRev) \u003C= PositionToleranceRev) THEN State := 40; END_IF;\n    40:\n        IF DwellTimer.Q THEN State := 50; END_IF;\n    50:\n        IF MoveBack.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - StartPositionRev) \u003C= PositionToleranceRev) THEN\n            Returned := TRUE; State := 60;\n        END_IF;\n    60:\n        IF DwellTimer.Q THEN State := 80; END_IF;\n    80:\n        IF StopAxis.Done AND ReadVelocity.Valid AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN State := 90;\n        ELSIF StopAxis.Error OR StopTimer.Q THEN\n            DiagnosticCode := 7115; Failed := TRUE; OutcomeUnknown := TRUE; State := 90;\n        END_IF;\n    90:\n        IF ReadStatus.Valid AND ReadStatus.Disabled AND NOT Power.Busy THEN\n            Active := FALSE;\n            IF Returned AND NOT Failed AND NOT OutcomeUnknown THEN\n                Passed := TRUE; CompletedRoundTrips := CompletedRoundTrips \u002B 1; State := 100;\n            ELSE Failed := TRUE; State := 900;\n            END_IF;\n        ELSIF Power.Error OR DisableTimer.Q THEN\n            DiagnosticCode := 7116; Failed := TRUE; OutcomeUnknown := TRUE;\n            Active := FALSE; State := 999;\n        END_IF;\n    END_CASE;\nEND_IF;\nEND_PROGRAM\n"
+        }
+      ],
+      "Notice": "MCP edits a saved-project draft. Save then reload in the desktop; resolve unsaved desktop edits first."
+    }
+  },
+  {
+    "tool": "source_write",
+    "arguments": {
+      "sessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "expectedRevision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "itemId": "91104fdc-745d-49de-88ac-0e2d24052797",
+      "text": "PROGRAM Main\nVAR\n    (* One rising edge requests one unloaded-motor round trip.\n       These stay FALSE until the actual controller uses verified rev units.\n       Current-position homing needs the commissioned method-35 controller profile.\n       No alarm reset or switch-search homing is performed. *)\n    RunOnce : BOOL := FALSE;\n    ParametersConfirmed : BOOL := FALSE;\n    EstablishTemporaryZero : BOOL := TRUE;\n    CancelTest : BOOL := FALSE;\n    Acknowledge : BOOL := FALSE;\n    DistanceRev : LREAL := 0.01;\n    VelocityRevPerSecond : LREAL := 0.01;\n    PositionToleranceRev : LREAL := 0.0001;\n    State : UINT := 0;\n    Active : BOOL;\n    Passed : BOOL;\n    Failed : BOOL;\n    OutcomeUnknown : BOOL;\n    DiagnosticCode : UDINT;\n    ReadyForTest : BOOL;\n    NeedsReference : BOOL;\n    ActualPositionRev : LREAL;\n    ActualVelocityRevPerSecond : LREAL;\n    StartPositionRev : LREAL;\n    OutwardPositionRev : LREAL;\n    CompletedRoundTrips : UINT;\n    PreviousRun : BOOL;\n    StartEdge : BOOL;\n    PowerDemand : BOOL;\n    Returned : BOOL;\n    ReadStatus : MC_ReadAxisStatus;\n    ReadPosition : MC_ReadActualPosition;\n    ReadVelocity : MC_ReadActualVelocity;\n    Power : MC_Power;\n    Home : MC_Home;\n    MoveOut : MC_MoveAbsolute;\n    MoveBack : MC_MoveAbsolute;\n    StopAxis : MC_Stop;\n    TotalTimer : TON;\n    DwellTimer : TON;\n    StopTimer : TON;\n    DisableTimer : TON;\nEND_VAR\n\nReadStatus(Axis := AXIS_IS620N, Enable := TRUE);\nReadPosition(Axis := AXIS_IS620N, Enable := TRUE);\nReadVelocity(Axis := AXIS_IS620N, Enable := TRUE);\nActualPositionRev := ReadPosition.Position;\nActualVelocityRevPerSecond := ReadVelocity.Velocity;\nNeedsReference := ReadStatus.Valid AND NOT ReadStatus.Homed;\nReadyForTest := ParametersConfirmed AND ReadStatus.Valid AND ReadPosition.Valid\n    AND ReadVelocity.Valid AND (ReadStatus.Homed OR EstablishTemporaryZero) AND NOT ReadStatus.ErrorStop\n    AND (ReadStatus.Disabled OR ReadStatus.Standstill)\n    AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) AND NOT CancelTest;\nStartEdge := RunOnce AND NOT PreviousRun;\nPreviousRun := RunOnce;\n\nIF Acknowledge AND NOT RunOnce AND NOT Active THEN\n    State := 0; Passed := FALSE; Failed := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\nEND_IF;\n\nIF StartEdge AND (State = 0) THEN\n    Passed := FALSE; Failed := FALSE; Returned := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\n    IF CancelTest THEN DiagnosticCode := 7110;\n    ELSIF NOT ParametersConfirmed THEN DiagnosticCode := 7101;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid THEN DiagnosticCode := 7103;\n    ELSIF NOT ReadStatus.Homed AND NOT EstablishTemporaryZero THEN DiagnosticCode := 7102;\n    ELSIF ReadStatus.ErrorStop THEN DiagnosticCode := 7104;\n    ELSIF NOT (ReadStatus.Disabled OR ReadStatus.Standstill)\n        OR NOT (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN DiagnosticCode := 7106;\n    ELSIF NOT (DistanceRev \u003E 0.0) OR NOT (DistanceRev \u003C= 0.01)\n        OR NOT (VelocityRevPerSecond \u003E 0.0) OR NOT (VelocityRevPerSecond \u003C= 0.01)\n        OR NOT (PositionToleranceRev \u003E 0.0) OR NOT (PositionToleranceRev \u003C= DistanceRev / 4.0)\n        OR NOT (ABS(ActualPositionRev) \u002B DistanceRev \u003C= 1.0) THEN DiagnosticCode := 7105;\n    ELSE\n        StartPositionRev := ActualPositionRev;\n        OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n        Active := TRUE; State := 10;\n    END_IF;\n    IF DiagnosticCode \u003C\u003E 0 THEN Failed := TRUE; State := 900; END_IF;\nEND_IF;\n\nTotalTimer(IN := Active, PT := T#10s);\nDwellTimer(IN := (State = 40) OR (State = 60), PT := T#250ms);\nStopTimer(IN := State = 80, PT := T#2s);\nDisableTimer(IN := State = 90, PT := T#2s);\n\nIF Active AND (State \u003C 80) THEN\n    IF CancelTest THEN DiagnosticCode := 7110; Failed := TRUE; State := 80;\n    ELSIF TotalTimer.Q THEN DiagnosticCode := 7111; Failed := TRUE; State := 80;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid\n        OR ReadStatus.ErrorStop THEN DiagnosticCode := 7112; Failed := TRUE; State := 80;\n    ELSIF (State \u003E= 30) AND (ABS(ActualPositionRev - StartPositionRev) \u003E DistanceRev * 1.5) THEN\n        DiagnosticCode := 7113; Failed := TRUE; State := 80;\n    END_IF;\nEND_IF;\n\n(* Only reads execute before a verified start. There is no cold-start disable command. *)\nIF Active THEN\n    PowerDemand := State \u003C 90;\n    StopAxis(Axis := AXIS_IS620N, Execute := State = 80);\n    Power(Axis := AXIS_IS620N, Enable := PowerDemand);\n    Home(Axis := AXIS_IS620N, Execute := State = 20);\n    MoveOut(Axis := AXIS_IS620N, Execute := State = 30,\n        Position := OutwardPositionRev, Velocity := VelocityRevPerSecond);\n    MoveBack(Axis := AXIS_IS620N, Execute := State = 50,\n        Position := StartPositionRev, Velocity := VelocityRevPerSecond);\n\n    IF (State \u003C 80) AND (Power.Error OR Home.Error OR MoveOut.Error OR MoveBack.Error\n        OR ((State = 20) AND Home.CommandAborted)\n        OR ((State = 30) AND MoveOut.CommandAborted)\n        OR ((State = 50) AND MoveBack.CommandAborted)) THEN\n        DiagnosticCode := 7114; Failed := TRUE; State := 80;\n    END_IF;\n\n    CASE State OF\n    10:\n        IF Power.Status AND NOT Power.Busy AND ReadStatus.Standstill THEN\n            IF EstablishTemporaryZero THEN State := 20; ELSE State := 30; END_IF;\n        END_IF;\n    20:\n        IF Home.Done AND ReadStatus.Valid AND ReadStatus.Homed AND ReadStatus.Standstill THEN\n            StartPositionRev := ActualPositionRev;\n            OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n            State := 30;\n        END_IF;\n    30:\n        IF MoveOut.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - OutwardPositionRev) \u003C= PositionToleranceRev) THEN State := 40; END_IF;\n    40:\n        IF DwellTimer.Q THEN State := 50; END_IF;\n    50:\n        IF MoveBack.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - StartPositionRev) \u003C= PositionToleranceRev) THEN\n            Returned := TRUE; State := 60;\n        END_IF;\n    60:\n        IF DwellTimer.Q THEN State := 80; END_IF;\n    80:\n        IF StopAxis.Done AND ReadVelocity.Valid AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN State := 90;\n        ELSIF StopAxis.Error OR StopTimer.Q THEN\n            DiagnosticCode := 7115; Failed := TRUE; OutcomeUnknown := TRUE; State := 90;\n        END_IF;\n    90:\n        IF ReadStatus.Valid AND ReadStatus.Disabled AND NOT Power.Busy THEN\n            Active := FALSE;\n            IF Returned AND NOT Failed AND NOT OutcomeUnknown THEN\n                Passed := TRUE; CompletedRoundTrips := CompletedRoundTrips \u002B 1; State := 100;\n            ELSE Failed := TRUE; State := 900;\n            END_IF;\n        ELSIF Power.Error OR DisableTimer.Q THEN\n            DiagnosticCode := 7116; Failed := TRUE; OutcomeUnknown := TRUE;\n            Active := FALSE; State := 999;\n        END_IF;\n    END_CASE;\nEND_IF;\nEND_PROGRAM\n"
+    },
+    "result": "success",
+    "response": {
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "ProjectPath": "examples/is620n-test/IS620N.stproj",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "HasUnsavedChanges": true,
+      "Project": {
+        "Network": {
+          "ManagementHost": "192.168.1.31",
+          "SshUser": "a",
+          "RuntimeEndpoint": "",
+          "EtherCatInterface": "enp3s0"
+        },
+        "SchemaVersion": 1,
+        "Id": "f8d1f254-c49b-41c9-8e78-daa4f5f4e078",
+        "Name": "IS620N \u7A7A\u8F7D\u5355\u6B21\u5F80\u8FD4\u6D4B\u8BD5\uFF08\u5F85\u5B9E\u673A\u9002\u914D\uFF09",
+        "Items": [
+          {
+            "Id": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "Name": "Main",
+            "Kind": "Program",
+            "SourcePath": "sources/Main.st"
+          }
+        ],
+        "Tasks": [
+          {
+            "Name": "Cyclic",
+            "ProgramId": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "IntervalMilliseconds": 10,
+            "Enabled": true
+          }
+        ],
+        "Hardware": {
+          "Stations": [
+            {
+              "Id": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "Name": "IS620NDrive",
+              "DeviceId": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "AliasAddress": 0,
+              "EnabledEntries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24831,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetVelocity",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24672,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeOfOperation",
+                  "Type": "SINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24684,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualVelocity",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24673,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeDisplay",
+                  "Type": "SINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Devices": [
+            {
+              "Id": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "Name": "IS620N_ECAT_v2.6.2 (commissioned 1600/1A00 PDO)",
+              "VendorId": 1048576,
+              "ProductCode": 786696,
+              "Revision": 65537,
+              "Entries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24831,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetVelocity",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24672,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeOfOperation",
+                  "Type": "SINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24684,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualVelocity",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24673,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeDisplay",
+                  "Type": "SINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Io": [],
+          "Axes": [
+            {
+              "Name": "IS620N",
+              "ControllerAxis": "Axis1",
+              "Unit": "rev",
+              "MinPosition": -1,
+              "MaxPosition": 1,
+              "StationId": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "MaximumVelocity": 0.01
+            }
+          ]
+        },
+        "Paths": []
+      },
+      "Sources": [
+        {
+          "ItemId": "91104fdc-745d-49de-88ac-0e2d24052797",
+          "RelativePath": "sources/Main.st",
+          "Text": "PROGRAM Main\nVAR\n    (* One rising edge requests one unloaded-motor round trip.\n       These stay FALSE until the actual controller uses verified rev units.\n       Current-position homing needs the commissioned method-35 controller profile.\n       No alarm reset or switch-search homing is performed. *)\n    RunOnce : BOOL := FALSE;\n    ParametersConfirmed : BOOL := FALSE;\n    EstablishTemporaryZero : BOOL := TRUE;\n    CancelTest : BOOL := FALSE;\n    Acknowledge : BOOL := FALSE;\n    DistanceRev : LREAL := 0.01;\n    VelocityRevPerSecond : LREAL := 0.01;\n    PositionToleranceRev : LREAL := 0.0001;\n    State : UINT := 0;\n    Active : BOOL;\n    Passed : BOOL;\n    Failed : BOOL;\n    OutcomeUnknown : BOOL;\n    DiagnosticCode : UDINT;\n    ReadyForTest : BOOL;\n    NeedsReference : BOOL;\n    ActualPositionRev : LREAL;\n    ActualVelocityRevPerSecond : LREAL;\n    StartPositionRev : LREAL;\n    OutwardPositionRev : LREAL;\n    CompletedRoundTrips : UINT;\n    PreviousRun : BOOL;\n    StartEdge : BOOL;\n    PowerDemand : BOOL;\n    Returned : BOOL;\n    ReadStatus : MC_ReadAxisStatus;\n    ReadPosition : MC_ReadActualPosition;\n    ReadVelocity : MC_ReadActualVelocity;\n    Power : MC_Power;\n    Home : MC_Home;\n    MoveOut : MC_MoveAbsolute;\n    MoveBack : MC_MoveAbsolute;\n    StopAxis : MC_Stop;\n    TotalTimer : TON;\n    DwellTimer : TON;\n    StopTimer : TON;\n    DisableTimer : TON;\nEND_VAR\n\nReadStatus(Axis := AXIS_IS620N, Enable := TRUE);\nReadPosition(Axis := AXIS_IS620N, Enable := TRUE);\nReadVelocity(Axis := AXIS_IS620N, Enable := TRUE);\nActualPositionRev := ReadPosition.Position;\nActualVelocityRevPerSecond := ReadVelocity.Velocity;\nNeedsReference := ReadStatus.Valid AND NOT ReadStatus.Homed;\nReadyForTest := ParametersConfirmed AND ReadStatus.Valid AND ReadPosition.Valid\n    AND ReadVelocity.Valid AND (ReadStatus.Homed OR EstablishTemporaryZero) AND NOT ReadStatus.ErrorStop\n    AND (ReadStatus.Disabled OR ReadStatus.Standstill)\n    AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) AND NOT CancelTest;\nStartEdge := RunOnce AND NOT PreviousRun;\nPreviousRun := RunOnce;\n\nIF Acknowledge AND NOT RunOnce AND NOT Active THEN\n    State := 0; Passed := FALSE; Failed := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\nEND_IF;\n\nIF StartEdge AND (State = 0) THEN\n    Passed := FALSE; Failed := FALSE; Returned := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\n    IF CancelTest THEN DiagnosticCode := 7110;\n    ELSIF NOT ParametersConfirmed THEN DiagnosticCode := 7101;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid THEN DiagnosticCode := 7103;\n    ELSIF NOT ReadStatus.Homed AND NOT EstablishTemporaryZero THEN DiagnosticCode := 7102;\n    ELSIF ReadStatus.ErrorStop THEN DiagnosticCode := 7104;\n    ELSIF NOT (ReadStatus.Disabled OR ReadStatus.Standstill)\n        OR NOT (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN DiagnosticCode := 7106;\n    ELSIF NOT (DistanceRev \u003E 0.0) OR NOT (DistanceRev \u003C= 0.01)\n        OR NOT (VelocityRevPerSecond \u003E 0.0) OR NOT (VelocityRevPerSecond \u003C= 0.01)\n        OR NOT (PositionToleranceRev \u003E 0.0) OR NOT (PositionToleranceRev \u003C= DistanceRev / 4.0)\n        OR NOT (ABS(ActualPositionRev) \u002B DistanceRev \u003C= 1.0) THEN DiagnosticCode := 7105;\n    ELSE\n        StartPositionRev := ActualPositionRev;\n        OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n        Active := TRUE; State := 10;\n    END_IF;\n    IF DiagnosticCode \u003C\u003E 0 THEN Failed := TRUE; State := 900; END_IF;\nEND_IF;\n\nTotalTimer(IN := Active, PT := T#10s);\nDwellTimer(IN := (State = 40) OR (State = 60), PT := T#250ms);\nStopTimer(IN := State = 80, PT := T#2s);\nDisableTimer(IN := State = 90, PT := T#2s);\n\nIF Active AND (State \u003C 80) THEN\n    IF CancelTest THEN DiagnosticCode := 7110; Failed := TRUE; State := 80;\n    ELSIF TotalTimer.Q THEN DiagnosticCode := 7111; Failed := TRUE; State := 80;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid\n        OR ReadStatus.ErrorStop THEN DiagnosticCode := 7112; Failed := TRUE; State := 80;\n    ELSIF (State \u003E= 30) AND (ABS(ActualPositionRev - StartPositionRev) \u003E DistanceRev * 1.5) THEN\n        DiagnosticCode := 7113; Failed := TRUE; State := 80;\n    END_IF;\nEND_IF;\n\n(* Only reads execute before a verified start. There is no cold-start disable command. *)\nIF Active THEN\n    PowerDemand := State \u003C 90;\n    StopAxis(Axis := AXIS_IS620N, Execute := State = 80);\n    Power(Axis := AXIS_IS620N, Enable := PowerDemand);\n    Home(Axis := AXIS_IS620N, Execute := State = 20);\n    MoveOut(Axis := AXIS_IS620N, Execute := State = 30,\n        Position := OutwardPositionRev, Velocity := VelocityRevPerSecond);\n    MoveBack(Axis := AXIS_IS620N, Execute := State = 50,\n        Position := StartPositionRev, Velocity := VelocityRevPerSecond);\n\n    IF (State \u003C 80) AND (Power.Error OR Home.Error OR MoveOut.Error OR MoveBack.Error\n        OR ((State = 20) AND Home.CommandAborted)\n        OR ((State = 30) AND MoveOut.CommandAborted)\n        OR ((State = 50) AND MoveBack.CommandAborted)) THEN\n        DiagnosticCode := 7114; Failed := TRUE; State := 80;\n    END_IF;\n\n    CASE State OF\n    10:\n        IF Power.Status AND NOT Power.Busy AND ReadStatus.Standstill THEN\n            IF EstablishTemporaryZero THEN State := 20; ELSE State := 30; END_IF;\n        END_IF;\n    20:\n        IF Home.Done AND ReadStatus.Valid AND ReadStatus.Homed AND ReadStatus.Standstill THEN\n            StartPositionRev := ActualPositionRev;\n            OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n            State := 30;\n        END_IF;\n    30:\n        IF MoveOut.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - OutwardPositionRev) \u003C= PositionToleranceRev) THEN State := 40; END_IF;\n    40:\n        IF DwellTimer.Q THEN State := 50; END_IF;\n    50:\n        IF MoveBack.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - StartPositionRev) \u003C= PositionToleranceRev) THEN\n            Returned := TRUE; State := 60;\n        END_IF;\n    60:\n        IF DwellTimer.Q THEN State := 80; END_IF;\n    80:\n        IF StopAxis.Done AND ReadVelocity.Valid AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN State := 90;\n        ELSIF StopAxis.Error OR StopTimer.Q THEN\n            DiagnosticCode := 7115; Failed := TRUE; OutcomeUnknown := TRUE; State := 90;\n        END_IF;\n    90:\n        IF ReadStatus.Valid AND ReadStatus.Disabled AND NOT Power.Busy THEN\n            Active := FALSE;\n            IF Returned AND NOT Failed AND NOT OutcomeUnknown THEN\n                Passed := TRUE; CompletedRoundTrips := CompletedRoundTrips \u002B 1; State := 100;\n            ELSE Failed := TRUE; State := 900;\n            END_IF;\n        ELSIF Power.Error OR DisableTimer.Q THEN\n            DiagnosticCode := 7116; Failed := TRUE; OutcomeUnknown := TRUE;\n            Active := FALSE; State := 999;\n        END_IF;\n    END_CASE;\nEND_IF;\nEND_PROGRAM\n"
+        }
+      ],
+      "Notice": "MCP edits a saved-project draft. Save then reload in the desktop; resolve unsaved desktop edits first."
+    }
+  },
+  {
+    "tool": "project_validate",
+    "arguments": {
+      "sessionId": "60fec4db6f6844a1925cf0f2eb059c51"
+    },
+    "result": "success",
+    "response": {
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "success": true,
+      "diagnostics": [],
+      "stage": "engineering-check",
+      "compilerCheckRequired": true
+    }
+  },
+  {
+    "tool": "project_save",
+    "arguments": {
+      "sessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "expectedRevision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57"
+    },
+    "result": "success",
+    "response": {
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "ProjectPath": "examples/is620n-test/IS620N.stproj",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "HasUnsavedChanges": false,
+      "Project": {
+        "Network": {
+          "ManagementHost": "192.168.1.31",
+          "SshUser": "a",
+          "RuntimeEndpoint": "",
+          "EtherCatInterface": "enp3s0"
+        },
+        "SchemaVersion": 1,
+        "Id": "f8d1f254-c49b-41c9-8e78-daa4f5f4e078",
+        "Name": "IS620N \u7A7A\u8F7D\u5355\u6B21\u5F80\u8FD4\u6D4B\u8BD5\uFF08\u5F85\u5B9E\u673A\u9002\u914D\uFF09",
+        "Items": [
+          {
+            "Id": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "Name": "Main",
+            "Kind": "Program",
+            "SourcePath": "sources/Main.st"
+          }
+        ],
+        "Tasks": [
+          {
+            "Name": "Cyclic",
+            "ProgramId": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "IntervalMilliseconds": 10,
+            "Enabled": true
+          }
+        ],
+        "Hardware": {
+          "Stations": [
+            {
+              "Id": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "Name": "IS620NDrive",
+              "DeviceId": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "AliasAddress": 0,
+              "EnabledEntries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24831,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetVelocity",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24672,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeOfOperation",
+                  "Type": "SINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24684,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualVelocity",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24673,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeDisplay",
+                  "Type": "SINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Devices": [
+            {
+              "Id": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "Name": "IS620N_ECAT_v2.6.2 (commissioned 1600/1A00 PDO)",
+              "VendorId": 1048576,
+              "ProductCode": 786696,
+              "Revision": 65537,
+              "Entries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24831,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetVelocity",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24672,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeOfOperation",
+                  "Type": "SINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24684,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualVelocity",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24673,
+                  "SubIndex": 0,
+                  "BitLength": 8,
+                  "Name": "ModeDisplay",
+                  "Type": "SINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Io": [],
+          "Axes": [
+            {
+              "Name": "IS620N",
+              "ControllerAxis": "Axis1",
+              "Unit": "rev",
+              "MinPosition": -1,
+              "MaxPosition": 1,
+              "StationId": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "MaximumVelocity": 0.01
+            }
+          ]
+        },
+        "Paths": []
+      },
+      "Sources": [
+        {
+          "ItemId": "91104fdc-745d-49de-88ac-0e2d24052797",
+          "RelativePath": "sources/Main.st",
+          "Text": "PROGRAM Main\nVAR\n    (* One rising edge requests one unloaded-motor round trip.\n       These stay FALSE until the actual controller uses verified rev units.\n       Current-position homing needs the commissioned method-35 controller profile.\n       No alarm reset or switch-search homing is performed. *)\n    RunOnce : BOOL := FALSE;\n    ParametersConfirmed : BOOL := FALSE;\n    EstablishTemporaryZero : BOOL := TRUE;\n    CancelTest : BOOL := FALSE;\n    Acknowledge : BOOL := FALSE;\n    DistanceRev : LREAL := 0.01;\n    VelocityRevPerSecond : LREAL := 0.01;\n    PositionToleranceRev : LREAL := 0.0001;\n    State : UINT := 0;\n    Active : BOOL;\n    Passed : BOOL;\n    Failed : BOOL;\n    OutcomeUnknown : BOOL;\n    DiagnosticCode : UDINT;\n    ReadyForTest : BOOL;\n    NeedsReference : BOOL;\n    ActualPositionRev : LREAL;\n    ActualVelocityRevPerSecond : LREAL;\n    StartPositionRev : LREAL;\n    OutwardPositionRev : LREAL;\n    CompletedRoundTrips : UINT;\n    PreviousRun : BOOL;\n    StartEdge : BOOL;\n    PowerDemand : BOOL;\n    Returned : BOOL;\n    ReadStatus : MC_ReadAxisStatus;\n    ReadPosition : MC_ReadActualPosition;\n    ReadVelocity : MC_ReadActualVelocity;\n    Power : MC_Power;\n    Home : MC_Home;\n    MoveOut : MC_MoveAbsolute;\n    MoveBack : MC_MoveAbsolute;\n    StopAxis : MC_Stop;\n    TotalTimer : TON;\n    DwellTimer : TON;\n    StopTimer : TON;\n    DisableTimer : TON;\nEND_VAR\n\nReadStatus(Axis := AXIS_IS620N, Enable := TRUE);\nReadPosition(Axis := AXIS_IS620N, Enable := TRUE);\nReadVelocity(Axis := AXIS_IS620N, Enable := TRUE);\nActualPositionRev := ReadPosition.Position;\nActualVelocityRevPerSecond := ReadVelocity.Velocity;\nNeedsReference := ReadStatus.Valid AND NOT ReadStatus.Homed;\nReadyForTest := ParametersConfirmed AND ReadStatus.Valid AND ReadPosition.Valid\n    AND ReadVelocity.Valid AND (ReadStatus.Homed OR EstablishTemporaryZero) AND NOT ReadStatus.ErrorStop\n    AND (ReadStatus.Disabled OR ReadStatus.Standstill)\n    AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) AND NOT CancelTest;\nStartEdge := RunOnce AND NOT PreviousRun;\nPreviousRun := RunOnce;\n\nIF Acknowledge AND NOT RunOnce AND NOT Active THEN\n    State := 0; Passed := FALSE; Failed := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\nEND_IF;\n\nIF StartEdge AND (State = 0) THEN\n    Passed := FALSE; Failed := FALSE; Returned := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\n    IF CancelTest THEN DiagnosticCode := 7110;\n    ELSIF NOT ParametersConfirmed THEN DiagnosticCode := 7101;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid THEN DiagnosticCode := 7103;\n    ELSIF NOT ReadStatus.Homed AND NOT EstablishTemporaryZero THEN DiagnosticCode := 7102;\n    ELSIF ReadStatus.ErrorStop THEN DiagnosticCode := 7104;\n    ELSIF NOT (ReadStatus.Disabled OR ReadStatus.Standstill)\n        OR NOT (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN DiagnosticCode := 7106;\n    ELSIF NOT (DistanceRev \u003E 0.0) OR NOT (DistanceRev \u003C= 0.01)\n        OR NOT (VelocityRevPerSecond \u003E 0.0) OR NOT (VelocityRevPerSecond \u003C= 0.01)\n        OR NOT (PositionToleranceRev \u003E 0.0) OR NOT (PositionToleranceRev \u003C= DistanceRev / 4.0)\n        OR NOT (ABS(ActualPositionRev) \u002B DistanceRev \u003C= 1.0) THEN DiagnosticCode := 7105;\n    ELSE\n        StartPositionRev := ActualPositionRev;\n        OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n        Active := TRUE; State := 10;\n    END_IF;\n    IF DiagnosticCode \u003C\u003E 0 THEN Failed := TRUE; State := 900; END_IF;\nEND_IF;\n\nTotalTimer(IN := Active, PT := T#10s);\nDwellTimer(IN := (State = 40) OR (State = 60), PT := T#250ms);\nStopTimer(IN := State = 80, PT := T#2s);\nDisableTimer(IN := State = 90, PT := T#2s);\n\nIF Active AND (State \u003C 80) THEN\n    IF CancelTest THEN DiagnosticCode := 7110; Failed := TRUE; State := 80;\n    ELSIF TotalTimer.Q THEN DiagnosticCode := 7111; Failed := TRUE; State := 80;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid\n        OR ReadStatus.ErrorStop THEN DiagnosticCode := 7112; Failed := TRUE; State := 80;\n    ELSIF (State \u003E= 30) AND (ABS(ActualPositionRev - StartPositionRev) \u003E DistanceRev * 1.5) THEN\n        DiagnosticCode := 7113; Failed := TRUE; State := 80;\n    END_IF;\nEND_IF;\n\n(* Only reads execute before a verified start. There is no cold-start disable command. *)\nIF Active THEN\n    PowerDemand := State \u003C 90;\n    StopAxis(Axis := AXIS_IS620N, Execute := State = 80);\n    Power(Axis := AXIS_IS620N, Enable := PowerDemand);\n    Home(Axis := AXIS_IS620N, Execute := State = 20);\n    MoveOut(Axis := AXIS_IS620N, Execute := State = 30,\n        Position := OutwardPositionRev, Velocity := VelocityRevPerSecond);\n    MoveBack(Axis := AXIS_IS620N, Execute := State = 50,\n        Position := StartPositionRev, Velocity := VelocityRevPerSecond);\n\n    IF (State \u003C 80) AND (Power.Error OR Home.Error OR MoveOut.Error OR MoveBack.Error\n        OR ((State = 20) AND Home.CommandAborted)\n        OR ((State = 30) AND MoveOut.CommandAborted)\n        OR ((State = 50) AND MoveBack.CommandAborted)) THEN\n        DiagnosticCode := 7114; Failed := TRUE; State := 80;\n    END_IF;\n\n    CASE State OF\n    10:\n        IF Power.Status AND NOT Power.Busy AND ReadStatus.Standstill THEN\n            IF EstablishTemporaryZero THEN State := 20; ELSE State := 30; END_IF;\n        END_IF;\n    20:\n        IF Home.Done AND ReadStatus.Valid AND ReadStatus.Homed AND ReadStatus.Standstill THEN\n            StartPositionRev := ActualPositionRev;\n            OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n            State := 30;\n        END_IF;\n    30:\n        IF MoveOut.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - OutwardPositionRev) \u003C= PositionToleranceRev) THEN State := 40; END_IF;\n    40:\n        IF DwellTimer.Q THEN State := 50; END_IF;\n    50:\n        IF MoveBack.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - StartPositionRev) \u003C= PositionToleranceRev) THEN\n            Returned := TRUE; State := 60;\n        END_IF;\n    60:\n        IF DwellTimer.Q THEN State := 80; END_IF;\n    80:\n        IF StopAxis.Done AND ReadVelocity.Valid AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN State := 90;\n        ELSIF StopAxis.Error OR StopTimer.Q THEN\n            DiagnosticCode := 7115; Failed := TRUE; OutcomeUnknown := TRUE; State := 90;\n        END_IF;\n    90:\n        IF ReadStatus.Valid AND ReadStatus.Disabled AND NOT Power.Busy THEN\n            Active := FALSE;\n            IF Returned AND NOT Failed AND NOT OutcomeUnknown THEN\n                Passed := TRUE; CompletedRoundTrips := CompletedRoundTrips \u002B 1; State := 100;\n            ELSE Failed := TRUE; State := 900;\n            END_IF;\n        ELSIF Power.Error OR DisableTimer.Q THEN\n            DiagnosticCode := 7116; Failed := TRUE; OutcomeUnknown := TRUE;\n            Active := FALSE; State := 999;\n        END_IF;\n    END_CASE;\nEND_IF;\nEND_PROGRAM\n"
+        }
+      ],
+      "Notice": "MCP edits a saved-project draft. Save then reload in the desktop; resolve unsaved desktop edits first."
+    }
+  },
+  {
+    "tool": "motion_manifest",
+    "arguments": {
+      "sessionId": "60fec4db6f6844a1925cf0f2eb059c51"
+    },
+    "result": "success",
+    "response": {
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "manifest": "{\u0022SchemaVersion\u0022:1,\u0022InterfaceVersion\u0022:\u0022workbench-axis-v1\u0022,\u0022PlcIntervalMilliseconds\u0022:10,\u0022Axes\u0022:[{\u0022Index\u0022:1,\u0022Name\u0022:\u0022IS620N\u0022,\u0022ControllerAxis\u0022:\u0022Axis1\u0022,\u0022Unit\u0022:\u0022rev\u0022,\u0022MinPosition\u0022:-1,\u0022MaxPosition\u0022:1,\u0022MaximumVelocity\u0022:0.01,\u0022MaximumAcceleration\u0022:null,\u0022MaximumDeceleration\u0022:null,\u0022MaximumJerk\u0022:null}]}",
+      "sha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0"
+    }
+  },
+  {
+    "tool": "build_start",
+    "arguments": {
+      "sessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "expectedRevision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Running",
+      "Success": false,
+      "BuildHash": null,
+      "Diagnostics": [],
+      "Log": ""
+    }
+  },
+  {
+    "tool": "build_status",
+    "arguments": {
+      "operationId": "4740036d3b9d46b19c096325ed541738"
+    },
+    "result": "success",
+    "response": {
+      "OperationId": "4740036d3b9d46b19c096325ed541738",
+      "SessionId": "60fec4db6f6844a1925cf0f2eb059c51",
+      "Revision": "e21f8c98b37fa39c6c72ad6d52f6616197634f51a46738f634de87e07e3d6e57",
+      "State": "Completed",
+      "Success": true,
+      "BuildHash": "5CB4FA5793460A1B3646544B31032B0FDFE6EE403A16E59934BB517D153655E1",
+      "Diagnostics": [],
+      "Log": "STruC\u002B\u002B version 0.7.0\nGenerated C\u002B\u002B and authoritative debugger tables for isolated Runtime candidate compilation.\n"
+    }
+  }
+]

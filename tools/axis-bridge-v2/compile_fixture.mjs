@@ -1,0 +1,15 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {pathToFileURL} from 'node:url';
+import {createRequire} from 'node:module';
+const require=createRequire(new URL('../compiler-adapter/package.json',import.meta.url));
+const {compile,getVersion}=await import(pathToFileURL(require.resolve('strucpp/node')));
+if(getVersion()!=='0.7.0')throw Error('Pinned compiler required');
+const root=new URL('.',import.meta.url),out=new URL('build/',root);
+await mkdir(out,{recursive:true});
+const source=await readFile(new URL('../axis-bridge/scan_fixture.st',root),'utf8');
+const result=compile(source,{fileName:'scan_fixture.st',headerFileName:'generated.hpp',additionalSources:[{fileName:'axis_control.st',source:await readFile(new URL('axis_control.st',root),'utf8')}]});
+for(const diagnostic of [...result.errors,...result.warnings])console.error(diagnostic);
+if(!result.success)process.exit(1);
+await writeFile(new URL('generated.cpp',out),result.cppCode);
+await writeFile(new URL('generated.hpp',out),result.headerCode);
+console.log('Pinned compiler generated real v2 ST/shim fixture');

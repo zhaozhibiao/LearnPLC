@@ -1,0 +1,129 @@
+2026-10-19T06:24:36-04:00
+Master0
+  Phase: Idle
+  Active: no
+  Slaves: 1
+  Ethernet devices:
+    Main: b4:96:91:77:df:0f (attached)
+      Link: UP
+      Tx frames:   102762
+      Tx bytes:    6169624
+      Rx frames:   102761
+      Rx bytes:    6169564
+      Tx errors:   0
+      Tx frame rate [1/s]:    122    124    125
+      Tx rate [KByte/s]:      7.1    7.3    7.3
+      Rx frame rate [1/s]:    122    124    125
+      Rx rate [KByte/s]:      7.1    7.3    7.3
+    Common:
+      Tx frames:   102762
+      Tx bytes:    6169624
+      Rx frames:   102761
+      Rx bytes:    6169564
+      Lost frames: 0
+      Tx frame rate [1/s]:    122    124    125
+      Tx rate [KByte/s]:      7.1    7.3    7.3
+      Rx frame rate [1/s]:    122    124    125
+      Rx rate [KByte/s]:      7.1    7.3    7.3
+      Loss rate [1/s]:          0      0      0
+      Frame loss [%]:         0.0    0.0    0.0
+  Distributed clocks:
+    Reference clock:   Slave 0
+    DC reference time: 0
+    Application time:  0
+                       2000-01-01 00:00:00.000000000
+=== Master 0, Slave 0 ===
+Device: Main
+State: PREOP
+Flag: +
+Identity:
+  Vendor Id:       0x00100000
+  Product code:    0x000c0108
+  Revision number: 0x00010001
+  Serial number:   0x00000000
+DL information:
+  FMMU bit operation: no
+  Distributed clocks: yes, 64 bit
+  DC system time transmission delay: 0 ns
+Port  Type  Link  Loop    Signal  NextSlave  RxTime [ns]  Diff [ns]   NextDc [ns]
+   0  MII   down  closed  no              -            -           -           -
+   1  MII   up    open    yes             -   2327217962   525541864           0
+   2  N/A   down  closed  no              -            -           -           -
+   3  N/A   down  closed  no              -            -           -           -
+Mailboxes:
+  Bootstrap RX: 0x0000/0, TX: 0x0000/0
+  Standard  RX: 0x1000/128, TX: 0x1400/128
+  Supported protocols: CoE
+General:
+  Group: InoServo
+  Image name: 
+  Order number: IS620N
+  Device name: IS620N_ECAT_v2.6.2
+  CoE details:
+    Enable SDO: yes
+    Enable SDO Info: no
+    Enable PDO Assign: yes
+    Enable PDO Configuration: yes
+    Enable Upload at startup: no
+    Enable SDO complete access: no
+  Flags:
+    Enable SafeOp: no
+    Enable notLRW: no
+  Current consumption: 0 mA
+SM0: PhysAddr 0x1000, DefaultSize  128, ControlRegister 0x26, Enable 1
+SM1: PhysAddr 0x1400, DefaultSize  128, ControlRegister 0x22, Enable 1
+SM2: PhysAddr 0x1800, DefaultSize    0, ControlRegister 0x64, Enable 1
+  RxPDO 0x1701 ""
+    PDO entry 0x6040:00, 16 bit, ""
+    PDO entry 0x607a:00, 32 bit, ""
+    PDO entry 0x60b8:00, 16 bit, ""
+    PDO entry 0x60fe:01, 32 bit, ""
+SM3: PhysAddr 0x1c00, DefaultSize    0, ControlRegister 0x20, Enable 1
+  TxPDO 0x1b01 ""
+    PDO entry 0x603f:00, 16 bit, ""
+    PDO entry 0x6041:00, 16 bit, ""
+    PDO entry 0x6064:00, 32 bit, ""
+    PDO entry 0x6077:00, 16 bit, ""
+    PDO entry 0x60f4:00, 32 bit, ""
+    PDO entry 0x60b9:00, 16 bit, ""
+    PDO entry 0x60ba:00, 32 bit, ""
+    PDO entry 0x60bc:00, 32 bit, ""
+    PDO entry 0x60fd:00, 32 bit, ""
+=== SDO 0x1008:0 (string) ===
+IS620-ECAT
+=== SDO 0x1018:1 (uint32) ===
+0x00100000 1048576
+=== SDO 0x1018:2 (uint32) ===
+0x000c0108 786696
+=== SDO 0x1018:3 (uint32) ===
+0x00010001 65537
+=== SDO 0x603f:0 (uint16) ===
+0x0000 0
+=== SDO 0x6041:0 (uint16) ===
+0x0250 592
+=== SDO 0x6061:0 (int8) ===
+0x00 0
+=== SDO 0x6064:0 (int32) ===
+0x00000000 0
+=== SDO 0x606c:0 (int32) ===
+0x00000000 0
+=== SDO 0x608f:1 (uint32) ===
+SDO transfer aborted with code 0x06020000: This object does not exist in the object directory
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x608f:2 (uint32) ===
+SDO transfer aborted with code 0x06020000: This object does not exist in the object directory
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x6091:1 (uint32) ===
+0x00000001 1
+=== SDO 0x6091:2 (uint32) ===
+0x00000001 1
+=== SDO 0x6092:1 (uint32) ===
+SDO transfer aborted with code 0x06020000: This object does not exist in the object directory
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x6092:2 (uint32) ===
+SDO transfer aborted with code 0x06020000: This object does not exist in the object directory
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x6098:0 (int8) ===
+0x01 1
+=== SDO 0x6502:0 (uint32) ===
+0x000003ad 941

@@ -1,0 +1,18 @@
+[Unit]
+Description=ST Workbench native PLC management host
+
+[Service]
+Type=simple
+WorkingDirectory=/home/a/.local/share/st-workbench/runtime-v4.3.0/source
+Environment=OPENPLC_RUNTIME_DIR=/home/a/.local/share/st-workbench/runtime-v4.3.0/run
+Environment=OPENPLC_PERSISTENT_DATA_DIR=/home/a/.local/share/st-workbench/runtime-v4.3.0/data
+ExecStartPre=/home/a/.local/share/st-workbench/runtime-v4.3.0/native/bin/st-runtime-startup-gate
+ExecStart=/home/a/.local/share/st-workbench/runtime-v4.3.0/native/bin/st-runtime-host
+Restart=no
+TimeoutStopSec=30
+KillMode=control-group
+UMask=0077
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target

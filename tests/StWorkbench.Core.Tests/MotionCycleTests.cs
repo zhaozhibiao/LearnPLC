@@ -25,6 +25,8 @@ public static class MotionCycleTests
         var snapshotMutation = snapshot.MotionCycle.AxisNames; snapshotMutation[0] = "Wrong";
         Check(snapshot.MotionCycle.AxisNames[0] == "X", "snapshot does not expose mutable axis group");
         var valid = snapshot.MotionCycle!;
+        Check(valid.Priority == 80, "motion default above all PLC realtime tasks");
+        Check(MotionCycleValidator.Validate(valid with { Priority = 40 }, project.Hardware.Axes, []).Any(e => e.Contains("60")), "legacy low motion priority requires explicit correction");
         foreach (var bad in new[] { valid with { PeriodMicroseconds = 0 }, valid with { Priority = 90 }, valid with { Cpu = -1 }, valid with { WatchdogCycles = 0 }, valid with { SchedulingPolicy = "OTHER" }, valid with { AxisNames = [] }, valid with { AxisNames = ["X", "x"] }, valid with { AxisNames = ["Wrong"] }, valid with { AxisNames = ["x"] } })
             Check(MotionCycleValidator.Validate(bad, project.Hardware.Axes, []).Count > 0, "invalid config rejected");
         var mismatchedPath = new MotionPathAsset { Axes = ["X"], Profile = new() { CycleSeconds = .002 } };

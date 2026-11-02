@@ -55,8 +55,17 @@ struct AxisFeedbackConfiguration {
     double velocity_feedback_raw_per_unit_per_second{};
     double velocity_offset_raw_per_unit_per_second{};
 
-    // Explicit bench-only reference change; false preserves raw host-target supervision.
+    // Explicit engineering configuration; false preserves legacy raw host-target supervision.
     bool drive_demand_protection{};
+    double demand_delivery_tolerance{};
+    bool demand_delivery_enforced{};
+    bool drive_error_only{};
+    std::string position_demand_key;
+    std::string following_error_key;
+    // Required declared raw/engineering-unit scales when protection is selected.
+    // Zero means unknown; do not silently assume either PDO uses encoder counts.
+    double position_demand_raw_per_unit{};
+    double following_error_raw_per_unit{};
 
     static AxisFeedbackConfiguration load(const std::string& path, const std::string& axis_name);
     static std::vector<AxisFeedbackConfiguration> load_all(const std::string& path);
@@ -80,6 +89,8 @@ public:
     void process(PdoImageView& image, RealtimeAxisSnapshot& snapshot) noexcept override;
 
 private:
+    [[nodiscard]] bool can_reset_command() const noexcept;
+    void complete_reset() noexcept;
     AxisFeedbackConfiguration configuration_;
     PdoHandle controlword_;
     PdoHandle target_position_;
@@ -96,11 +107,15 @@ private:
     std::array<std::int32_t, 2> demand_history_{};
     unsigned demand_history_size_{}, demand_history_next_{};
     bool demand_flow_fault_{}, demand_reset_healthy_{true};
+    bool demand_delivery_fault_{};
     double peak_error_{}, excess_ms_{}, max_excess_ms_{}, peak_actual_velocity_{};
     bool motion_timing_ready_{true};
     bool motion_timing_fault_{};
     bool enable_requested_{};
     bool reset_requested_{};
+    bool drive_fault_active_{};
+    bool drive_reset_pending_{};
+    bool drive_reset_feedback_healthy_{};
     bool operation_enabled_{};
     std::int8_t last_mode_display_{};
     double last_actual_velocity_{};

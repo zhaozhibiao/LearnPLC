@@ -14,7 +14,7 @@
       "AllowMotion": false,
       "Backend": "EcMotion",
       "AllowedAxes": ["X"],
-      "GatewayPath": "/home/a/st-workbench-mcp/linux/mcp/motion_gateway.py",
+      "GatewayPath": "/home/a/st-workbench-mcp/st-motion-gateway",
       "AxisManifestPath": "/home/a/st-workbench-mcp/axis-manifest.json",
       "ControllerSocket": "/run/ecmotion/controller.sock"
     }

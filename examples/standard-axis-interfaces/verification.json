@@ -1,0 +1,18 @@
+{
+  "VerifiedAt": "2026-10-22T13:23:39.4064457+08:00",
+  "BuildHash": "FCA29A31130F84CF48AA021A6F698FCC243B07DFE8B6D8D51D6E2CABBC6CBDAB",
+  "PublicInterfaceScenarios": 19,
+  "ExampleSequenceScenarios": 9,
+  "LinuxWorkerTests": 40,
+  "LegacyScanPassed": true,
+  "CorePassed": true,
+  "ToolchainPassed": true,
+  "McpPassed": true,
+  "AppPassed": true,
+  "SpecificationReviewPassed": true,
+  "QualityReviewPassed": true,
+  "DeviceProgramChanged": false,
+  "PhysicalMotionTested": false,
+  "AxisLibrarySha256": "D53C8F49571FA59614C85BBCB4DE62702393724B5FAEA7F26F35525EBD88F367",
+  "ScanShimSha256": "00EDF55DC6694A254B1A740D666DB652EF31C3E1B3F11CAB8760EAAB0F7B7AC5"
+}

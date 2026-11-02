@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "cyclic_trace.hpp"
+#include "axis_feedback.hpp"
 #include <array>
 #include <climits>
 #include <sstream>
@@ -98,6 +99,55 @@ int main() {
         trace.capture(image,axis,9,9000000,9000500,true,-99);
         check(trace.frames().size()==1 && trace.frames()[0].cycle==9 && trace.dropped()==0,"trace rearm did not reset bounded buffer");
         check(!trace.request_rearm(),"recording trace must reject rearm");
+        // Formal engineering keys are not legacy display-name suffixes.
+        auto formal=descriptors();
+        for(auto& entry:formal) entry.key="Project.Axis."+entry.key.substr(entry.key.find("0x"));
+        formal.pop_back(); // Engineering mapping intentionally has no 6077 torque.
+        ecmotion::AxisFeedbackConfiguration configured;
+        configured.controlword_key=formal[0].key; configured.target_position_key=formal[1].key;
+        configured.velocity_offset_key=formal[2].key; configured.statusword_key=formal[5].key;
+        configured.position_actual_key=formal[6].key; configured.velocity_actual_key=formal[7].key;
+        configured.mode_display_key=formal[8].key; configured.error_code_key=formal[4].key;
+        configured.position_demand_key=formal[9].key; configured.following_error_key=formal[10].key;
+        const auto bindings=ecmotion::CyclicAxisTraceBindings::from_axis(configured);
+        ecmotion::PdoLayout formal_layout(formal,34);
+        ecmotion::PdoImageView formal_image(bytes,formal_layout);
+        ecmotion::CyclicAxisTrace formal_trace(formal_layout,bindings,2);
+        formal_trace.capture(formal_image,axis,10,10000000,10000500,true,-99);
+        check(formal_trace.request_freeze(),"formal trace freeze rejected");
+        formal_trace.capture(formal_image,axis,11,11000000,11000500,true,-99);
+        check(formal_trace.frozen() && !formal_trace.frames()[0].torque_valid,"absent torque falsely valid");
+        std::ostringstream formal_csv; formal_trace.write_csv(formal_csv);
+        check(formal_csv.str().find("torque_raw,torque_valid")!=std::string::npos,"torque validity CSV missing");
+        check(formal_csv.str().find("-400,,0,")!=std::string::npos,"unmeasured torque must be blank with validity false");
+        formal_trace.capture(formal_image,axis,12,12000000,12000500,true,-99);
+        std::ostringstream frozen_csv; formal_trace.write_csv(frozen_csv);
+        check(formal_csv.str()==frozen_csv.str(),"formal frozen CSV mutated");
+        for(const auto index:{9U,10U}) {
+            auto absent=formal; absent.erase(absent.begin()+index);
+            rejected([&]{ecmotion::PdoLayout l(absent,34);ecmotion::CyclicAxisTrace bad(l,bindings,1);});
+        }
+        for(std::size_t index=0;index<formal.size();++index) {
+            if(index==3) continue; // mode command is not a trace channel
+            auto invalid=formal; invalid[index].direction=invalid[index].direction==ecmotion::PdoDirection::ControllerInput
+                ? ecmotion::PdoDirection::ControllerOutput:ecmotion::PdoDirection::ControllerInput;
+            rejected([&]{ecmotion::PdoLayout l(invalid,34);ecmotion::CyclicAxisTrace bad(l,bindings,1);});
+            invalid=formal; invalid[index].bit_length/=2;
+            rejected([&]{ecmotion::PdoLayout l(invalid,34);ecmotion::CyclicAxisTrace bad(l,bindings,1);});
+        }
+        auto no_demand=bindings; no_demand.position_demand_key.clear();
+        rejected([&]{ecmotion::CyclicAxisTrace bad(formal_layout,no_demand,1);});
+        auto torque_bindings=bindings; torque_bindings.torque_actual_key="Project.Axis.0x6077:0";
+        rejected([&]{ecmotion::CyclicAxisTrace bad(formal_layout,torque_bindings,1);});
+        formal.push_back({torque_bindings.torque_actual_key,ecmotion::PdoDirection::ControllerInput,32,0,16});
+        ecmotion::PdoLayout torque_layout(formal,34);
+        ecmotion::PdoImageView torque_image(bytes,torque_layout);
+        ecmotion::CyclicAxisTrace torque_trace(torque_layout,torque_bindings,1);
+        torque_trace.capture(torque_image,axis,1,1,1,true,0);
+        check(torque_trace.frames()[0].torque_valid && torque_trace.frames()[0].torque_raw==-123,"bound torque lost validity/value");
+        check(formal_trace.request_rearm(),"formal rearm rejected");
+        formal_trace.capture(formal_image,axis,13,13000000,13000500,true,-99);
+        check(formal_trace.frames().size()==1 && formal_trace.frames()[0].cycle==13,"formal rearm failed");
         std::cout<<"cyclic axis trace: PASS\n";return 0;
     } catch(const std::exception& e) {std::cerr<<e.what()<<'\n';return 1;}
 }

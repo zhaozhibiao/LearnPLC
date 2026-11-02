@@ -46,39 +46,111 @@ def read_exact(stream, count):
 
 
 class ProtocolClient:
-    def __init__(self, stream):
-        self.stream = stream
+    """One native session. Ambiguous wire failures permanently revoke its transport."""
+    REQUEST_KINDS = frozenset({'HelloRequest','ReadSnapshotRequest','AcquireControlRequest',
+        'ReleaseControlRequest','HeartbeatRequest','AxisCommandRequest','PlcScanBatchRequest'})
+
+    def __init__(self, stream, now=time.perf_counter):
+        self.stream, self.now = stream, now
         self.sequence = 0
+        self.failure = None
+        self.timings = {}
+        self.original_timeout=getattr(stream,'gettimeout',lambda: .2)()
+        self.io_timeout=self.original_timeout if self.original_timeout and self.original_timeout>0 else .2
+
+    def diagnostics(self):
+        return dict(State='Disconnected' if self.failure else 'Connected',
+            FailureReason=self.failure, Requests={kind:dict(Count=s[0],Failures=s[1],
+                LastMilliseconds=s[2],MaxMilliseconds=s[3],MeanMilliseconds=s[4]/s[0])
+                for kind,s in self.timings.items()})
+
+    def _abort(self, reason):
+        if self.failure is not None:return
+        self.failure = reason
+        try:self.stream.shutdown(socket.SHUT_RDWR)
+        except (OSError,AttributeError):pass
+        try:self.stream.close()
+        except OSError:pass
 
     def request(self, kind, payload, expected='CommandResponse'):
-        self.sequence += 1
-        if self.sequence >= 2**64:
+        if self.failure is not None:raise ProtocolError('Native channel requires explicit re-establishment')
+        sequence = self.sequence + 1
+        if sequence >= 2**64:
+            self._abort('sequence_exhausted')
             raise ProtocolError('Protocol sequence exhausted')
         request_id = str(uuid.uuid4())
-        envelope = dict(protocolVersion=4, kind=kind, requestId=request_id,
-                        sequence=self.sequence, payload=payload)
-        data = json.dumps(envelope, allow_nan=False, separators=(',', ':')).encode('utf-8')
-        if not 0 < len(data) <= 1048576:
-            raise ProtocolError('Invalid outgoing frame length')
-        self.stream.sendall(struct.pack('<I', len(data)) + data)
-        count, = struct.unpack('<I', read_exact(self.stream, 4))
-        if not 0 < count <= 1048576:
-            raise ProtocolError('Invalid incoming frame length')
+        envelope = dict(protocolVersion=4,kind=kind,requestId=request_id,sequence=sequence,payload=payload)
+        # Invalid local data has never reached the wire and does not poison a session.
+        data = json.dumps(envelope,allow_nan=False,separators=(',', ':')).encode('utf-8')
+        if not 0 < len(data) <= 1048576:raise ProtocolError('Invalid outgoing frame length')
+        self.sequence = sequence
+        started, failed = self.now(), True
+        deadline=time.monotonic()+self.io_timeout
+        def remaining():
+            wait=deadline-time.monotonic()
+            if wait<=0:raise TimeoutError('Native whole-frame deadline expired')
+            setter=getattr(self.stream,'settimeout',None)
+            if setter:setter(wait)
+        def receive(count):
+            buffer=bytearray()
+            while len(buffer)<count:
+                remaining()
+                chunk=self.stream.recv(count-len(buffer))
+                if not chunk:raise ProtocolError('Controller closed or truncated a frame')
+                buffer.extend(chunk)
+            return bytes(buffer)
+        def pairs(items):
+            result={}
+            for key,value in items:
+                if key in result:raise ValueError('Duplicate native response field')
+                result[key]=value
+            return result
+        def integer(value):
+            if len(value.lstrip('-'))>20:raise ValueError('Native integer exceeds wire capacity')
+            return int(value)
+        def real(value):
+            result=float(value)
+            if not math.isfinite(result):raise ValueError('Nonfinite native response')
+            return result
         try:
-            response = json.loads(read_exact(self.stream, count),
-                                  parse_constant=lambda s: (_ for _ in ()).throw(ValueError(s)))
-            if (response['protocolVersion'] != 4 or response['requestId'] != request_id
-                    or response['sequence'] != self.sequence):
-                raise ProtocolError('Response identity/version/sequence mismatch')
-            if not isinstance(response['payload'], dict):
-                raise ProtocolError('Response payload is not an object')
-            if response['kind'] == 'ErrorResponse':
-                raise BackendError(response['payload'].get('code', 'backend_error'))
-            if response['kind'] != expected:
-                raise ProtocolError('Unexpected response kind')
+            remaining()
+            self.stream.sendall(struct.pack('<I',len(data))+data)
+            count, = struct.unpack('<I',receive(4))
+            if not 0 < count <= 1048576:raise ProtocolError('Invalid incoming frame length')
+            response=json.loads(receive(count),object_pairs_hook=pairs,parse_int=integer,parse_float=real,
+                parse_constant=lambda value: (_ for _ in ()).throw(ValueError('Nonfinite native response')))
+            remaining()
+            if (not isinstance(response,dict) or type(response.get('protocolVersion')) is not int
+                    or response['protocolVersion']!=4 or response.get('requestId')!=request_id
+                    or type(response.get('sequence')) is not int or response['sequence']!=sequence
+                    or not isinstance(response.get('payload'),dict)):
+                raise ProtocolError('Native response identity/version/schema mismatch')
+            if response.get('kind')=='ErrorResponse':
+                code=response['payload'].get('code')
+                if not isinstance(code,str) or not 0<len(code)<=128:raise ProtocolError('Invalid native rejection')
+                raise BackendError(code)
+            if response.get('kind')!=expected:raise ProtocolError('Unexpected native response kind')
+            if expected=='CommandResponse' and type(response['payload'].get('accepted')) is not bool:
+                raise ProtocolError('Ambiguous native command receipt')
+            failed=False
             return response['payload']
-        except (KeyError, TypeError, ValueError, UnicodeError) as error:
-            raise ProtocolError('Malformed response') from error
+        except BackendError:
+            # A correlated, fully read rejection is definitive, not a lost transport.
+            raise
+        except (OSError,ProtocolError,KeyError,TypeError,ValueError,UnicodeError,RecursionError,OverflowError,struct.error) as error:
+            self._abort('transport_timeout' if isinstance(error,TimeoutError) else
+                'transport_io' if isinstance(error,OSError) else 'invalid_response')
+            raise ProtocolError('Native channel failed: '+self.failure) from error
+        finally:
+            if self.failure is None:
+                setter=getattr(self.stream,'settimeout',None)
+                if setter:
+                    try:setter(self.original_timeout)
+                    except OSError:self._abort('transport_io')
+            elapsed=max(0.,(self.now()-started)*1000.)
+            label=kind if kind in self.REQUEST_KINDS else 'Other'
+            sample=self.timings.setdefault(label,[0,0,0.,0.,0.])
+            sample[0]+=1;sample[1]+=int(failed);sample[2]=elapsed;sample[3]=max(sample[3],elapsed);sample[4]+=elapsed
 
 
 @dataclasses.dataclass(frozen=True)
@@ -120,8 +192,8 @@ class Manifest:
             if axis['MinPosition'] >= axis['MaxPosition']:
                 raise ValueError('Axis bounds must increase')
             for key in ('MaximumVelocity', 'MaximumAcceleration', 'MaximumDeceleration', 'MaximumJerk'):
-                if axis.get(key) is not None and (isinstance(axis[key], bool) or not isinstance(axis[key], (int, float)) or not math.isfinite(axis[key]) or axis[key] <= 0):
-                    raise ValueError('Axis dynamic cap must be finite and positive')
+                if axis.get(key) is not None and (isinstance(axis[key], bool) or not isinstance(axis[key], (int, float)) or not math.isfinite(axis[key]) or axis[key] < 0 or (axis[key] == 0 and key != 'MaximumJerk')):
+                    raise ValueError('Axis dynamic cap must be finite and positive (jerk may be zero)')
             indexes.add(index); names.add(name.casefold()); controllers.add(controller.casefold())
         # Index assignment is deterministic and dense, sorted using .NET Ordinal semantics.
         ordered = sorted(axes, key=lambda a: a['Name'].encode('utf-16-be'))
@@ -161,9 +233,11 @@ class Worker:
         self.mapping = {a['Index']-1: a for a in manifest.axes}
         self.hello = {}
         self.ready = False
+        self.motion_ready = False
         self.lease = None
         self.owned = set()
         self.failed = 0
+        self.failure_reason = None
         self.scan_index = 0
         self.last_scan = None
         self.cycle = 0
@@ -188,6 +262,11 @@ class Worker:
                     Backend=self.mode, PID=os.getpid(), ControllerReady=self.ready and not self.failed,
                     PhysicalBasicAxis=bool(native and self.ready and not self.failed),
                     SimulatorBasicAxis=self.mode == 'EcMotionSimulator' and self.ready and not self.failed,
+                    MotionReady=self.motion_ready and self.ready and not self.failed,
+                    FailureCode=self.failed,FailureReason=self.failure_reason,
+                    RecoveryRequired=bool(self.failed),
+                    RecoveryAction='stop_plc_and_reestablish_channel' if self.failed else 'none',
+                    LinkMetrics=getattr(self.backend,'diagnostics',lambda: {})(),
                     Continuous=False, MotionCycleApplied=False)
 
     def poll(self):
@@ -213,6 +292,7 @@ class Worker:
             if len(by_name) != len(axes):
                 raise ProtocolError('Duplicate snapshot axis')
             self.ready = snapshot.get('runtimeReady') is True and self.hello.get('runtimeReady') is True
+            self.motion_ready = not self.failed and snapshot.get('motionReady', snapshot.get('runtimeReady')) is True
             for index, mapping in self.mapping.items():
                 sample = by_name.get(mapping['ControllerAxis'])
                 if sample is None:
@@ -226,6 +306,8 @@ class Worker:
                     raise ProtocolError('Invalid MotionId')
                 slot = self.slots[index]
                 slot.sample = sample
+                if sample.get('fault') or sample['state'] == 'ErrorStop':
+                    self.motion_ready = False
                 if not slot.busy or slot.error or slot.aborted:
                     continue
                 if slot.kind == 3:
@@ -345,6 +427,9 @@ class Worker:
             if (kind == 5 and (not mapping['MinPosition'] <= position <= mapping['MaxPosition'] or velocity <= 0)) or (kind == 6 and velocity == 0) or (kind in (5,6) and mapping.get('MaximumVelocity') is not None and abs(velocity)>mapping['MaximumVelocity']):
                 slot.error = 2007
                 continue
+            if kind in (1,4,5,6) and (slot.sample.get('fault') or slot.sample.get('state') == 'ErrorStop'):
+                slot.error = 2005
+                continue
             if not self.ready and kind not in (2,3,7):
                 slot.error = 2005
                 continue
@@ -374,7 +459,8 @@ class Worker:
                 self.shutdown(2008)
             except BackendError as error:
                 slot.error = 2003 if str(error) in ('control_busy', 'lease_refused', 'invalid_lease', 'lease_expired') else 2005
-                self.shutdown(slot.error)
+                if str(error) not in ('invalid_state', 'invalid_argument', 'command_rejected'):
+                    self.shutdown(slot.error)
             except (OSError, ProtocolError):
                 slot.error = 2004
                 self.shutdown(2004)
@@ -383,10 +469,14 @@ class Worker:
         if self.last_scan is not None and not self.failed and self.now()-self.last_scan > self.watchdog:
             self.shutdown(2002)
 
-    def shutdown(self, error=2004):
+    def shutdown(self, error=2004, report=True):
         if self.failed:
             return
-        self.failed, self.ready = error, False
+        self.failure_reason = getattr(self.backend,'failure',None) or {
+            2002:'plc_watchdog_expired',2003:'control_ownership_lost',
+            2004:'transport_or_protocol_failed',2005:'native_command_failed',
+            2008:'capability_or_receipt_invalid'}.get(error,'channel_failed')
+        self.failed, self.ready, self.motion_ready = error, False, False
         for index in self.mapping:
             slot = self.slots[index]
             slot.error = slot.error or error
@@ -406,15 +496,25 @@ class Worker:
             except (OSError, ProtocolError, BackendError):
                 pass
         self.lease = None
+        # Log once after protective handling; never leak command payloads/leases,
+        # and never let a broken logging pipe interrupt the safety path.
+        try:
+            if report:
+                print(json.dumps(dict(event='axis_channel_failed',interface=INTERFACE,
+                    code=self.failed,reason=self.failure_reason,
+                    recovery='stop_plc_and_reestablish_channel')),file=sys.stderr,flush=True)
+        except (OSError,ValueError):pass
 
     def feedback(self):
         output = bytearray(FEEDBACK_BYTES)
         for index, slot in enumerate(self.slots):
-            sample = slot.sample
+            # A command error can coexist with fresh actual data. A terminal
+            # worker failure cannot: cached samples must never look valid again.
+            sample = slot.sample if not self.failed and index in self.mapping else {}
             state = STATES.get(sample.get('state'), 0)
             enabled = state in (2,3,4,5,6)
-            FEEDBACK.pack_into(output, index*FEEDBACK.size, slot.request, int(slot.busy), int(slot.done),
-                               slot.error, int(slot.aborted), int(enabled), int(bool(sample.get('homed'))),
+            FEEDBACK.pack_into(output, index*FEEDBACK.size, slot.request, int(slot.busy), int(slot.done and not self.failed),
+                               slot.error, int(slot.aborted), int(enabled), int(bool(state and sample.get('homed'))),
                                state, slot.motion_id, sample.get('actualPosition',0.), sample.get('actualVelocity',0.))
         return bytes(output)
 
@@ -432,7 +532,9 @@ def publish_capabilities(path, capabilities):
         with os.fdopen(fd, 'w', encoding='utf-8') as stream:
             json.dump(capabilities, stream, allow_nan=False)
             stream.flush()
-            os.fsync(stream.fileno())
+            # This is a volatile, PID-bound readiness heartbeat, not a durable
+            # configuration journal. Atomic replacement is sufficient; fsync
+            # here blocks PLC replies on slow disks/overlay filesystems.
         if os.path.lexists(path):
             info = os.lstat(path)
             if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid():
@@ -443,13 +545,32 @@ def publish_capabilities(path, capabilities):
             os.unlink(temporary)
 
 
+class CapabilityPublisher:
+    """Publish state changes immediately and unchanged liveness once a second."""
+    def __init__(self, path, now=time.monotonic):
+        self.path, self.now = path, now
+        self.previous = None
+        self.published_at = float('-inf')
+
+    def __call__(self, capabilities):
+        current = self.now()
+        # Timing counters change per native read; they must not turn the private
+        # liveness heartbeat back into a per-scan file write.
+        state={key:value for key,value in capabilities.items() if key!='LinkMetrics'}
+        if state != self.previous or current - self.published_at >= 1.0:
+            publish_capabilities(self.path, capabilities)
+            self.previous = dict(state)
+            self.published_at = current
+
+
 def serve(args):
     if sys.byteorder != 'little' or os.name != 'posix':
         raise ValueError('Private axis worker requires little-endian Unix')
     manifest = Manifest.load(args.manifest)
     capability_path = args.capabilities or args.socket + '.capabilities.json'
+    publish = CapabilityPublisher(capability_path)
     # Revoke an earlier run's sidecar before any controller connection attempt.
-    publish_capabilities(capability_path, dict(SchemaVersion=1, InterfaceVersion=INTERFACE,
+    publish(dict(SchemaVersion=1, InterfaceVersion=INTERFACE,
         ManifestSha256=manifest.digest, Backend=args.backend, PID=os.getpid(),
         ControllerReady=False, PhysicalBasicAxis=False, SimulatorBasicAxis=False,
         Continuous=False, MotionCycleApplied=False))
@@ -467,13 +588,29 @@ def serve(args):
     except (ProtocolError, BackendError, OSError):
         controller.close()
         raise
-    publish_capabilities(capability_path, worker.capabilities())
+    publish(worker.capabilities())
     server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     selector = selectors.DefaultSelector()
     client = None
     bound_socket = False
     input_buffer, output_buffer = bytearray(), bytearray()
     next_poll = time.monotonic()
+    def end_plc_session():
+        nonlocal worker, client
+        # A loader probe / PLC unload ends one PLC session, not the listening
+        # service. Stop/release and discard ALL old pending frames first.
+        worker.shutdown(report=any(slot.busy for slot in worker.slots))
+        publish(worker.capabilities())
+        selector.unregister(client)
+        client.close()
+        client = None
+        input_buffer.clear()
+        output_buffer.clear()
+        # Same physical transport: no controller reconnect, retry, request or
+        # lease carries over. A lost physical connection still fails closed.
+        worker = Worker(manifest, worker.backend, args.backend)
+        worker.probe()
+        publish(worker.capabilities())
     try:
         if os.path.lexists(args.socket):
             raise ValueError('Private bridge socket already exists; refuse replacing it')
@@ -488,7 +625,7 @@ def serve(args):
             if current >= next_poll:
                 worker.tick()
                 worker.poll()
-                publish_capabilities(capability_path, worker.capabilities())
+                publish(worker.capabilities())
                 # Readiness and watchdogs operate before any PLC/native connection.
                 # Poll timing is independent of the configured PLC scan interval.
                 next_poll = current + .01
@@ -503,9 +640,13 @@ def serve(args):
                     selector.register(client, selectors.EVENT_READ)
                 else:
                     if events & selectors.EVENT_READ:
-                        data = client.recv(4*COMMAND_BYTES)
+                        try:
+                            data = client.recv(4*COMMAND_BYTES)
+                        except ConnectionResetError:
+                            data = b''
                         if not data:
-                            raise ProtocolError('Private bridge disconnected')
+                            end_plc_session()
+                            continue
                         input_buffer.extend(data)
                         if len(input_buffer) > 4*COMMAND_BYTES:
                             raise ProtocolError('Private bridge command capacity exceeded')
@@ -517,10 +658,10 @@ def serve(args):
                                 # Refresh after a new backend command, without issuing
                                 # expensive snapshots for every repeated 1 ms PLC image.
                                 worker.poll()
-                                publish_capabilities(capability_path, worker.capabilities())
+                                publish(worker.capabilities())
                                 next_poll = time.monotonic() + .01
                             elif worker.failed != previous_failure:
-                                publish_capabilities(capability_path, worker.capabilities())
+                                publish(worker.capabilities())
                             if len(output_buffer) >= 4*FEEDBACK_BYTES:
                                 raise ProtocolError('Private bridge feedback consumer stalled')
                             # Exactly one correlated reply for every complete input image,
@@ -528,12 +669,16 @@ def serve(args):
                             output_buffer.extend(worker.feedback())
                             selector.modify(client, selectors.EVENT_READ | selectors.EVENT_WRITE)
                     if events & selectors.EVENT_WRITE and output_buffer:
-                        count = client.send(output_buffer)
+                        try:
+                            count = client.send(output_buffer)
+                        except (BrokenPipeError, ConnectionResetError):
+                            end_plc_session()
+                            continue
                         del output_buffer[:count]
                         if not output_buffer:
                             selector.modify(client, selectors.EVENT_READ)
     finally:
-        worker.shutdown()
+        worker.shutdown(report=any(slot.busy for slot in worker.slots))
         publish_capabilities(capability_path, worker.capabilities())
         selector.close()
         if client: client.close()

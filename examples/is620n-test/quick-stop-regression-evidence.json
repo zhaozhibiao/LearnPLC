@@ -1,0 +1,26 @@
+{
+  "scope": "Offline native regression; no physical movement in this correction",
+  "before": {
+    "exitCode": 1,
+    "message": "FAIL native IO map: Quick Stop Active escaped actual velocity overspeed protection"
+  },
+  "after": {
+    "exitCode": 0,
+    "ctestPassed": 9,
+    "ctestFailed": 0,
+    "controllerBinarySha256": "0919aeb1864d7b5ea9d0ff869f87379d5c3786a7c306a350ea2d11b1c886fdcd"
+  },
+  "deployment": "User sudo restart completed; active service ExecStart and installed binary SHA256 verified over SSH",
+  "physicalEvidence": "mcp-motion-success.json and st-motion-evidence.json retain previously tested binary identities",
+  "finalReadOnlyEvidence": "hardware-final-revision-state.json",
+  "finalReadOnlySummary": {
+    "samples": 40,
+    "allDisabled": true,
+    "zeroVelocitySamples": 39,
+    "oneRawVelocitySampleRevPerSec": -0.0149993896484375,
+    "finalVelocityRevPerSec": 0,
+    "allWithoutFault": true,
+    "allRuntimeReady": true,
+    "noAppliedCommands": true
+  }
+}

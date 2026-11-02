@@ -136,6 +136,12 @@ void RealtimeExchange::publish(const RealtimeSnapshot& value) noexcept {
         target.max_excess_ms.store(source.max_excess_ms, std::memory_order_relaxed);
         target.feedforward_velocity.store(source.feedforward_velocity, std::memory_order_relaxed);
         target.peak_actual_velocity.store(source.peak_actual_velocity, std::memory_order_relaxed);
+        target.demand_position_error.store(source.demand_position_error, std::memory_order_relaxed);
+        target.drive_following_error.store(source.drive_following_error, std::memory_order_relaxed);
+        target.demand_delivery_error.store(source.demand_delivery_error, std::memory_order_relaxed);
+        target.demand_feedback_valid.store(source.demand_feedback_valid, std::memory_order_relaxed);
+        target.demand_delivery_mismatch.store(source.demand_delivery_mismatch, std::memory_order_relaxed);
+        target.demand_delivery_fault.store(source.demand_delivery_fault, std::memory_order_relaxed);
         target.state.store(source.state, std::memory_order_relaxed);
         target.position.store(source.actual_position, std::memory_order_relaxed);
         target.velocity.store(source.actual_velocity, std::memory_order_relaxed);
@@ -208,6 +214,12 @@ RealtimeSnapshot RealtimeExchange::snapshot() const noexcept {
             target.max_excess_ms = source.max_excess_ms.load(std::memory_order_relaxed);
             target.feedforward_velocity = source.feedforward_velocity.load(std::memory_order_relaxed);
             target.peak_actual_velocity = source.peak_actual_velocity.load(std::memory_order_relaxed);
+            target.demand_position_error = source.demand_position_error.load(std::memory_order_relaxed);
+            target.drive_following_error = source.drive_following_error.load(std::memory_order_relaxed);
+            target.demand_delivery_error = source.demand_delivery_error.load(std::memory_order_relaxed);
+            target.demand_feedback_valid = source.demand_feedback_valid.load(std::memory_order_relaxed);
+            target.demand_delivery_mismatch = source.demand_delivery_mismatch.load(std::memory_order_relaxed);
+            target.demand_delivery_fault = source.demand_delivery_fault.load(std::memory_order_relaxed);
             target.state = source.state.load(std::memory_order_relaxed);
             target.actual_position = source.position.load(std::memory_order_relaxed);
             target.actual_velocity = source.velocity.load(std::memory_order_relaxed);

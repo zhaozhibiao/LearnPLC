@@ -1,0 +1,12 @@
+{
+  "state": "compiled",
+  "build_hash": "3CB70471472D8BF6693D56C57FC18CA030BFF3C83C5B4DE4563CC06025A22249",
+  "library_sha256": "853677730791e93de62369d8674dc2b7a2904fa3d6f4f44508bf01044a8f94dd",
+  "exports_verified": true,
+  "runtime_commit": "a9e38d901fb87deb5a8cf778b52639b9387834d0",
+  "log_path": "/home/a/.local/share/st-workbench/runtime-v4.3.0/deployment/.versions/3CB70471472D8BF6693D56C57FC18CA030BFF3C83C5B4DE4563CC06025A22249/compile.log",
+  "request_id": "axis_backend_verified_408a7bcc59ce4a1e8b47de3d660442ca",
+  "axis_ready": true,
+  "axis_message": "Verified private EcMotion basic axis backend; motion-cycle configuration is not applied",
+  "success": true
+}

@@ -58,7 +58,7 @@ public sealed class MotionTransport(DeviceOptions device, string sshExecutable =
         device.Validate();
         var start = new ProcessStartInfo(sshExecutable) { UseShellExecute = false, RedirectStandardInput = true, RedirectStandardOutput = true, RedirectStandardError = true, CreateNoWindow = true };
         foreach (var arg in new[] { "-o", "StrictHostKeyChecking=yes", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10", "-o", "UserKnownHostsFile=" + device.KnownHostsPath, "-p", device.Port.ToString(), "--", device.User + "@" + device.Host,
-            "python3 " + device.GatewayPath + " --manifest " + device.AxisManifestPath + " --controller-socket " + device.ControllerSocket + " --backend " + device.Backend }) start.ArgumentList.Add(arg);
+            device.GatewayPath + " --manifest " + device.AxisManifestPath + " --controller-socket " + device.ControllerSocket + " --backend " + device.Backend }) start.ArgumentList.Add(arg);
         process = Process.Start(start) ?? throw new IOException("Could not start SSH motion session.");
         drain = Drain(process.StandardError);
         }

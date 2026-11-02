@@ -9,7 +9,7 @@ public sealed class SshSessionBroker
         if (!Regex.IsMatch(host, @"^[A-Za-z0-9][A-Za-z0-9.-]{0,252}$") || !Regex.IsMatch(user, @"^[A-Za-z_][A-Za-z0-9_-]{0,31}$")) throw new ArgumentException("Invalid SSH target.");
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken); deadline.CancelAfter(TimeSpan.FromSeconds(25));
         var start = new ProcessStartInfo("ssh") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true, CreateNoWindow = true };
-        foreach (var argument in new[] { "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=yes", "-o", "ConnectTimeout=8", "-o", "UserKnownHostsFile=" + Path.GetFullPath(knownHostsPath), "--", user + "@" + host, "python3 /home/a/st-workbench-runtime-install/runtime-session.py" }) start.ArgumentList.Add(argument);
+        foreach (var argument in new[] { "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=yes", "-o", "ConnectTimeout=8", "-o", "UserKnownHostsFile=" + Path.GetFullPath(knownHostsPath), "--", user + "@" + host, "/home/a/st-workbench-runtime-install/st-session-helper --runtime-session" }) start.ArgumentList.Add(argument);
         using var process = new Process { StartInfo = start }; var started = false;
         async Task<string> Read(StreamReader reader)
         {

@@ -20,9 +20,10 @@ with tempfile.TemporaryDirectory(prefix='ecmotion-bundle-test-') as folder:
         topology['machineSha256'] = hashlib.sha256(machine.read_bytes()).hexdigest()
         topology['ioMapSha256'] = hashlib.sha256(iomap.read_bytes()).hexdigest()
         config.write_text(json.dumps(topology))
-    def run(expected, companions=True):
+    def run(expected, companions=True, extra_args=()):
         args=[binary,'--validate-ethercat-config',str(config)]
         if companions: args += ['--machine-config',str(machine),'--io-map',str(iomap)]
+        args += list(extra_args)
         result=subprocess.run(args,capture_output=True,text=True,timeout=10)
         if (result.returncode==0)!=expected:
             raise AssertionError(f'Offline validation unexpected result: {result.returncode} {result.stdout} {result.stderr}')
@@ -33,6 +34,7 @@ with tempfile.TemporaryDirectory(prefix='ecmotion-bundle-test-') as folder:
     run(False)  # Hash binding must run even in config-only mode.
     bind()
     run(True)  # IO-only machine is supported.
+    run(False, extra_args=['--axis-trace-csv', str(directory / 'no-axis.csv')])
     run(False, False)  # Bound bundles require explicit companion paths.
     machine.write_text('{"schemaVersion":99,"axes":[]}')
     bind()
@@ -50,6 +52,21 @@ with tempfile.TemporaryDirectory(prefix='ecmotion-bundle-test-') as folder:
     topology['slaves'][0]['pdos'][0]['entries']=entries[:4]
     topology['slaves'][0]['pdos'][1]['entries']=entries[4:]
     machine.write_text(json.dumps(axis_machine));iomap.write_text('{"schemaVersion":1,"groups":[]}');bind();run(True)
+    # Trace requires demand/error feedback independently of motion protection.
+    axis_machine['axes'][0]['driveDemandProtection'] = False
+    keys['positionDemand'] = 'FormalDrive.0x6062:0'
+    keys['followingError'] = 'FormalDrive.0x60F4:0'
+    trace_args = ['--axis-trace-csv', str(directory / 'offline-trace.csv')]
+    machine.write_text(json.dumps(axis_machine));bind()
+    run(False, extra_args=trace_args)  # Both required feedback PDOs absent.
+    tx_entries = topology['slaves'][0]['pdos'][1]['entries']
+    tx_entries.append(dict(index=0x6062, subindex=0, bitLength=32, key=keys['positionDemand']))
+    bind();run(False, extra_args=trace_args)  # Drive error still absent.
+    tx_entries.append(dict(index=0x60F4, subindex=0, bitLength=32, key=keys['followingError']))
+    bind();run(True, extra_args=trace_args)  # Valid formal keys, torque absent.
+    run(False, extra_args=trace_args + ['--axis-trace-prefix', 'MissingLegacyDrive'])
+    if (directory / 'offline-trace.csv').exists():
+        raise AssertionError('Offline trace validation wrote a CSV')
     timing_machine=json.loads(json.dumps(axis_machine))
     saved_dc=json.loads(json.dumps(topology['slaves'][0].get('dc',{})))
     topology['slaves'][0]['dc']={'enabled':True,'assignActivate':0x300,'sync0CycleNs':1000000,'sync0ShiftNs':500000,'sync1CycleNs':0,'sync1ShiftNs':0}

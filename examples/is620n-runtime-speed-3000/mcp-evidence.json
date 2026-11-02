@@ -1,0 +1,1673 @@
+{
+  "RecordedAtUtc": "2026-11-02T07:40:34.3507752Z",
+  "ProjectPath": "examples/is620n-runtime-speed-3000/IS620N-Runtime-Migrated.stproj",
+  "BuildHash": "E291CE985670899364E4371CEACF8C275485CBF375F23B3605EB325BB95A09EE",
+  "OutputDirectory": "",
+  "SavedThroughMcp": true,
+  "ValidatedThroughMcp": true,
+  "CompiledThroughMcp": true,
+  "AuditTrail": [
+    {
+      "timestamp": "2026-11-02T07:40:31.4248372Z",
+      "tool": "workbench_info",
+      "arguments": {},
+      "status": "success",
+      "response": {
+        "name": "ST Workbench MCP",
+        "version": "1.0.0",
+        "transport": "stdio",
+        "workspace": "D:\\OPenplc",
+        "workflow": "project_open/create \u2192 project_read \u2192 edit with expectedRevision \u2192 project_validate \u2192 project_save \u2192 build_start \u2192 build_status \u2192 device_prepare \u2192 device_execute \u2192 operation_status",
+        "motionWorkflow": "motion_capabilities/status \u2192 motion_manifest \u2192 install approved manifest separately \u2192 motion_acquire \u2192 motion_prepare \u2192 motion_execute \u2192 motion_operation \u2192 motion_stop/release",
+        "devices": [],
+        "limits": {
+          "drafts": 16,
+          "sourcesPerProject": 256,
+          "sourceBytes": 1048576,
+          "draftBytes": 12582912,
+          "buildJobs": 32,
+          "jobs": 64,
+          "planSeconds": 20,
+          "controlSeconds": 30
+        },
+        "notes": [
+          "MCP edits saved-project drafts; save and reload desktop after resolving unsaved desktop edits.",
+          "Accepted never means motion completed; Unknown must not be replayed.",
+          "Mechanical/rotary apply, physical timed Jog and continuous machining are capability-gated and currently unsupported.",
+          "MCP is supervisory; Linux core retains realtime control. Stop is ordinary controlled stop, not safety-rated emergency stop."
+        ]
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:31.6580618Z",
+      "tool": "project_open",
+      "arguments": {
+        "projectPath": "examples/is620n-runtime-speed-3000/IS620N-Runtime-Migrated.stproj"
+      },
+      "status": "success",
+      "response": {
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "ProjectPath": "examples/is620n-runtime-speed-3000/IS620N-Runtime-Migrated.stproj",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "HasUnsavedChanges": false,
+        "Project": {
+          "Network": {
+            "ManagementHost": "192.168.1.31",
+            "SshUser": "a",
+            "RuntimeEndpoint": "",
+            "EtherCatInterface": "enp3s0"
+          },
+          "SchemaVersion": 1,
+          "Id": "68820f80-eb44-425b-2b75-ed3a40797b09",
+          "Name": "IS620N \u6B63\u5F0FST\u7A7A\u8F7D\u9A8C\u6536 \u00B7 3000rpm",
+          "Items": [
+            {
+              "Id": "7b3cf0cd-bc73-4254-be4f-2f518c875f87",
+              "Name": "Main",
+              "Kind": "Program",
+              "SourcePath": "sources/Main.st"
+            }
+          ],
+          "Tasks": [
+            {
+              "Name": "Cyclic",
+              "ProgramId": "7b3cf0cd-bc73-4254-be4f-2f518c875f87",
+              "IntervalMilliseconds": 10,
+              "Enabled": true,
+              "Scheduling": "Ordinary",
+              "Priority": 10,
+              "Cpu": null
+            }
+          ],
+          "Hardware": {
+            "Runtime": {
+              "AxisTrace": {
+                "Enabled": true,
+                "Capacity": 120000
+              },
+              "CycleTimeNanoseconds": 1000000,
+              "CycleTiming": {
+                "Enabled": true,
+                "Model": "R2M",
+                "BoundaryGuardNs": 200000,
+                "RemainingSendBudgetNs": 100000,
+                "RequiredGoodCycles": 1000
+              }
+            },
+            "Stations": [
+              {
+                "Id": "5ed04c68-e38f-49d2-ad0d-214eadaceb47",
+                "Name": "IS620NDrive",
+                "DeviceId": "a5fa0850-89c5-4fdc-89db-e12147fc9f71",
+                "AliasAddress": 0,
+                "EnabledEntries": [
+                  {
+                    "Index": 24640,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Controlword",
+                    "Type": "UINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24698,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target position",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24831,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target velocity",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24672,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode",
+                    "Type": "SINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24639,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Error code",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24641,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Statusword",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24676,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual position",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24684,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual velocity",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24673,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode display",
+                    "Type": "SINT",
+                    "IsInput": true
+                  }
+                ],
+                "Runtime": {
+                  "SelectedPdoIndices": [
+                    5632,
+                    6656
+                  ],
+                  "DcModeName": "DC1ms",
+                  "DcSync0ShiftNanoseconds": 670000,
+                  "ProfileId": "is620n-csp"
+                }
+              }
+            ],
+            "Devices": [
+              {
+                "Id": "a5fa0850-89c5-4fdc-89db-e12147fc9f71",
+                "Name": "IS620N commissioned profile",
+                "VendorId": 1048576,
+                "ProductCode": 786696,
+                "Revision": 65537,
+                "Entries": [
+                  {
+                    "Index": 24640,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Controlword",
+                    "Type": "UINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24698,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target position",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24831,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target velocity",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24672,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode",
+                    "Type": "SINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24639,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Error code",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24641,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Statusword",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24676,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual position",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24684,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual velocity",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24673,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode display",
+                    "Type": "SINT",
+                    "IsInput": true
+                  }
+                ],
+                "Description": {
+                  "SourceSha256": "da9822bb880af269f1d386fad0a83b6d8e0085e85a509d285b4cb8fe4afffff6",
+                  "PdoGroups": [
+                    {
+                      "Index": 5632,
+                      "Name": "Commissioned Rx",
+                      "IsInput": false,
+                      "SyncManager": 2,
+                      "Fixed": false,
+                      "Mandatory": false,
+                      "Excludes": [],
+                      "DefaultSelected": true,
+                      "Entries": [
+                        {
+                          "Index": 24640,
+                          "SubIndex": 0,
+                          "BitLength": 16,
+                          "Name": "Controlword",
+                          "Type": "UINT",
+                          "IsInput": false
+                        },
+                        {
+                          "Index": 24698,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Target position",
+                          "Type": "DINT",
+                          "IsInput": false
+                        },
+                        {
+                          "Index": 24831,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Target velocity",
+                          "Type": "DINT",
+                          "IsInput": false
+                        },
+                        {
+                          "Index": 24672,
+                          "SubIndex": 0,
+                          "BitLength": 8,
+                          "Name": "Mode",
+                          "Type": "SINT",
+                          "IsInput": false
+                        }
+                      ]
+                    },
+                    {
+                      "Index": 6656,
+                      "Name": "Commissioned Tx",
+                      "IsInput": true,
+                      "SyncManager": 3,
+                      "Fixed": false,
+                      "Mandatory": false,
+                      "Excludes": [],
+                      "DefaultSelected": true,
+                      "Entries": [
+                        {
+                          "Index": 24639,
+                          "SubIndex": 0,
+                          "BitLength": 16,
+                          "Name": "Error code",
+                          "Type": "UINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24641,
+                          "SubIndex": 0,
+                          "BitLength": 16,
+                          "Name": "Statusword",
+                          "Type": "UINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24676,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Actual position",
+                          "Type": "DINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24684,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Actual velocity",
+                          "Type": "DINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24673,
+                          "SubIndex": 0,
+                          "BitLength": 8,
+                          "Name": "Mode display",
+                          "Type": "SINT",
+                          "IsInput": true
+                        }
+                      ]
+                    }
+                  ],
+                  "SyncManagers": [
+                    {
+                      "Index": 0,
+                      "Name": "MBoxOut",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": null,
+                      "Watchdog": null
+                    },
+                    {
+                      "Index": 1,
+                      "Name": "MBoxIn",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": null,
+                      "Watchdog": null
+                    },
+                    {
+                      "Index": 2,
+                      "Name": "Outputs",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": true,
+                      "Watchdog": true
+                    },
+                    {
+                      "Index": 3,
+                      "Name": "Inputs",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": true,
+                      "Watchdog": false
+                    }
+                  ],
+                  "DcModes": [
+                    {
+                      "Name": "DC1ms",
+                      "AssignActivate": 768,
+                      "Sync0": {
+                        "Value": 0,
+                        "Factor": 1,
+                        "Shift": 0
+                      },
+                      "Sync1": {
+                        "Value": 0,
+                        "Factor": null,
+                        "Shift": null
+                      }
+                    }
+                  ],
+                  "StartupCommands": [
+                    {
+                      "Transition": "PS",
+                      "Index": 8197,
+                      "SubIndex": 20,
+                      "DataHex": "0100",
+                      "CompleteAccess": false
+                    },
+                    {
+                      "Transition": "PS",
+                      "Index": 8200,
+                      "SubIndex": 20,
+                      "DataHex": "E803",
+                      "CompleteAccess": false
+                    }
+                  ],
+                  "UnsupportedFeatures": [],
+                  "IsDescriptionSupported": true
+                }
+              }
+            ],
+            "Io": [],
+            "Axes": [
+              {
+                "Name": "X",
+                "ControllerAxis": "Axis1",
+                "Unit": "rev",
+                "MinPosition": -1000,
+                "MaxPosition": 1000,
+                "Runtime": {
+                  "ProfileId": "is620n-csp",
+                  "DriveDemandProtection": true,
+                  "DriveErrorOnly": true,
+                  "DemandDeliveryEnforced": false,
+                  "VelocityFeedbackRawPerUnitPerSecond": 1048576,
+                  "VelocityOffsetRawPerUnitPerSecond": 1048576,
+                  "VelocityFeedforwardGain": 0,
+                  "FollowingErrorRawPerUnit": 1048576,
+                  "PositionDemandRawPerUnit": 1048576,
+                  "DriveFollowingErrorWindowRaw": 10486,
+                  "MotorModel": "ISMH1-10B30CB-U230Z",
+                  "MechanicsConfirmed": true,
+                  "SafetyConfirmed": true,
+                  "VelocityUnits": "CountsPerSecond",
+                  "MaximumActualVelocity": 55,
+                  "MaximumFollowingError": 0.005,
+                  "FollowingErrorTimeoutMilliseconds": 20,
+                  "Homing": {
+                    "Required": true,
+                    "Method": 35,
+                    "AllowCurrentPositionZero": true,
+                    "SearchSpeedRaw": 1048,
+                    "LatchSpeedRaw": 1048,
+                    "AccelerationRaw": 10485,
+                    "OffsetRaw": 0,
+                    "TimeoutMilliseconds": 5000
+                  },
+                  "MotionCompletion": {
+                    "PositionTolerance": 0.0001,
+                    "VelocityTolerance": 0.0005,
+                    "DwellMilliseconds": 100,
+                    "PositionStabilityCompletion": true
+                  }
+                },
+                "Mechanics": {
+                  "Kind": "Rotary",
+                  "FeedbackUnit": "EncoderCounts",
+                  "FeedbackCountsPerMotorRevolution": 1048576,
+                  "MotorRevolutions": 1,
+                  "LoadRevolutions": 1,
+                  "TravelPerLoadRevolution": 1,
+                  "ReverseDirection": false,
+                  "RotaryMode": "Limited",
+                  "ModuloStart": 0,
+                  "ModuloPeriod": 360,
+                  "HomeMode": "ControllerConfigured",
+                  "HomeDirection": "Negative",
+                  "HomeOffset": 0,
+                  "HomeSearchVelocity": 1,
+                  "HomeLatchVelocity": 0.2
+                },
+                "StationId": "5ed04c68-e38f-49d2-ad0d-214eadaceb47",
+                "MaximumVelocity": 50,
+                "MaximumAcceleration": 5,
+                "MaximumDeceleration": 5,
+                "MaximumJerk": 20
+              }
+            ]
+          },
+          "Paths": []
+        },
+        "Sources": [
+          {
+            "ItemId": "7b3cf0cd-bc73-4254-be4f-2f518c875f87",
+            "RelativePath": "sources/Main.st",
+            "Text": "(* MIT. Standard MC_* native closed-loop test sequence on configured axis AXIS_X *)\nPROGRAM Main\nVAR\n    PowerEnable : BOOL := FALSE;\n    StartExecute : BOOL := FALSE;\n    JogExecute : BOOL := FALSE;\n    StopExecute : BOOL := FALSE;\n    ResetExecute : BOOL := FALSE;\n\n    (* Target parameters within configured limits: MaxVel 50, MaxAcc 5, MaxDec 5, MaxJerk 20 *)\n    ForwardTurns : LREAL := 2.0;\n    ReverseTurns : LREAL := 2.0;\n    Speed : LREAL := 1.0;\n    Acc : LREAL := 2.0;\n    Dec : LREAL := 2.0;\n    JerkVal : LREAL := 10.0;\n    JogSpeed : LREAL := 0.5;\n\n    Step : UINT := 0;\n    StartPosition : LREAL := 0.0;\n    ErrorID : UDINT := 0;\n    Done : BOOL := FALSE;\n    Cancelled : BOOL := FALSE;\n\n    (* Native Axis Function Block Instances *)\n    Power : MC_Power;\n    Home : MC_Home;\n    Reset : MC_Reset;\n    Status : MC_ReadStatus;\n    Position : MC_ReadActualPosition;\n    MoveFwd : MC_MoveAbsolute;\n    MoveRev : MC_MoveAbsolute;\n    Jog : MC_MoveVelocity;\n    Stop : MC_Stop;\n\n    (* Timers \u0026 Triggers *)\n    Dwell : TON;\n    JogTimer : TON;\n    StartEdge : R_TRIG;\nEND_VAR\n\n(* Continuous state \u0026 position feedback read on AXIS_X every scan *)\nStatus(Axis := AXIS_X, Enable := TRUE);\nPosition(Axis := AXIS_X, Enable := TRUE);\nStartEdge(CLK := StartExecute);\n\n(* Commands called cyclically with parameter bindings *)\nPower(Axis := AXIS_X, Enable := PowerEnable);\nReset(Axis := AXIS_X, Execute := ResetExecute);\nHome(Axis := AXIS_X, Execute := (Step = 10));\n\nMoveFwd(Axis := AXIS_X, Execute := (Step = 20),\n    Position := StartPosition \u002B ForwardTurns,\n    Velocity := Speed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nDwell(IN := (Step = 30), PT := T#1s);\n\nMoveRev(Axis := AXIS_X, Execute := (Step = 40),\n    Position := StartPosition \u002B ForwardTurns - ReverseTurns,\n    Velocity := Speed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nJog(Axis := AXIS_X, Execute := (Step = 50) OR JogExecute,\n    Velocity := JogSpeed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nJogTimer(IN := (Step = 50), PT := T#1500ms);\n\nStop(Axis := AXIS_X, Execute := StopExecute OR (Step = 60),\n    Deceleration := Dec, Jerk := JerkVal);\n\n(* Sequence State Machine *)\nIF StopExecute AND (Step \u003E 0) AND (Step \u003C 100) THEN\n    Cancelled := TRUE;\n    Step := 60;\nEND_IF;\n\nCASE Step OF\n0: (* Idle wait for Start trigger when powered and stand still *)\n    IF StartEdge.Q AND Power.Status AND Status.Standstill THEN\n        StartPosition := Position.Position;\n        ErrorID := 0;\n        Cancelled := FALSE;\n        Done := FALSE;\n        IF Status.Homed THEN\n            Step := 20; (* If already homed, proceed directly to forward move *)\n        ELSE\n            Step := 10; (* Otherwise perform homing *)\n        END_IF;\n    END_IF;\n\n10: (* Homing *)\n    IF Home.Done THEN\n        StartPosition := Position.Position;\n        Step := 20;\n    ELSIF Home.Error THEN\n        ErrorID := Home.ErrorID;\n        Step := 900;\n    ELSIF Home.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n20: (* Forward Absolute Move with Jerk *)\n    IF MoveFwd.Done THEN\n        Step := 30;\n    ELSIF MoveFwd.Error THEN\n        ErrorID := MoveFwd.ErrorID;\n        Step := 900;\n    ELSIF MoveFwd.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n30: (* Dwell 1s *)\n    IF Dwell.Q THEN\n        Step := 40;\n    END_IF;\n\n40: (* Reverse Absolute Move back to start with Jerk *)\n    IF MoveRev.Done THEN\n        Step := 50;\n    ELSIF MoveRev.Error THEN\n        ErrorID := MoveRev.ErrorID;\n        Step := 900;\n    ELSIF MoveRev.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n50: (* Jog / Velocity motion for 1.5s *)\n    IF JogTimer.Q THEN\n        Step := 60; (* Trigger controlled stop *)\n    ELSIF Jog.Error THEN\n        ErrorID := Jog.ErrorID;\n        Step := 900;\n    ELSIF Jog.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n60: (* Controlled Stop *)\n    IF Stop.Done THEN\n        Step := 100;\n    ELSIF Stop.Error THEN\n        IF ErrorID = 0 THEN ErrorID := Stop.ErrorID; END_IF;\n        Step := 900;\n    END_IF;\n\n100: (* Sequence completed *)\n    Done := NOT Cancelled;\n    IF NOT StartExecute AND NOT StopExecute THEN\n        Step := 0;\n    END_IF;\n\n900: (* Error state, wait for Reset *)\n    IF Reset.Done AND NOT StartExecute AND NOT StopExecute THEN\n        ErrorID := 0;\n        Step := 0;\n    END_IF;\nEND_CASE;\nEND_PROGRAM"
+          }
+        ],
+        "Notice": "MCP edits a saved-project draft. Save then reload in the desktop; resolve unsaved desktop edits first."
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:31.6736308Z",
+      "tool": "source_write",
+      "arguments": {
+        "sessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "expectedRevision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "itemId": "7b3cf0cd-bc73-4254-be4f-2f518c875f87",
+        "text": "(* MIT. Standard MC_* native closed-loop test sequence on configured axis AXIS_X *)\nPROGRAM Main\nVAR\n    PowerEnable : BOOL := FALSE;\n    StartExecute : BOOL := FALSE;\n    JogExecute : BOOL := FALSE;\n    StopExecute : BOOL := FALSE;\n    ResetExecute : BOOL := FALSE;\n\n    (* Target parameters within configured limits: MaxVel 50, MaxAcc 5, MaxDec 5, MaxJerk 20 *)\n    ForwardTurns : LREAL := 2.0;\n    ReverseTurns : LREAL := 2.0;\n    Speed : LREAL := 1.0;\n    Acc : LREAL := 2.0;\n    Dec : LREAL := 2.0;\n    JerkVal : LREAL := 10.0;\n    JogSpeed : LREAL := 0.5;\n\n    Step : UINT := 0;\n    StartPosition : LREAL := 0.0;\n    ErrorID : UDINT := 0;\n    Done : BOOL := FALSE;\n    Cancelled : BOOL := FALSE;\n\n    (* Native Axis Function Block Instances *)\n    Power : MC_Power;\n    Home : MC_Home;\n    Reset : MC_Reset;\n    Status : MC_ReadStatus;\n    Position : MC_ReadActualPosition;\n    MoveFwd : MC_MoveAbsolute;\n    MoveRev : MC_MoveAbsolute;\n    Jog : MC_MoveVelocity;\n    Stop : MC_Stop;\n\n    (* Timers \u0026 Triggers *)\n    Dwell : TON;\n    JogTimer : TON;\n    StartEdge : R_TRIG;\nEND_VAR\n\n(* Continuous state \u0026 position feedback read on AXIS_X every scan *)\nStatus(Axis := AXIS_X, Enable := TRUE);\nPosition(Axis := AXIS_X, Enable := TRUE);\nStartEdge(CLK := StartExecute);\n\n(* Commands called cyclically with parameter bindings *)\nPower(Axis := AXIS_X, Enable := PowerEnable);\nReset(Axis := AXIS_X, Execute := ResetExecute);\nHome(Axis := AXIS_X, Execute := (Step = 10));\n\nMoveFwd(Axis := AXIS_X, Execute := (Step = 20),\n    Position := StartPosition \u002B ForwardTurns,\n    Velocity := Speed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nDwell(IN := (Step = 30), PT := T#1s);\n\nMoveRev(Axis := AXIS_X, Execute := (Step = 40),\n    Position := StartPosition \u002B ForwardTurns - ReverseTurns,\n    Velocity := Speed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nJog(Axis := AXIS_X, Execute := (Step = 50) OR JogExecute,\n    Velocity := JogSpeed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nJogTimer(IN := (Step = 50), PT := T#1500ms);\n\nStop(Axis := AXIS_X, Execute := StopExecute OR (Step = 60),\n    Deceleration := Dec, Jerk := JerkVal);\n\n(* Sequence State Machine *)\nIF StopExecute AND (Step \u003E 0) AND (Step \u003C 100) THEN\n    Cancelled := TRUE;\n    Step := 60;\nEND_IF;\n\nCASE Step OF\n0: (* Idle wait for Start trigger when powered and stand still *)\n    IF StartEdge.Q AND Power.Status AND Status.Standstill THEN\n        StartPosition := Position.Position;\n        ErrorID := 0;\n        Cancelled := FALSE;\n        Done := FALSE;\n        IF Status.Homed THEN\n            Step := 20; (* If already homed, proceed directly to forward move *)\n        ELSE\n            Step := 10; (* Otherwise perform homing *)\n        END_IF;\n    END_IF;\n\n10: (* Homing *)\n    IF Home.Done THEN\n        StartPosition := Position.Position;\n        Step := 20;\n    ELSIF Home.Error THEN\n        ErrorID := Home.ErrorID;\n        Step := 900;\n    ELSIF Home.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n20: (* Forward Absolute Move with Jerk *)\n    IF MoveFwd.Done THEN\n        Step := 30;\n    ELSIF MoveFwd.Error THEN\n        ErrorID := MoveFwd.ErrorID;\n        Step := 900;\n    ELSIF MoveFwd.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n30: (* Dwell 1s *)\n    IF Dwell.Q THEN\n        Step := 40;\n    END_IF;\n\n40: (* Reverse Absolute Move back to start with Jerk *)\n    IF MoveRev.Done THEN\n        Step := 50;\n    ELSIF MoveRev.Error THEN\n        ErrorID := MoveRev.ErrorID;\n        Step := 900;\n    ELSIF MoveRev.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n50: (* Jog / Velocity motion for 1.5s *)\n    IF JogTimer.Q THEN\n        Step := 60; (* Trigger controlled stop *)\n    ELSIF Jog.Error THEN\n        ErrorID := Jog.ErrorID;\n        Step := 900;\n    ELSIF Jog.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n60: (* Controlled Stop *)\n    IF Stop.Done THEN\n        Step := 100;\n    ELSIF Stop.Error THEN\n        IF ErrorID = 0 THEN ErrorID := Stop.ErrorID; END_IF;\n        Step := 900;\n    END_IF;\n\n100: (* Sequence completed *)\n    Done := NOT Cancelled;\n    IF NOT StartExecute AND NOT StopExecute THEN\n        Step := 0;\n    END_IF;\n\n900: (* Error state, wait for Reset *)\n    IF Reset.Done AND NOT StartExecute AND NOT StopExecute THEN\n        ErrorID := 0;\n        Step := 0;\n    END_IF;\nEND_CASE;\nEND_PROGRAM"
+      },
+      "status": "success",
+      "response": {
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "ProjectPath": "examples/is620n-runtime-speed-3000/IS620N-Runtime-Migrated.stproj",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "HasUnsavedChanges": false,
+        "Project": {
+          "Network": {
+            "ManagementHost": "192.168.1.31",
+            "SshUser": "a",
+            "RuntimeEndpoint": "",
+            "EtherCatInterface": "enp3s0"
+          },
+          "SchemaVersion": 1,
+          "Id": "68820f80-eb44-425b-2b75-ed3a40797b09",
+          "Name": "IS620N \u6B63\u5F0FST\u7A7A\u8F7D\u9A8C\u6536 \u00B7 3000rpm",
+          "Items": [
+            {
+              "Id": "7b3cf0cd-bc73-4254-be4f-2f518c875f87",
+              "Name": "Main",
+              "Kind": "Program",
+              "SourcePath": "sources/Main.st"
+            }
+          ],
+          "Tasks": [
+            {
+              "Name": "Cyclic",
+              "ProgramId": "7b3cf0cd-bc73-4254-be4f-2f518c875f87",
+              "IntervalMilliseconds": 10,
+              "Enabled": true,
+              "Scheduling": "Ordinary",
+              "Priority": 10,
+              "Cpu": null
+            }
+          ],
+          "Hardware": {
+            "Runtime": {
+              "AxisTrace": {
+                "Enabled": true,
+                "Capacity": 120000
+              },
+              "CycleTimeNanoseconds": 1000000,
+              "CycleTiming": {
+                "Enabled": true,
+                "Model": "R2M",
+                "BoundaryGuardNs": 200000,
+                "RemainingSendBudgetNs": 100000,
+                "RequiredGoodCycles": 1000
+              }
+            },
+            "Stations": [
+              {
+                "Id": "5ed04c68-e38f-49d2-ad0d-214eadaceb47",
+                "Name": "IS620NDrive",
+                "DeviceId": "a5fa0850-89c5-4fdc-89db-e12147fc9f71",
+                "AliasAddress": 0,
+                "EnabledEntries": [
+                  {
+                    "Index": 24640,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Controlword",
+                    "Type": "UINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24698,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target position",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24831,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target velocity",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24672,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode",
+                    "Type": "SINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24639,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Error code",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24641,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Statusword",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24676,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual position",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24684,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual velocity",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24673,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode display",
+                    "Type": "SINT",
+                    "IsInput": true
+                  }
+                ],
+                "Runtime": {
+                  "SelectedPdoIndices": [
+                    5632,
+                    6656
+                  ],
+                  "DcModeName": "DC1ms",
+                  "DcSync0ShiftNanoseconds": 670000,
+                  "ProfileId": "is620n-csp"
+                }
+              }
+            ],
+            "Devices": [
+              {
+                "Id": "a5fa0850-89c5-4fdc-89db-e12147fc9f71",
+                "Name": "IS620N commissioned profile",
+                "VendorId": 1048576,
+                "ProductCode": 786696,
+                "Revision": 65537,
+                "Entries": [
+                  {
+                    "Index": 24640,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Controlword",
+                    "Type": "UINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24698,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target position",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24831,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target velocity",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24672,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode",
+                    "Type": "SINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24639,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Error code",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24641,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Statusword",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24676,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual position",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24684,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual velocity",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24673,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode display",
+                    "Type": "SINT",
+                    "IsInput": true
+                  }
+                ],
+                "Description": {
+                  "SourceSha256": "da9822bb880af269f1d386fad0a83b6d8e0085e85a509d285b4cb8fe4afffff6",
+                  "PdoGroups": [
+                    {
+                      "Index": 5632,
+                      "Name": "Commissioned Rx",
+                      "IsInput": false,
+                      "SyncManager": 2,
+                      "Fixed": false,
+                      "Mandatory": false,
+                      "Excludes": [],
+                      "DefaultSelected": true,
+                      "Entries": [
+                        {
+                          "Index": 24640,
+                          "SubIndex": 0,
+                          "BitLength": 16,
+                          "Name": "Controlword",
+                          "Type": "UINT",
+                          "IsInput": false
+                        },
+                        {
+                          "Index": 24698,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Target position",
+                          "Type": "DINT",
+                          "IsInput": false
+                        },
+                        {
+                          "Index": 24831,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Target velocity",
+                          "Type": "DINT",
+                          "IsInput": false
+                        },
+                        {
+                          "Index": 24672,
+                          "SubIndex": 0,
+                          "BitLength": 8,
+                          "Name": "Mode",
+                          "Type": "SINT",
+                          "IsInput": false
+                        }
+                      ]
+                    },
+                    {
+                      "Index": 6656,
+                      "Name": "Commissioned Tx",
+                      "IsInput": true,
+                      "SyncManager": 3,
+                      "Fixed": false,
+                      "Mandatory": false,
+                      "Excludes": [],
+                      "DefaultSelected": true,
+                      "Entries": [
+                        {
+                          "Index": 24639,
+                          "SubIndex": 0,
+                          "BitLength": 16,
+                          "Name": "Error code",
+                          "Type": "UINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24641,
+                          "SubIndex": 0,
+                          "BitLength": 16,
+                          "Name": "Statusword",
+                          "Type": "UINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24676,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Actual position",
+                          "Type": "DINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24684,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Actual velocity",
+                          "Type": "DINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24673,
+                          "SubIndex": 0,
+                          "BitLength": 8,
+                          "Name": "Mode display",
+                          "Type": "SINT",
+                          "IsInput": true
+                        }
+                      ]
+                    }
+                  ],
+                  "SyncManagers": [
+                    {
+                      "Index": 0,
+                      "Name": "MBoxOut",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": null,
+                      "Watchdog": null
+                    },
+                    {
+                      "Index": 1,
+                      "Name": "MBoxIn",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": null,
+                      "Watchdog": null
+                    },
+                    {
+                      "Index": 2,
+                      "Name": "Outputs",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": true,
+                      "Watchdog": true
+                    },
+                    {
+                      "Index": 3,
+                      "Name": "Inputs",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": true,
+                      "Watchdog": false
+                    }
+                  ],
+                  "DcModes": [
+                    {
+                      "Name": "DC1ms",
+                      "AssignActivate": 768,
+                      "Sync0": {
+                        "Value": 0,
+                        "Factor": 1,
+                        "Shift": 0
+                      },
+                      "Sync1": {
+                        "Value": 0,
+                        "Factor": null,
+                        "Shift": null
+                      }
+                    }
+                  ],
+                  "StartupCommands": [
+                    {
+                      "Transition": "PS",
+                      "Index": 8197,
+                      "SubIndex": 20,
+                      "DataHex": "0100",
+                      "CompleteAccess": false
+                    },
+                    {
+                      "Transition": "PS",
+                      "Index": 8200,
+                      "SubIndex": 20,
+                      "DataHex": "E803",
+                      "CompleteAccess": false
+                    }
+                  ],
+                  "UnsupportedFeatures": [],
+                  "IsDescriptionSupported": true
+                }
+              }
+            ],
+            "Io": [],
+            "Axes": [
+              {
+                "Name": "X",
+                "ControllerAxis": "Axis1",
+                "Unit": "rev",
+                "MinPosition": -1000,
+                "MaxPosition": 1000,
+                "Runtime": {
+                  "ProfileId": "is620n-csp",
+                  "DriveDemandProtection": true,
+                  "DriveErrorOnly": true,
+                  "DemandDeliveryEnforced": false,
+                  "VelocityFeedbackRawPerUnitPerSecond": 1048576,
+                  "VelocityOffsetRawPerUnitPerSecond": 1048576,
+                  "VelocityFeedforwardGain": 0,
+                  "FollowingErrorRawPerUnit": 1048576,
+                  "PositionDemandRawPerUnit": 1048576,
+                  "DriveFollowingErrorWindowRaw": 10486,
+                  "MotorModel": "ISMH1-10B30CB-U230Z",
+                  "MechanicsConfirmed": true,
+                  "SafetyConfirmed": true,
+                  "VelocityUnits": "CountsPerSecond",
+                  "MaximumActualVelocity": 55,
+                  "MaximumFollowingError": 0.005,
+                  "FollowingErrorTimeoutMilliseconds": 20,
+                  "Homing": {
+                    "Required": true,
+                    "Method": 35,
+                    "AllowCurrentPositionZero": true,
+                    "SearchSpeedRaw": 1048,
+                    "LatchSpeedRaw": 1048,
+                    "AccelerationRaw": 10485,
+                    "OffsetRaw": 0,
+                    "TimeoutMilliseconds": 5000
+                  },
+                  "MotionCompletion": {
+                    "PositionTolerance": 0.0001,
+                    "VelocityTolerance": 0.0005,
+                    "DwellMilliseconds": 100,
+                    "PositionStabilityCompletion": true
+                  }
+                },
+                "Mechanics": {
+                  "Kind": "Rotary",
+                  "FeedbackUnit": "EncoderCounts",
+                  "FeedbackCountsPerMotorRevolution": 1048576,
+                  "MotorRevolutions": 1,
+                  "LoadRevolutions": 1,
+                  "TravelPerLoadRevolution": 1,
+                  "ReverseDirection": false,
+                  "RotaryMode": "Limited",
+                  "ModuloStart": 0,
+                  "ModuloPeriod": 360,
+                  "HomeMode": "ControllerConfigured",
+                  "HomeDirection": "Negative",
+                  "HomeOffset": 0,
+                  "HomeSearchVelocity": 1,
+                  "HomeLatchVelocity": 0.2
+                },
+                "StationId": "5ed04c68-e38f-49d2-ad0d-214eadaceb47",
+                "MaximumVelocity": 50,
+                "MaximumAcceleration": 5,
+                "MaximumDeceleration": 5,
+                "MaximumJerk": 20
+              }
+            ]
+          },
+          "Paths": []
+        },
+        "Sources": [
+          {
+            "ItemId": "7b3cf0cd-bc73-4254-be4f-2f518c875f87",
+            "RelativePath": "sources/Main.st",
+            "Text": "(* MIT. Standard MC_* native closed-loop test sequence on configured axis AXIS_X *)\nPROGRAM Main\nVAR\n    PowerEnable : BOOL := FALSE;\n    StartExecute : BOOL := FALSE;\n    JogExecute : BOOL := FALSE;\n    StopExecute : BOOL := FALSE;\n    ResetExecute : BOOL := FALSE;\n\n    (* Target parameters within configured limits: MaxVel 50, MaxAcc 5, MaxDec 5, MaxJerk 20 *)\n    ForwardTurns : LREAL := 2.0;\n    ReverseTurns : LREAL := 2.0;\n    Speed : LREAL := 1.0;\n    Acc : LREAL := 2.0;\n    Dec : LREAL := 2.0;\n    JerkVal : LREAL := 10.0;\n    JogSpeed : LREAL := 0.5;\n\n    Step : UINT := 0;\n    StartPosition : LREAL := 0.0;\n    ErrorID : UDINT := 0;\n    Done : BOOL := FALSE;\n    Cancelled : BOOL := FALSE;\n\n    (* Native Axis Function Block Instances *)\n    Power : MC_Power;\n    Home : MC_Home;\n    Reset : MC_Reset;\n    Status : MC_ReadStatus;\n    Position : MC_ReadActualPosition;\n    MoveFwd : MC_MoveAbsolute;\n    MoveRev : MC_MoveAbsolute;\n    Jog : MC_MoveVelocity;\n    Stop : MC_Stop;\n\n    (* Timers \u0026 Triggers *)\n    Dwell : TON;\n    JogTimer : TON;\n    StartEdge : R_TRIG;\nEND_VAR\n\n(* Continuous state \u0026 position feedback read on AXIS_X every scan *)\nStatus(Axis := AXIS_X, Enable := TRUE);\nPosition(Axis := AXIS_X, Enable := TRUE);\nStartEdge(CLK := StartExecute);\n\n(* Commands called cyclically with parameter bindings *)\nPower(Axis := AXIS_X, Enable := PowerEnable);\nReset(Axis := AXIS_X, Execute := ResetExecute);\nHome(Axis := AXIS_X, Execute := (Step = 10));\n\nMoveFwd(Axis := AXIS_X, Execute := (Step = 20),\n    Position := StartPosition \u002B ForwardTurns,\n    Velocity := Speed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nDwell(IN := (Step = 30), PT := T#1s);\n\nMoveRev(Axis := AXIS_X, Execute := (Step = 40),\n    Position := StartPosition \u002B ForwardTurns - ReverseTurns,\n    Velocity := Speed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nJog(Axis := AXIS_X, Execute := (Step = 50) OR JogExecute,\n    Velocity := JogSpeed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nJogTimer(IN := (Step = 50), PT := T#1500ms);\n\nStop(Axis := AXIS_X, Execute := StopExecute OR (Step = 60),\n    Deceleration := Dec, Jerk := JerkVal);\n\n(* Sequence State Machine *)\nIF StopExecute AND (Step \u003E 0) AND (Step \u003C 100) THEN\n    Cancelled := TRUE;\n    Step := 60;\nEND_IF;\n\nCASE Step OF\n0: (* Idle wait for Start trigger when powered and stand still *)\n    IF StartEdge.Q AND Power.Status AND Status.Standstill THEN\n        StartPosition := Position.Position;\n        ErrorID := 0;\n        Cancelled := FALSE;\n        Done := FALSE;\n        IF Status.Homed THEN\n            Step := 20; (* If already homed, proceed directly to forward move *)\n        ELSE\n            Step := 10; (* Otherwise perform homing *)\n        END_IF;\n    END_IF;\n\n10: (* Homing *)\n    IF Home.Done THEN\n        StartPosition := Position.Position;\n        Step := 20;\n    ELSIF Home.Error THEN\n        ErrorID := Home.ErrorID;\n        Step := 900;\n    ELSIF Home.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n20: (* Forward Absolute Move with Jerk *)\n    IF MoveFwd.Done THEN\n        Step := 30;\n    ELSIF MoveFwd.Error THEN\n        ErrorID := MoveFwd.ErrorID;\n        Step := 900;\n    ELSIF MoveFwd.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n30: (* Dwell 1s *)\n    IF Dwell.Q THEN\n        Step := 40;\n    END_IF;\n\n40: (* Reverse Absolute Move back to start with Jerk *)\n    IF MoveRev.Done THEN\n        Step := 50;\n    ELSIF MoveRev.Error THEN\n        ErrorID := MoveRev.ErrorID;\n        Step := 900;\n    ELSIF MoveRev.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n50: (* Jog / Velocity motion for 1.5s *)\n    IF JogTimer.Q THEN\n        Step := 60; (* Trigger controlled stop *)\n    ELSIF Jog.Error THEN\n        ErrorID := Jog.ErrorID;\n        Step := 900;\n    ELSIF Jog.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n60: (* Controlled Stop *)\n    IF Stop.Done THEN\n        Step := 100;\n    ELSIF Stop.Error THEN\n        IF ErrorID = 0 THEN ErrorID := Stop.ErrorID; END_IF;\n        Step := 900;\n    END_IF;\n\n100: (* Sequence completed *)\n    Done := NOT Cancelled;\n    IF NOT StartExecute AND NOT StopExecute THEN\n        Step := 0;\n    END_IF;\n\n900: (* Error state, wait for Reset *)\n    IF Reset.Done AND NOT StartExecute AND NOT StopExecute THEN\n        ErrorID := 0;\n        Step := 0;\n    END_IF;\nEND_CASE;\nEND_PROGRAM"
+          }
+        ],
+        "Notice": "MCP edits a saved-project draft. Save then reload in the desktop; resolve unsaved desktop edits first."
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:31.6806332Z",
+      "tool": "project_validate",
+      "arguments": {
+        "sessionId": "292cdb34832c423c85586d9e25a22f3b"
+      },
+      "status": "success",
+      "response": {
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "success": true,
+        "diagnostics": [],
+        "stage": "engineering-check",
+        "compilerCheckRequired": true
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:31.7176528Z",
+      "tool": "project_save",
+      "arguments": {
+        "sessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "expectedRevision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea"
+      },
+      "status": "success",
+      "response": {
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "ProjectPath": "examples/is620n-runtime-speed-3000/IS620N-Runtime-Migrated.stproj",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "HasUnsavedChanges": false,
+        "Project": {
+          "Network": {
+            "ManagementHost": "192.168.1.31",
+            "SshUser": "a",
+            "RuntimeEndpoint": "",
+            "EtherCatInterface": "enp3s0"
+          },
+          "SchemaVersion": 1,
+          "Id": "68820f80-eb44-425b-2b75-ed3a40797b09",
+          "Name": "IS620N \u6B63\u5F0FST\u7A7A\u8F7D\u9A8C\u6536 \u00B7 3000rpm",
+          "Items": [
+            {
+              "Id": "7b3cf0cd-bc73-4254-be4f-2f518c875f87",
+              "Name": "Main",
+              "Kind": "Program",
+              "SourcePath": "sources/Main.st"
+            }
+          ],
+          "Tasks": [
+            {
+              "Name": "Cyclic",
+              "ProgramId": "7b3cf0cd-bc73-4254-be4f-2f518c875f87",
+              "IntervalMilliseconds": 10,
+              "Enabled": true,
+              "Scheduling": "Ordinary",
+              "Priority": 10,
+              "Cpu": null
+            }
+          ],
+          "Hardware": {
+            "Runtime": {
+              "AxisTrace": {
+                "Enabled": true,
+                "Capacity": 120000
+              },
+              "CycleTimeNanoseconds": 1000000,
+              "CycleTiming": {
+                "Enabled": true,
+                "Model": "R2M",
+                "BoundaryGuardNs": 200000,
+                "RemainingSendBudgetNs": 100000,
+                "RequiredGoodCycles": 1000
+              }
+            },
+            "Stations": [
+              {
+                "Id": "5ed04c68-e38f-49d2-ad0d-214eadaceb47",
+                "Name": "IS620NDrive",
+                "DeviceId": "a5fa0850-89c5-4fdc-89db-e12147fc9f71",
+                "AliasAddress": 0,
+                "EnabledEntries": [
+                  {
+                    "Index": 24640,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Controlword",
+                    "Type": "UINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24698,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target position",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24831,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target velocity",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24672,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode",
+                    "Type": "SINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24639,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Error code",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24641,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Statusword",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24676,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual position",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24684,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual velocity",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24673,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode display",
+                    "Type": "SINT",
+                    "IsInput": true
+                  }
+                ],
+                "Runtime": {
+                  "SelectedPdoIndices": [
+                    5632,
+                    6656
+                  ],
+                  "DcModeName": "DC1ms",
+                  "DcSync0ShiftNanoseconds": 670000,
+                  "ProfileId": "is620n-csp"
+                }
+              }
+            ],
+            "Devices": [
+              {
+                "Id": "a5fa0850-89c5-4fdc-89db-e12147fc9f71",
+                "Name": "IS620N commissioned profile",
+                "VendorId": 1048576,
+                "ProductCode": 786696,
+                "Revision": 65537,
+                "Entries": [
+                  {
+                    "Index": 24640,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Controlword",
+                    "Type": "UINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24698,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target position",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24831,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target velocity",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24672,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode",
+                    "Type": "SINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24639,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Error code",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24641,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Statusword",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24676,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual position",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24684,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual velocity",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24673,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode display",
+                    "Type": "SINT",
+                    "IsInput": true
+                  }
+                ],
+                "Description": {
+                  "SourceSha256": "da9822bb880af269f1d386fad0a83b6d8e0085e85a509d285b4cb8fe4afffff6",
+                  "PdoGroups": [
+                    {
+                      "Index": 5632,
+                      "Name": "Commissioned Rx",
+                      "IsInput": false,
+                      "SyncManager": 2,
+                      "Fixed": false,
+                      "Mandatory": false,
+                      "Excludes": [],
+                      "DefaultSelected": true,
+                      "Entries": [
+                        {
+                          "Index": 24640,
+                          "SubIndex": 0,
+                          "BitLength": 16,
+                          "Name": "Controlword",
+                          "Type": "UINT",
+                          "IsInput": false
+                        },
+                        {
+                          "Index": 24698,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Target position",
+                          "Type": "DINT",
+                          "IsInput": false
+                        },
+                        {
+                          "Index": 24831,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Target velocity",
+                          "Type": "DINT",
+                          "IsInput": false
+                        },
+                        {
+                          "Index": 24672,
+                          "SubIndex": 0,
+                          "BitLength": 8,
+                          "Name": "Mode",
+                          "Type": "SINT",
+                          "IsInput": false
+                        }
+                      ]
+                    },
+                    {
+                      "Index": 6656,
+                      "Name": "Commissioned Tx",
+                      "IsInput": true,
+                      "SyncManager": 3,
+                      "Fixed": false,
+                      "Mandatory": false,
+                      "Excludes": [],
+                      "DefaultSelected": true,
+                      "Entries": [
+                        {
+                          "Index": 24639,
+                          "SubIndex": 0,
+                          "BitLength": 16,
+                          "Name": "Error code",
+                          "Type": "UINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24641,
+                          "SubIndex": 0,
+                          "BitLength": 16,
+                          "Name": "Statusword",
+                          "Type": "UINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24676,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Actual position",
+                          "Type": "DINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24684,
+                          "SubIndex": 0,
+                          "BitLength": 32,
+                          "Name": "Actual velocity",
+                          "Type": "DINT",
+                          "IsInput": true
+                        },
+                        {
+                          "Index": 24673,
+                          "SubIndex": 0,
+                          "BitLength": 8,
+                          "Name": "Mode display",
+                          "Type": "SINT",
+                          "IsInput": true
+                        }
+                      ]
+                    }
+                  ],
+                  "SyncManagers": [
+                    {
+                      "Index": 0,
+                      "Name": "MBoxOut",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": null,
+                      "Watchdog": null
+                    },
+                    {
+                      "Index": 1,
+                      "Name": "MBoxIn",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": null,
+                      "Watchdog": null
+                    },
+                    {
+                      "Index": 2,
+                      "Name": "Outputs",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": true,
+                      "Watchdog": true
+                    },
+                    {
+                      "Index": 3,
+                      "Name": "Inputs",
+                      "StartAddress": null,
+                      "DefaultSize": null,
+                      "ControlByte": null,
+                      "Enable": true,
+                      "Watchdog": false
+                    }
+                  ],
+                  "DcModes": [
+                    {
+                      "Name": "DC1ms",
+                      "AssignActivate": 768,
+                      "Sync0": {
+                        "Value": 0,
+                        "Factor": 1,
+                        "Shift": 0
+                      },
+                      "Sync1": {
+                        "Value": 0,
+                        "Factor": null,
+                        "Shift": null
+                      }
+                    }
+                  ],
+                  "StartupCommands": [
+                    {
+                      "Transition": "PS",
+                      "Index": 8197,
+                      "SubIndex": 20,
+                      "DataHex": "0100",
+                      "CompleteAccess": false
+                    },
+                    {
+                      "Transition": "PS",
+                      "Index": 8200,
+                      "SubIndex": 20,
+                      "DataHex": "E803",
+                      "CompleteAccess": false
+                    }
+                  ],
+                  "UnsupportedFeatures": [],
+                  "IsDescriptionSupported": true
+                }
+              }
+            ],
+            "Io": [],
+            "Axes": [
+              {
+                "Name": "X",
+                "ControllerAxis": "Axis1",
+                "Unit": "rev",
+                "MinPosition": -1000,
+                "MaxPosition": 1000,
+                "Runtime": {
+                  "ProfileId": "is620n-csp",
+                  "DriveDemandProtection": true,
+                  "DriveErrorOnly": true,
+                  "DemandDeliveryEnforced": false,
+                  "VelocityFeedbackRawPerUnitPerSecond": 1048576,
+                  "VelocityOffsetRawPerUnitPerSecond": 1048576,
+                  "VelocityFeedforwardGain": 0,
+                  "FollowingErrorRawPerUnit": 1048576,
+                  "PositionDemandRawPerUnit": 1048576,
+                  "DriveFollowingErrorWindowRaw": 10486,
+                  "MotorModel": "ISMH1-10B30CB-U230Z",
+                  "MechanicsConfirmed": true,
+                  "SafetyConfirmed": true,
+                  "VelocityUnits": "CountsPerSecond",
+                  "MaximumActualVelocity": 55,
+                  "MaximumFollowingError": 0.005,
+                  "FollowingErrorTimeoutMilliseconds": 20,
+                  "Homing": {
+                    "Required": true,
+                    "Method": 35,
+                    "AllowCurrentPositionZero": true,
+                    "SearchSpeedRaw": 1048,
+                    "LatchSpeedRaw": 1048,
+                    "AccelerationRaw": 10485,
+                    "OffsetRaw": 0,
+                    "TimeoutMilliseconds": 5000
+                  },
+                  "MotionCompletion": {
+                    "PositionTolerance": 0.0001,
+                    "VelocityTolerance": 0.0005,
+                    "DwellMilliseconds": 100,
+                    "PositionStabilityCompletion": true
+                  }
+                },
+                "Mechanics": {
+                  "Kind": "Rotary",
+                  "FeedbackUnit": "EncoderCounts",
+                  "FeedbackCountsPerMotorRevolution": 1048576,
+                  "MotorRevolutions": 1,
+                  "LoadRevolutions": 1,
+                  "TravelPerLoadRevolution": 1,
+                  "ReverseDirection": false,
+                  "RotaryMode": "Limited",
+                  "ModuloStart": 0,
+                  "ModuloPeriod": 360,
+                  "HomeMode": "ControllerConfigured",
+                  "HomeDirection": "Negative",
+                  "HomeOffset": 0,
+                  "HomeSearchVelocity": 1,
+                  "HomeLatchVelocity": 0.2
+                },
+                "StationId": "5ed04c68-e38f-49d2-ad0d-214eadaceb47",
+                "MaximumVelocity": 50,
+                "MaximumAcceleration": 5,
+                "MaximumDeceleration": 5,
+                "MaximumJerk": 20
+              }
+            ]
+          },
+          "Paths": []
+        },
+        "Sources": [
+          {
+            "ItemId": "7b3cf0cd-bc73-4254-be4f-2f518c875f87",
+            "RelativePath": "sources/Main.st",
+            "Text": "(* MIT. Standard MC_* native closed-loop test sequence on configured axis AXIS_X *)\nPROGRAM Main\nVAR\n    PowerEnable : BOOL := FALSE;\n    StartExecute : BOOL := FALSE;\n    JogExecute : BOOL := FALSE;\n    StopExecute : BOOL := FALSE;\n    ResetExecute : BOOL := FALSE;\n\n    (* Target parameters within configured limits: MaxVel 50, MaxAcc 5, MaxDec 5, MaxJerk 20 *)\n    ForwardTurns : LREAL := 2.0;\n    ReverseTurns : LREAL := 2.0;\n    Speed : LREAL := 1.0;\n    Acc : LREAL := 2.0;\n    Dec : LREAL := 2.0;\n    JerkVal : LREAL := 10.0;\n    JogSpeed : LREAL := 0.5;\n\n    Step : UINT := 0;\n    StartPosition : LREAL := 0.0;\n    ErrorID : UDINT := 0;\n    Done : BOOL := FALSE;\n    Cancelled : BOOL := FALSE;\n\n    (* Native Axis Function Block Instances *)\n    Power : MC_Power;\n    Home : MC_Home;\n    Reset : MC_Reset;\n    Status : MC_ReadStatus;\n    Position : MC_ReadActualPosition;\n    MoveFwd : MC_MoveAbsolute;\n    MoveRev : MC_MoveAbsolute;\n    Jog : MC_MoveVelocity;\n    Stop : MC_Stop;\n\n    (* Timers \u0026 Triggers *)\n    Dwell : TON;\n    JogTimer : TON;\n    StartEdge : R_TRIG;\nEND_VAR\n\n(* Continuous state \u0026 position feedback read on AXIS_X every scan *)\nStatus(Axis := AXIS_X, Enable := TRUE);\nPosition(Axis := AXIS_X, Enable := TRUE);\nStartEdge(CLK := StartExecute);\n\n(* Commands called cyclically with parameter bindings *)\nPower(Axis := AXIS_X, Enable := PowerEnable);\nReset(Axis := AXIS_X, Execute := ResetExecute);\nHome(Axis := AXIS_X, Execute := (Step = 10));\n\nMoveFwd(Axis := AXIS_X, Execute := (Step = 20),\n    Position := StartPosition \u002B ForwardTurns,\n    Velocity := Speed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nDwell(IN := (Step = 30), PT := T#1s);\n\nMoveRev(Axis := AXIS_X, Execute := (Step = 40),\n    Position := StartPosition \u002B ForwardTurns - ReverseTurns,\n    Velocity := Speed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nJog(Axis := AXIS_X, Execute := (Step = 50) OR JogExecute,\n    Velocity := JogSpeed, Acceleration := Acc, Deceleration := Dec, Jerk := JerkVal);\n\nJogTimer(IN := (Step = 50), PT := T#1500ms);\n\nStop(Axis := AXIS_X, Execute := StopExecute OR (Step = 60),\n    Deceleration := Dec, Jerk := JerkVal);\n\n(* Sequence State Machine *)\nIF StopExecute AND (Step \u003E 0) AND (Step \u003C 100) THEN\n    Cancelled := TRUE;\n    Step := 60;\nEND_IF;\n\nCASE Step OF\n0: (* Idle wait for Start trigger when powered and stand still *)\n    IF StartEdge.Q AND Power.Status AND Status.Standstill THEN\n        StartPosition := Position.Position;\n        ErrorID := 0;\n        Cancelled := FALSE;\n        Done := FALSE;\n        IF Status.Homed THEN\n            Step := 20; (* If already homed, proceed directly to forward move *)\n        ELSE\n            Step := 10; (* Otherwise perform homing *)\n        END_IF;\n    END_IF;\n\n10: (* Homing *)\n    IF Home.Done THEN\n        StartPosition := Position.Position;\n        Step := 20;\n    ELSIF Home.Error THEN\n        ErrorID := Home.ErrorID;\n        Step := 900;\n    ELSIF Home.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n20: (* Forward Absolute Move with Jerk *)\n    IF MoveFwd.Done THEN\n        Step := 30;\n    ELSIF MoveFwd.Error THEN\n        ErrorID := MoveFwd.ErrorID;\n        Step := 900;\n    ELSIF MoveFwd.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n30: (* Dwell 1s *)\n    IF Dwell.Q THEN\n        Step := 40;\n    END_IF;\n\n40: (* Reverse Absolute Move back to start with Jerk *)\n    IF MoveRev.Done THEN\n        Step := 50;\n    ELSIF MoveRev.Error THEN\n        ErrorID := MoveRev.ErrorID;\n        Step := 900;\n    ELSIF MoveRev.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n50: (* Jog / Velocity motion for 1.5s *)\n    IF JogTimer.Q THEN\n        Step := 60; (* Trigger controlled stop *)\n    ELSIF Jog.Error THEN\n        ErrorID := Jog.ErrorID;\n        Step := 900;\n    ELSIF Jog.CommandAborted THEN\n        Cancelled := TRUE;\n        Step := 100;\n    END_IF;\n\n60: (* Controlled Stop *)\n    IF Stop.Done THEN\n        Step := 100;\n    ELSIF Stop.Error THEN\n        IF ErrorID = 0 THEN ErrorID := Stop.ErrorID; END_IF;\n        Step := 900;\n    END_IF;\n\n100: (* Sequence completed *)\n    Done := NOT Cancelled;\n    IF NOT StartExecute AND NOT StopExecute THEN\n        Step := 0;\n    END_IF;\n\n900: (* Error state, wait for Reset *)\n    IF Reset.Done AND NOT StartExecute AND NOT StopExecute THEN\n        ErrorID := 0;\n        Step := 0;\n    END_IF;\nEND_CASE;\nEND_PROGRAM"
+          }
+        ],
+        "Notice": "MCP edits a saved-project draft. Save then reload in the desktop; resolve unsaved desktop edits first."
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:31.8339436Z",
+      "tool": "build_start",
+      "arguments": {
+        "sessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "expectedRevision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea"
+      },
+      "status": "success",
+      "response": {
+        "OperationId": "a3e0a6a744604625a3d06c5fceb0c710",
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "State": "Running",
+        "Success": false,
+        "BuildHash": null,
+        "Diagnostics": [],
+        "Log": ""
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:32.1467890Z",
+      "tool": "build_status",
+      "arguments": {
+        "operationId": "a3e0a6a744604625a3d06c5fceb0c710"
+      },
+      "status": "success",
+      "response": {
+        "OperationId": "a3e0a6a744604625a3d06c5fceb0c710",
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "State": "Running",
+        "Success": false,
+        "BuildHash": null,
+        "Diagnostics": [],
+        "Log": ""
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:32.4613858Z",
+      "tool": "build_status",
+      "arguments": {
+        "operationId": "a3e0a6a744604625a3d06c5fceb0c710"
+      },
+      "status": "success",
+      "response": {
+        "OperationId": "a3e0a6a744604625a3d06c5fceb0c710",
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "State": "Running",
+        "Success": false,
+        "BuildHash": null,
+        "Diagnostics": [],
+        "Log": ""
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:32.7749816Z",
+      "tool": "build_status",
+      "arguments": {
+        "operationId": "a3e0a6a744604625a3d06c5fceb0c710"
+      },
+      "status": "success",
+      "response": {
+        "OperationId": "a3e0a6a744604625a3d06c5fceb0c710",
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "State": "Running",
+        "Success": false,
+        "BuildHash": null,
+        "Diagnostics": [],
+        "Log": ""
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:33.0901481Z",
+      "tool": "build_status",
+      "arguments": {
+        "operationId": "a3e0a6a744604625a3d06c5fceb0c710"
+      },
+      "status": "success",
+      "response": {
+        "OperationId": "a3e0a6a744604625a3d06c5fceb0c710",
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "State": "Running",
+        "Success": false,
+        "BuildHash": null,
+        "Diagnostics": [],
+        "Log": ""
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:33.4043493Z",
+      "tool": "build_status",
+      "arguments": {
+        "operationId": "a3e0a6a744604625a3d06c5fceb0c710"
+      },
+      "status": "success",
+      "response": {
+        "OperationId": "a3e0a6a744604625a3d06c5fceb0c710",
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "State": "Running",
+        "Success": false,
+        "BuildHash": null,
+        "Diagnostics": [],
+        "Log": ""
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:33.7207441Z",
+      "tool": "build_status",
+      "arguments": {
+        "operationId": "a3e0a6a744604625a3d06c5fceb0c710"
+      },
+      "status": "success",
+      "response": {
+        "OperationId": "a3e0a6a744604625a3d06c5fceb0c710",
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "State": "Running",
+        "Success": false,
+        "BuildHash": null,
+        "Diagnostics": [],
+        "Log": ""
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:34.0367875Z",
+      "tool": "build_status",
+      "arguments": {
+        "operationId": "a3e0a6a744604625a3d06c5fceb0c710"
+      },
+      "status": "success",
+      "response": {
+        "OperationId": "a3e0a6a744604625a3d06c5fceb0c710",
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "State": "Running",
+        "Success": false,
+        "BuildHash": null,
+        "Diagnostics": [],
+        "Log": ""
+      }
+    },
+    {
+      "timestamp": "2026-11-02T07:40:34.3507206Z",
+      "tool": "build_status",
+      "arguments": {
+        "operationId": "a3e0a6a744604625a3d06c5fceb0c710"
+      },
+      "status": "success",
+      "response": {
+        "OperationId": "a3e0a6a744604625a3d06c5fceb0c710",
+        "SessionId": "292cdb34832c423c85586d9e25a22f3b",
+        "Revision": "3d7c60da643c0c74b6ca337109a6869b4fa1533530c1a902d57685d69b2f3fea",
+        "State": "Completed",
+        "Success": true,
+        "BuildHash": "E291CE985670899364E4371CEACF8C275485CBF375F23B3605EB325BB95A09EE",
+        "Diagnostics": [],
+        "Log": "STruC\u002B\u002B version 0.7.0\nGenerated C\u002B\u002B and authoritative debugger tables for isolated Runtime candidate compilation.\n"
+      }
+    }
+  ]
+}

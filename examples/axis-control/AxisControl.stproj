@@ -2,11 +2,11 @@
   "SchemaVersion": 1,
   "Project": {
     "SchemaVersion": 1,
-    "Id": "162dbfbe-b184-43eb-8173-6bcc7fadd120",
+    "Id": "96305b16-b51d-4270-a42b-7a0c82120d2b",
     "Name": "Basic axis control",
     "Items": [
       {
-        "Id": "86f122db-c6b7-414c-b974-74a5e0f1e2eb",
+        "Id": "21147940-63eb-4de0-8914-66301d12b44d",
         "Name": "Main",
         "Kind": 0,
         "SourcePath": "sources/Main.st"
@@ -15,9 +15,12 @@
     "Tasks": [
       {
         "Name": "Cyclic",
-        "ProgramId": "86f122db-c6b7-414c-b974-74a5e0f1e2eb",
+        "ProgramId": "21147940-63eb-4de0-8914-66301d12b44d",
         "IntervalMilliseconds": 10,
-        "Enabled": true
+        "Enabled": true,
+        "Scheduling": 0,
+        "Priority": 10,
+        "Cpu": null
       }
     ],
     "Hardware": {
@@ -36,6 +39,6 @@
     "Paths": []
   },
   "SourceFiles": {
-    "86f122db-c6b7-414c-b974-74a5e0f1e2eb": ".stversions/7c37de15105ac4d881af861d72b576ce7ab2ab51b4ee50484c67736bd02faf52/de8c42a8e3198a9c166a5a77ec83f005c80f791dfcf1d373d25cab6e6b04f965/sources/Main.st"
+    "21147940-63eb-4de0-8914-66301d12b44d": ".stversions/09000c4d1bb6d5fb770076c2c78c6743b610d9b161c6be68ddd988db27ad1e35/de8c42a8e3198a9c166a5a77ec83f005c80f791dfcf1d373d25cab6e6b04f965/sources/Main.st"
   }
 }

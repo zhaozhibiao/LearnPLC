@@ -9,6 +9,8 @@ namespace StWorkbench.App;
 
 public sealed partial class MainWindow
 {
+    private DeploymentResponse? compiledReadiness;
+    private bool configurationPreparationReady;
     private sealed class ProgramApplicationException(string message, Exception inner) : InvalidOperationException(message, inner);
     private async Task DownloadAndApplyAsync(bool upload)
     {
@@ -66,7 +68,7 @@ public sealed partial class MainWindow
         {
             deploymentBusy = busy = false; operationTarget = null;
             var current = IsCurrent();
-            downloadButton.IsEnabled = current;
+            downloadButton.IsEnabled = true;
             RefreshCompiledProgramAction();
         }
     }
@@ -74,8 +76,8 @@ public sealed partial class MainWindow
     private void RefreshCompiledProgramAction()
     {
         activateButton.IsEnabled = false;
-        if (busy || deploymentBusy || !remoteKnown || candidatePackage is null || compiledBuildHash != candidatePackage.BuildHash || !motionDeploymentReady ||
-            project.Hardware.Axes.Any(a => a.Mechanics is not null) || string.Equals(activeBuildHash, candidatePackage.BuildHash, StringComparison.OrdinalIgnoreCase)) return;
+        if (busy || deploymentBusy || !remoteKnown || candidatePackage is null || compiledBuildHash != candidatePackage.BuildHash || !(motionDeploymentReady || configurationPreparationReady) ||
+            HasOfflineAxisMechanics || (string.Equals(activeBuildHash, candidatePackage.BuildHash, StringComparison.OrdinalIgnoreCase) && !configurationPreparationReady)) return;
         try { activateButton.IsEnabled = CandidateMatchesProject(); } catch (InvalidDataException) { }
     }
 
@@ -83,7 +85,9 @@ public sealed partial class MainWindow
     {
         public bool IsCurrent => isCurrent();
         public bool CanApply => IsCurrent && owner.candidatePackage is not null && owner.compiledBuildHash == owner.candidatePackage.BuildHash &&
-            owner.motionDeploymentReady && owner.project.Hardware.Axes.All(a => a.Mechanics is null);
+            owner.motionDeploymentReady && !owner.HasOfflineAxisMechanics;
+        public bool RequiresConfigurationCheck => owner.project.Hardware.Runtime is not null;
+        public bool CanApplyAfterConfiguration => IsCurrent && owner.candidatePackage is not null && owner.compiledBuildHash == owner.candidatePackage.BuildHash && owner.configurationPreparationReady;
         public async Task<DeploymentResponse> SendAsync(string action, string? packageBase64 = null, string? packageHash = null)
         {
             owner.buildStatus.Text = action switch
@@ -91,7 +95,13 @@ public sealed partial class MainWindow
                 "stage" => "正在上传程序…", "compile" => "Linux 编译中…", "stop" => "正在停止原程序…",
                 "activate" => "正在重启 Runtime 核心并应用程序…", "start" => "正在恢复新程序运行…", _ => owner.buildStatus.Text
             };
+            if (action == "configuration-plan") owner.buildStatus.Text = "正在比较程序所需组态与设备组态…";
             return await owner.SendDeploymentAsync(action, packageBase64, packageHash);
+        }
+        public void ReportConfigurationMismatch(ProgramConfigurationPlan plan)
+        {
+            owner.AppendLog(plan.Kind == "axis" ? "轴映射、限值或周期与设备不一致，请先下载硬件；未停止原程序，未修改组态。" : "物理总线、IO 或轴参数与设备不一致，请先下载硬件；未停止原程序，未修改组态。", true);
+            owner.buildStatus.Text = "程序下载已停止 · 硬件组态不一致，请先选择左侧硬件并下载硬件";
         }
         public void ApplyCompilation(DeploymentResponse result) => owner.ApplyCompiledCandidate(result);
         public Task<bool> ConfirmRestartAsync(ProgramRestartNotice notice) => owner.ConfirmProgramRestartAsync(notice, target);
@@ -104,17 +114,23 @@ public sealed partial class MainWindow
 
     private async Task<bool> ConfirmProgramRestartAsync(ProgramRestartNotice notice, SshTarget target)
     {
-        var dialog = new Window { Title = "下载并应用程序", Width = 560, Height = 330, WindowStartupLocation = WindowStartupLocation.CenterOwner, CanResize = false };
+        var dialog = new Window { Title = "下载并应用程序", Width = 590, Height = 430, MinWidth = 420, MinHeight = 260, WindowStartupLocation = WindowStartupLocation.CenterOwner, CanResize = true };
         var state = notice.WasRunning ? "当前 PLC 程序正在运行，继续后将先停止原程序。" : "当前 PLC 程序已停止。";
         var completion = notice.WasRunning ? "应用完成并核对新程序后自动恢复运行。" : "应用完成后保持停止，不会自动运行。";
-        var message = $"目标：{target.User}@{target.Host}\n\n{state}\n本次应用需要重启 Runtime 核心，在线监视会短暂断开。\n\n{completion}取消将保留已编译程序，不执行停止或切换。";
+        var configuration = notice.ConfigurationChange switch
+        {
+            "hardware" => "\n本次同时更新总线／IO／轴参数组态，需要重启运动核心并重新配置从站。所有轴必须已停稳且撤使能，否则将停止此次应用。",
+            "axis" => "\n本次同时更新轴服务的映射、限值或 PLC 周期。所有轴必须已停稳且撤使能；更新轴服务会短暂中断轴反馈，运动核心保持运行。",
+            _ => "\n设备组态无需更新。"
+        };
+        var message = $"目标：{target.User}@{target.Host}\n\n{state}\n本次应用需要重启 Runtime 核心，在线监视会短暂断开。{configuration}\n\n{completion}\n取消将保留已编译程序，不更新组态、不执行停止或切换。";
         var yes = new Button { Content = "重启核心并应用" }; var no = new Button { Content = "取消" };
         yes.Click += (_, _) => dialog.Close(true); no.Click += (_, _) => dialog.Close(false);
-        dialog.Content = new StackPanel { Margin = new Thickness(22), Spacing = 18, Children =
-        {
-            new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap },
-            new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, HorizontalAlignment = HorizontalAlignment.Right, Children = { no, yes } }
-        } };
+        var content = new Grid { Margin = new Thickness(22), RowDefinitions = new("*,Auto"), RowSpacing = 18 };
+        content.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
+            Content = new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap } });
+        var footer = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, HorizontalAlignment = HorizontalAlignment.Right, Children = { no, yes } };
+        Grid.SetRow(footer, 1); content.Children.Add(footer); dialog.Content = content;
         return await dialog.ShowDialog<bool>(this);
     }
 }

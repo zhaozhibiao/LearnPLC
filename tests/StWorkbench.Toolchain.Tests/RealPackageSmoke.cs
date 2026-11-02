@@ -47,7 +47,8 @@ internal static class RealPackageSmoke
         var repeatedArchive = await File.ReadAllBytesAsync(repeat.PackagePath);
         if (!SHA256.HashData(firstArchive).SequenceEqual(SHA256.HashData(repeatedArchive)))
             throw new Exception("Identical build identity produced different archive bytes");
-        snapshot = snapshot with { Tasks = [new("Cyclic", programId, 20, true)] };
+        project.Tasks[0].IntervalMilliseconds = 20;
+        snapshot = ProjectValidator.Capture(project, docs);
         var second = await builder.BuildAsync(snapshot, names, "node", adapter, distribution, root);
         if (!second.Success || second.BuildHash == result.BuildHash) throw new Exception("Task timing change did not change identity");
         var invalidNames = new Dictionary<Guid, string> { [programId] = "OtherProgram" };

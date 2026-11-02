@@ -1,0 +1,76 @@
+{
+  "src/EcMotion.Igh/CMakeLists.txt": {
+    "originalSha256": "052cf52d89923986f23d0400f9b62e999736e91aa911322419d4f69b661b7073",
+    "patchedSha256": "1118a8b7811d2fe2200f69283f7786a7a1f5cf41b0b3c7ad92531459d9c32db3"
+  },
+  "src/EcMotion.Igh/generated/is620n_ethercat_config.hpp": {
+    "originalSha256": null,
+    "patchedSha256": "70cd29c55b1d010ec11ae750b32d3ec0a6d27d11deff8c8e0f33509de52c3b35",
+    "kind": "added"
+  },
+  "src/EcMotion.Igh/include/axis_feedback.hpp": {
+    "originalSha256": "a983f1374bf4bee6f676c206f60c504914f630af118c17a704003c81f7e71d06",
+    "patchedSha256": "48979e60a77a9536332bfb2dc477945c68678b1fef25fff6be7dbc6da38b870b"
+  },
+  "src/EcMotion.Igh/include/control_backend.hpp": {
+    "originalSha256": "664fe88ab3309cf5504d6ae58996b1d36f7beef41e17dcba795abbd8ea891951",
+    "patchedSha256": "89e275b0f5f55f96a848d88455310f7fdae6932c665ae0a277899cc3b4e51324"
+  },
+  "src/EcMotion.Igh/include/ethercat_runtime_config.hpp": {
+    "originalSha256": null,
+    "patchedSha256": "ff94bbe809520451e38042c4d8851c84cbdfebbdc9560d3a4495ffe10326afcf",
+    "kind": "added"
+  },
+  "src/EcMotion.Igh/include/fieldbus_control_backend.hpp": {
+    "originalSha256": "d6eedf219df66bbbf69da2ed8834b5725dd9b46a1711b5a3d05a2b0972ca44ad",
+    "patchedSha256": "f84f3027613375205365ebf0d8a416195b01142e9bda24d382a9da31df3d6c81"
+  },
+  "src/EcMotion.Igh/include/motion_safety.hpp": {
+    "originalSha256": "5c8266b186dd136fd7f9ef20404bcb293e13a8d71267c487f86eba65853698b4",
+    "patchedSha256": "64335da277707d46fe4cf62e4e02b912bc50def16e5e4818e9a200dea471101b"
+  },
+  "src/EcMotion.Igh/src/axis_feedback.cpp": {
+    "originalSha256": "aef12d32ce2557466931b39f8d1e642dda6323bbf8710b7f995fbc258ed98c4e",
+    "patchedSha256": "1443ba9dc5948a13c16fbdbf5f36e39a2698be695c10c946075dda658b393459"
+  },
+  "src/EcMotion.Igh/src/ethercat_runtime_cli_selftest.py": {
+    "originalSha256": null,
+    "patchedSha256": "2ab770325b6ae9f7dea2cf632297bb7c012121a0c289008938366d7ed267f5bd",
+    "kind": "added"
+  },
+  "src/EcMotion.Igh/src/ethercat_runtime_config.cpp": {
+    "originalSha256": null,
+    "patchedSha256": "0607e7e2a462f8f281ba7cd267a07b980fc5232fd5583567dea2df121101692e",
+    "kind": "added"
+  },
+  "src/EcMotion.Igh/src/ethercat_runtime_config_fixture.json": {
+    "originalSha256": null,
+    "patchedSha256": "5203b4079739b5a96edb72857555df66690d384cddacba708652be4d81e0553f",
+    "kind": "added"
+  },
+  "src/EcMotion.Igh/src/ethercat_runtime_config_selftest.cpp": {
+    "originalSha256": null,
+    "patchedSha256": "6040fc52fd51c0c6c3538c6a84a05834f4bde5f5c65de9177e467f550625f653",
+    "kind": "added"
+  },
+  "src/EcMotion.Igh/src/io_map_config_selftest.cpp": {
+    "originalSha256": "0df2348b9e61354cfa55dfd8dbc871d882d355d81f6d323e629fda344137ef1e",
+    "patchedSha256": "076133571d06ffa2331bde3ddd2b3b22fd6e08fe1f56f593c3a97cd3ccf63920"
+  },
+  "src/EcMotion.Igh/src/main.cpp": {
+    "originalSha256": "6dc077bcd6263f9d030b8fc1f5b423af4a9a5ceb79f56da63539e517f4ab0355",
+    "patchedSha256": "365430d2346785d508661fc494da99fbb793ba269ad03f7319296cbd13ca44ca"
+  },
+  "src/EcMotion.Igh/src/motion_safety.cpp": {
+    "originalSha256": "4d83ac338ee8862b34f78ce766adeec365aa9ee9aaac48728cc228ed9f5d9207",
+    "patchedSha256": "9e72753b05d9dfe6621ef7047e3414879828059a08760b6767ba28d4b0c49df8"
+  },
+  "src/EcMotion.Igh/src/native_protocol_server.cpp": {
+    "originalSha256": "2df29a42cf8d1f0a5237b53aa41af7da73be83309370de2cb2c667966ba63811",
+    "patchedSha256": "b088d5b2904d81bc0115c6a69ebd62040bb820533028fb295b10109865073e23"
+  },
+  "src/EcMotion.Igh/src/fieldbus_control_backend.cpp": {
+    "originalSha256": "f578c632ef64266390605834285cc562b48df08d57a24a04426dba387712076d",
+    "patchedSha256": "cd833f6ede8d94e5e9a7781ad879a7d396ee84b99c2a635d217b53595729714c"
+  }
+}

@@ -1,0 +1,347 @@
+2026-10-19T06:42:26-04:00
+Master0
+  Phase: Idle
+  Active: no
+  Slaves: 1
+  Ethernet devices:
+    Main: b4:96:91:77:df:0f (attached)
+      Link: UP
+      Tx frames:   236280
+      Tx bytes:    14184444
+      Rx frames:   236279
+      Rx bytes:    14184384
+      Tx errors:   0
+      Tx frame rate [1/s]:    125    124    125
+      Tx rate [KByte/s]:      7.3    7.3    7.3
+      Rx frame rate [1/s]:    125    124    125
+      Rx rate [KByte/s]:      7.3    7.3    7.3
+    Common:
+      Tx frames:   236280
+      Tx bytes:    14184444
+      Rx frames:   236279
+      Rx bytes:    14184384
+      Lost frames: 0
+      Tx frame rate [1/s]:    125    124    125
+      Tx rate [KByte/s]:      7.3    7.3    7.3
+      Rx frame rate [1/s]:    125    124    125
+      Rx rate [KByte/s]:      7.3    7.3    7.3
+      Loss rate [1/s]:          0      0      0
+      Frame loss [%]:         0.0    0.0    0.0
+  Distributed clocks:
+    Reference clock:   Slave 0
+    DC reference time: 0
+    Application time:  0
+                       2000-01-01 00:00:00.000000000
+=== Master 0, Slave 0 ===
+Device: Main
+State: PREOP
+Flag: +
+Identity:
+  Vendor Id:       0x00100000
+  Product code:    0x000c0108
+  Revision number: 0x00010001
+  Serial number:   0x00000000
+DL information:
+  FMMU bit operation: no
+  Distributed clocks: yes, 64 bit
+  DC system time transmission delay: 0 ns
+Port  Type  Link  Loop    Signal  NextSlave  RxTime [ns]  Diff [ns]   NextDc [ns]
+   0  MII   down  closed  no              -            -           -           -
+   1  MII   up    open    yes             -   2327217962   525541864           0
+   2  N/A   down  closed  no              -            -           -           -
+   3  N/A   down  closed  no              -            -           -           -
+Mailboxes:
+  Bootstrap RX: 0x0000/0, TX: 0x0000/0
+  Standard  RX: 0x1000/128, TX: 0x1400/128
+  Supported protocols: CoE
+General:
+  Group: InoServo
+  Image name: 
+  Order number: IS620N
+  Device name: IS620N_ECAT_v2.6.2
+  CoE details:
+    Enable SDO: yes
+    Enable SDO Info: no
+    Enable PDO Assign: yes
+    Enable PDO Configuration: yes
+    Enable Upload at startup: no
+    Enable SDO complete access: no
+  Flags:
+    Enable SafeOp: no
+    Enable notLRW: no
+  Current consumption: 0 mA
+SM0: PhysAddr 0x1000, DefaultSize  128, ControlRegister 0x26, Enable 1
+SM1: PhysAddr 0x1400, DefaultSize  128, ControlRegister 0x22, Enable 1
+SM2: PhysAddr 0x1800, DefaultSize    0, ControlRegister 0x64, Enable 1
+  RxPDO 0x1701 ""
+    PDO entry 0x6040:00, 16 bit, ""
+    PDO entry 0x607a:00, 32 bit, ""
+    PDO entry 0x60b8:00, 16 bit, ""
+    PDO entry 0x60fe:01, 32 bit, ""
+SM3: PhysAddr 0x1c00, DefaultSize    0, ControlRegister 0x20, Enable 1
+  TxPDO 0x1b01 ""
+    PDO entry 0x603f:00, 16 bit, ""
+    PDO entry 0x6041:00, 16 bit, ""
+    PDO entry 0x6064:00, 32 bit, ""
+    PDO entry 0x6077:00, 16 bit, ""
+    PDO entry 0x60f4:00, 32 bit, ""
+    PDO entry 0x60b9:00, 16 bit, ""
+    PDO entry 0x60ba:00, 32 bit, ""
+    PDO entry 0x60bc:00, 32 bit, ""
+    PDO entry 0x60fd:00, 32 bit, ""
+=== SDO 0x1703:0 (uint8) ===
+0x07 7
+=== SDO 0x1703:1 (uint32) ===
+0x60400010 1614807056
+=== SDO 0x1703:2 (uint32) ===
+0x607a0020 1618608160
+=== SDO 0x1703:3 (uint32) ===
+0x60ff0020 1627324448
+=== SDO 0x1703:4 (uint32) ===
+0x60600008 1616904200
+=== SDO 0x1703:5 (uint32) ===
+0x60b80010 1622671376
+=== SDO 0x1703:6 (uint32) ===
+0x60e00010 1625292816
+=== SDO 0x1703:7 (uint32) ===
+0x60e10010 1625358352
+=== SDO 0x1703:8 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1703:9 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1703:10 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1b04:0 (uint8) ===
+0x0a 10
+=== SDO 0x1b04:1 (uint32) ===
+0x603f0010 1614741520
+=== SDO 0x1b04:2 (uint32) ===
+0x60410010 1614872592
+=== SDO 0x1b04:3 (uint32) ===
+0x60640020 1617166368
+=== SDO 0x1b04:4 (uint32) ===
+0x60770010 1618411536
+=== SDO 0x1b04:5 (uint32) ===
+0x60610008 1616969736
+=== SDO 0x1b04:6 (uint32) ===
+0x60f40020 1626603552
+=== SDO 0x1b04:7 (uint32) ===
+0x60b90010 1622736912
+=== SDO 0x1b04:8 (uint32) ===
+0x60ba0020 1622802464
+=== SDO 0x1b04:9 (uint32) ===
+0x60bc0020 1622933536
+=== SDO 0x1b04:10 (uint32) ===
+0x606c0020 1617690656
+=== SDO 0x1600:0 (uint8) ===
+0x03 3
+=== SDO 0x1600:1 (uint32) ===
+0x60400010 1614807056
+=== SDO 0x1600:2 (uint32) ===
+0x607a0020 1618608160
+=== SDO 0x1600:3 (uint32) ===
+0x60b80010 1622671376
+=== SDO 0x1600:4 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1600:5 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1600:6 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1600:7 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1600:8 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1600:9 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1600:10 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1a00:0 (uint8) ===
+0x07 7
+=== SDO 0x1a00:1 (uint32) ===
+0x60410010 1614872592
+=== SDO 0x1a00:2 (uint32) ===
+0x60640020 1617166368
+=== SDO 0x1a00:3 (uint32) ===
+0x60b90010 1622736912
+=== SDO 0x1a00:4 (uint32) ===
+0x60ba0020 1622802464
+=== SDO 0x1a00:5 (uint32) ===
+0x60bc0020 1622933536
+=== SDO 0x1a00:6 (uint32) ===
+0x603f0010 1614741520
+=== SDO 0x1a00:7 (uint32) ===
+0x60fd0020 1627193376
+=== SDO 0x1a00:8 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1a00:9 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1a00:10 (uint32) ===
+SDO transfer aborted with code 0x06090011: Subindex does not exist
+READ_UNAVAILABLE (no parameter changed)
+=== SDO 0x1c32:1 (uint16) ===
+0x0002 2
+=== SDO 0x1c32:2 (uint32) ===
+0x00000000 0
+=== SDO 0x1c32:4 (uint16) ===
+0x0004 4
+=== SDO 0x1c32:5 (uint32) ===
+0x0001e848 125000
+=== SDO 0x1c33:1 (uint16) ===
+0x0002 2
+=== SDO 0x1c33:4 (uint16) ===
+0x0004 4
+=== SDO 0x6091:1 (uint32) ===
+0x00000001 1
+=== SDO 0x6091:2 (uint32) ===
+0x00000001 1
+=== SDO 0x6063:0 (int32) ===
+0xffffffe2 -30
+=== SDO 0x6064:0 (int32) ===
+0xffffffe1 -31
+=== SDO 0x60e0:0 (uint16) ===
+0x1388 5000
+=== SDO 0x60e1:0 (uint16) ===
+0x1388 5000
+=== SDO 0x6098:0 (int8) ===
+0x01 1
+=== SDO 0x607c:0 (int32) ===
+0x00000000 0
+=== SDO 0x603f:0 (uint16) ===
+0x0000 0
+=== SDO 0x6041:0 (uint16) ===
+0x0250 592
+=== SDO 0x6061:0 (int8) ===
+0x00 0
+=== SDO 0x6502:0 (uint32) ===
+0x000003ad 941
+=== SII XML (read only) ===
+<?xml version="1.0" ?>
+<EtherCATInfo>
+  <!-- Slave 0 -->
+  <Vendor>
+    <Id>1048576</Id>
+  </Vendor>
+  <Descriptions>
+    <Devices>
+      <Device>
+        <Type ProductCode="#x000c0108" RevisionNo="#x00010001">IS620N</Type>
+        <Name><![CDATA[IS620N_ECAT_v2.6.2]]></Name>
+        <Sm Enable="1" StartAddress="#x1000" ControlByte="#x26" DefaultSize="128" />
+        <Sm Enable="1" StartAddress="#x1400" ControlByte="#x22" DefaultSize="128" />
+        <Sm Enable="1" StartAddress="#x1800" ControlByte="#x64" DefaultSize="0" />
+        <Sm Enable="1" StartAddress="#x1c00" ControlByte="#x20" DefaultSize="0" />
+        <RxPdo Sm="2" Fixed="1" Mandatory="1">
+          <Index>#x1701</Index>
+          <Name></Name>
+          <Entry>
+            <Index>#x6040</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>16</BitLen>
+            <Name></Name>
+            <DataType>UINT16</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x607a</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>32</BitLen>
+            <Name></Name>
+            <DataType>UINT32</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x60b8</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>16</BitLen>
+            <Name></Name>
+            <DataType>UINT16</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x60fe</Index>
+            <SubIndex>1</SubIndex>
+            <BitLen>32</BitLen>
+            <Name></Name>
+            <DataType>UINT32</DataType>
+          </Entry>
+        </RxPdo>
+        <TxPdo Sm="3" Fixed="1" Mandatory="1">
+          <Index>#x1b01</Index>
+          <Name></Name>
+          <Entry>
+            <Index>#x603f</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>16</BitLen>
+            <Name></Name>
+            <DataType>UINT16</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x6041</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>16</BitLen>
+            <Name></Name>
+            <DataType>UINT16</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x6064</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>32</BitLen>
+            <Name></Name>
+            <DataType>UINT32</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x6077</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>16</BitLen>
+            <Name></Name>
+            <DataType>UINT16</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x60f4</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>32</BitLen>
+            <Name></Name>
+            <DataType>UINT32</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x60b9</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>16</BitLen>
+            <Name></Name>
+            <DataType>UINT16</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x60ba</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>32</BitLen>
+            <Name></Name>
+            <DataType>UINT32</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x60bc</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>32</BitLen>
+            <Name></Name>
+            <DataType>UINT32</DataType>
+          </Entry>
+          <Entry>
+            <Index>#x60fd</Index>
+            <SubIndex>0</SubIndex>
+            <BitLen>32</BitLen>
+            <Name></Name>
+            <DataType>UINT32</DataType>
+          </Entry>
+        </TxPdo>
+      </Device>
+    </Devices>
+  </Descriptions>
+</EtherCATInfo>

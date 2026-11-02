@@ -37,7 +37,7 @@ def validate_configuration(data):
     require(isinstance(config, dict), "Configuration object required")
     require(set(config) == {"Enabled", "PeriodMicroseconds", "SchedulingPolicy", "Priority", "Cpu", "WatchdogCycles", "AxisNames"}, "configuration fields")
     require(config.get("Enabled") is True, "enabled flag")
-    for field, lower, upper in (("PeriodMicroseconds", 100, 100000), ("Priority", 1, 89), ("WatchdogCycles", 1, 100)):
+    for field, lower, upper in (("PeriodMicroseconds", 100, 100000), ("Priority", 60, 89), ("WatchdogCycles", 1, 100)):
         require(integer(config.get(field), lower, upper), field + " range")
     require(config.get("SchedulingPolicy") == "FIFO", "FIFO policy required")
     require("Cpu" in config and (config["Cpu"] is None or integer(config["Cpu"], 0, 1023)), "Cpu range")

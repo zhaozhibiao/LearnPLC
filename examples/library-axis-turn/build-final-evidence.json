@@ -1,0 +1,13 @@
+{
+  "ProjectPath": "D:\\OPenplc\\examples/library-axis-turn/LibraryAxis.stproj",
+  "OutputDirectory": "D:\\OPenplc\\.st-mcp-builds\\edc0e0a4dd4d4e87ad0acf3108191a6d\\df7f1251a2304712b3ac5baafbad6dcb\\output",
+  "PackagePath": "D:\\OPenplc\\.st-mcp-builds\\edc0e0a4dd4d4e87ad0acf3108191a6d\\program.zip",
+  "BuildHash": "0A4D7EAAE308FA9DED9D4DAF144AE098EF1EEEFB4F9ED124A623DA395B2F2746",
+  "AuthoredThroughMcp": true,
+  "SavedThroughMcp": true,
+  "CompiledThroughMcp": true,
+  "Downloaded": false,
+  "Activated": false,
+  "PhysicalMotionTested": false,
+  "Phase": "final"
+}

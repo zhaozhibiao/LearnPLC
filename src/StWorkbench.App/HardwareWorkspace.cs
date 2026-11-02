@@ -51,9 +51,16 @@ public sealed partial class MainWindow
         configuredStations.SelectionChanged += (_, _) => { if (!refreshingConfiguration) SelectConfiguredStation(configuredStations.SelectedIndex); };
         panel.Children.Add(new Expander { Header = "选中从站的 PDO（勾选后应用）", IsExpanded = true, Content = stationPdos });
         panel.Children.Add(hardwareConfigurationStatus);
+        panel.Children.Add(new Expander { Header = "通用 EtherCAT 运行组态 · PDO / DC / 设备适配", Content = EtherCatRuntimePane() });
         panel.Children.Add(new Expander { Header = "通信通道 · Modbus / RS485 / RS232 / TCP", Content = CommunicationPane() });
         hardwareIoAxisExpander.Content = HardwareIoAxisPane(); Register(hardwareIoAxisExpander, "HardwareIoAxisExpander"); panel.Children.Add(hardwareIoAxisExpander);
-        var scroll=ScrollPanel(panel);Register(scroll,"HardwareConfigurationScroll");return scroll;
+        var scroll=ScrollPanel(panel);Register(scroll,"HardwareConfigurationScroll");
+        var apply = ActionButton("下载硬件", DownloadHardwareAsync);
+        Register(apply, "ApplyEtherCatHardwareButton");
+        ToolTip.SetTip(apply, "独立生成并下载硬件组态，不需要编译 ST；所有轴必须停稳且撤使能，确认后重启运动核心。");
+        var toolbar = new WrapPanel { Margin = new Avalonia.Thickness(0, 0, 0, 8), Children = { apply, Label("应用到 Linux · 普通用户授权通道 · 需确认核心重启") } };
+        DockPanel.SetDock(toolbar, Dock.Top);
+        return new DockPanel { LastChildFill = true, Children = { toolbar, scroll } };
     }
     private void AddConfigurationButton(Panel panel, string label, string name, Action action)
     {
@@ -150,7 +157,7 @@ public sealed partial class MainWindow
             var ioId = (ioStation.SelectedItem as StationChoice)?.Id; var axisId = (axisStation.SelectedItem as StationChoice)?.Id;
             ioStation.ItemsSource = choices; axisStation.ItemsSource = choices;
             ioStation.SelectedItem = choices.FirstOrDefault(c => c.Id == ioId) ?? choices[0]; axisStation.SelectedItem = choices.FirstOrDefault(c => c.Id == axisId) ?? choices[0];
-            RefreshIoPdoChoices(); RefreshNetworkTopology();
+            RefreshIoPdoChoices(); RefreshNetworkTopology(); RefreshEtherCatRuntimeSettings();
         }
         finally { refreshingConfiguration = false; }
     }
@@ -169,6 +176,7 @@ public sealed partial class MainWindow
         panel.Children.Add(new WrapPanel { Children = { axisNameEditor, controllerAxisEditor, Label("工程单位"), axisUnitEditor, Label("位置下限 / 上限"), axisMinEditor, axisMaxEditor, axisStation } });
         var limits = new WrapPanel(); foreach(var field in axisLimitEditors) limits.Children.Add(field); panel.Children.Add(limits);
         panel.Children.Add(AxisMechanicalPropertiesPane());
+        panel.Children.Add(new Expander { Header = "选中轴的运行适配与保护参数", Content = EtherCatAxisRuntimePane() });
         axisList.SelectionChanged += (_, _) => { if (!refreshingConfiguration) LoadAxisProperties(); };
         var axisActions = new WrapPanel(); AddConfigurationButton(axisActions,"添加轴引用","AddConfiguredAxis",()=> SaveAxisProperties(false)); AddConfigurationButton(axisActions,"应用选中轴属性","ApplyConfiguredAxis",()=> SaveAxisProperties(true));
         AddConfigurationButton(axisActions,"删除选中轴","RemoveConfiguredAxis",()=> { var at=axisList.SelectedIndex; if(at<0)return; var old=project.Hardware.Axes[at]; ChangeHardware(()=>project.Hardware.Axes.RemoveAt(at),()=>project.Hardware.Axes.Insert(at,old)); }); panel.Children.Add(axisActions);
@@ -205,6 +213,7 @@ public sealed partial class MainWindow
         var values=new[]{axis.MaximumVelocity,axis.MaximumAcceleration,axis.MaximumDeceleration,axis.MaximumJerk};for(var i=0;i<4;i++)axisLimitEditors[i].Text=values[i]?.ToString(CultureInfo.InvariantCulture)??"";
         axisStation.SelectedItem=((IEnumerable<StationChoice>)axisStation.ItemsSource!).FirstOrDefault(c=>c.Id==axis.StationId);
         LoadAxisMechanics(axis);
+        RefreshAxisRuntimeSettings();
     }
     public void SaveAxisProperties(bool edit)
     {
@@ -213,6 +222,12 @@ public sealed partial class MainWindow
         double? Limit(TextBox field)=>string.IsNullOrWhiteSpace(field.Text)?null:double.TryParse(field.Text,NumberStyles.Float,CultureInfo.InvariantCulture,out var value)&&double.IsFinite(value)&&value>0?value:throw new InvalidDataException("轴动态限制须为正数。");
         var next=new AxisConfiguration(axisNameEditor.Text?.Trim()??"",controllerAxisEditor.Text?.Trim()??"",axisUnitEditor.Text?.Trim()??"",low,high){StationId=(axisStation.SelectedItem as StationChoice)?.Id,MaximumVelocity=Limit(axisLimitEditors[0]),MaximumAcceleration=Limit(axisLimitEditors[1]),MaximumDeceleration=Limit(axisLimitEditors[2]),MaximumJerk=Limit(axisLimitEditors[3]),Mechanics=ReadAxisMechanics()};
         var old=edit?project.Hardware.Axes[at]:null;
+        if (old?.Runtime is { } runtime)
+        {
+            var mechanicsChanged = old.Mechanics != next.Mechanics || old.StationId != next.StationId || old.Unit != next.Unit || old.ControllerAxis != next.ControllerAxis;
+            var safetyChanged = mechanicsChanged || old.MinPosition != next.MinPosition || old.MaxPosition != next.MaxPosition || old.MaximumVelocity != next.MaximumVelocity || old.MaximumAcceleration != next.MaximumAcceleration || old.MaximumDeceleration != next.MaximumDeceleration;
+            next = next with { Runtime = runtime with { MechanicsConfirmed = runtime.MechanicsConfirmed && !mechanicsChanged, SafetyConfirmed = runtime.SafetyConfirmed && !safetyChanged } };
+        }
         ChangeHardware(()=> {if(edit)project.Hardware.Axes[at]=next;else project.Hardware.Axes.Add(next);},()=> {if(edit)project.Hardware.Axes[at]=old!;else project.Hardware.Axes.Remove(next);});
         axisList.SelectedIndex = edit ? at : project.Hardware.Axes.Count - 1;
         LoadAxisProperties();

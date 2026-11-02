@@ -81,6 +81,32 @@ internal static class ProtocolTests
                 new("Y", "Axis2", "mm", -1000, 1000) { MaximumVelocity = 20, MaximumAcceleration = 100, MaximumDeceleration = 100, MaximumJerk = 1000 }] };
             project = await Call(client, "configuration_update", new() { ["sessionId"] = session, ["expectedRevision"] = revision, ["hardware"] = hardware, ["tasks"] = model.Tasks });
             revision = project.GetProperty("Revision").GetString()!;
+            var axisCatalog = await Call(client, "st_instructions", new() { ["sessionId"] = session, ["search"] = "Axis_X_" });
+            WorkspaceTests.Check(axisCatalog.GetProperty("templates").GetArrayLength() == 10, "canonical axis templates and compatibility alias exposed through actual MCP");
+            var motionSignatures = axisCatalog.GetProperty("motionSignatures").EnumerateArray().ToArray();
+            foreach (var block in new[] { "MC_MoveAbsolute", "MC_MoveVelocity", "MC_Stop" })
+            {
+                foreach (var input in block == "MC_Stop" ? new[] { "Deceleration", "Jerk" } : new[] { "Acceleration", "Deceleration", "Jerk" })
+                    WorkspaceTests.Check(motionSignatures.Any(s => s.GetProperty("Owner").GetString() == block && s.GetProperty("Name").GetString() == input && s.GetProperty("Kind").GetString() == "VAR_INPUT"), "MCP advertises actual v2 public input " + block + "." + input);
+                var signature = await Call(client, "st_symbols", new() { ["sessionId"] = session, ["signatureName"] = block });
+                WorkspaceTests.Check(signature.ToString().Contains("Deceleration", StringComparison.Ordinal) && signature.ToString().Contains("Jerk", StringComparison.Ordinal), "MCP signature completion includes verified dynamic inputs");
+            }
+            WorkspaceTests.Check(!motionSignatures.Any(s => s.GetProperty("Owner").GetString() == "MC_Stop" && s.GetProperty("Name").GetString() == "Acceleration"), "MCP Stop does not advertise acceleration");
+            var axisTemplateIds = axisCatalog.GetProperty("templates").EnumerateArray().Select(t => t.GetProperty("Id").GetString()).ToArray();
+            WorkspaceTests.Check(axisTemplateIds.Contains("Axis_X_MC_ReadStatus") && axisTemplateIds.Contains("Axis_X_MC_ReadAxisStatus"), "MCP lists canonical and legacy status template IDs");
+            foreach (var id in new[] { "Axis_X_MC_Power", "Axis_X_MC_MoveAbsolute", "Axis_X_MC_MoveAbsolute", "Axis_X_MC_ReadStatus", "Axis_X_MC_ReadAxisStatus" })
+            {
+                var text = project.GetProperty("Sources")[0].GetProperty("Text").GetString()!;
+                project = await Call(client, "st_insert_instruction", new() { ["sessionId"] = session, ["expectedRevision"] = revision,
+                    ["itemId"] = item, ["offset"] = text.IndexOf("END_PROGRAM", StringComparison.Ordinal), ["instructionId"] = id });
+                revision = project.GetProperty("Revision").GetString()!;
+            }
+            var axisText = project.GetProperty("Sources")[0].GetProperty("Text").GetString()!;
+            WorkspaceTests.Check(axisText.Contains("SnippetAxis_X_MC_MoveAbsolute2(Axis := AXIS_X") && axisText.Contains("SnippetAxis_X_MC_Power1Enable : BOOL := FALSE;"), "MCP uses actual desktop axis declaration/call naming and unique instances");
+            WorkspaceTests.Check(axisText.Contains("SnippetAxis_X_MC_ReadStatus1 : MC_ReadStatus;") && axisText.Contains("SnippetAxis_X_MC_ReadAxisStatus1 : MC_ReadAxisStatus;") && axisText.Contains("SnippetAxis_X_MC_ReadStatus1(Axis := AXIS_X, Enable := TRUE)") && axisText.Contains("SnippetAxis_X_MC_ReadAxisStatus1(Axis := AXIS_X, Enable := TRUE)"), "MCP inserts canonical and legacy readers enabled for read-only feedback");
+            var unknownAxis = await client.CallToolAsync("st_insert_instruction", new Dictionary<string, object?> { ["sessionId"] = session, ["expectedRevision"] = revision,
+                ["itemId"] = item, ["offset"] = axisText.IndexOf("END_PROGRAM", StringComparison.Ordinal), ["instructionId"] = "Axis_Unknown_MC_Power" });
+            WorkspaceTests.Check(unknownAxis.IsError == true, "unconfigured axis template rejected");
             var dxf = "0\nSECTION\n2\nENTITIES\n0\nLINE\n8\n0\n10\n0\n20\n0\n11\n2\n21\n0\n0\nENDSEC\n0\nEOF\n";
             await File.WriteAllTextAsync(Path.Combine(root, "line.dxf"), dxf);
             var preview = await Call(client, "dxf_preview", new() { ["sessionId"] = session, ["expectedRevision"] = revision, ["dxfPath"] = "line.dxf", ["millimetersPerUnit"] = 1 });
@@ -99,7 +125,7 @@ internal static class ProtocolTests
             {
                 var launchTransport = new StdioClientTransport(new StdioClientTransportOptions
                 {
-                    Name = "Shipped PowerShell launcher", Command = "pwsh", Arguments = ["-NoProfile", "-File", Path.Combine(repository, "scripts", "start-mcp.ps1"), "-ConfigPath", configPath]
+                    Name = "Shipped PowerShell launcher", Command = (Environment.GetEnvironmentVariable("PATH")?.Split(Path.PathSeparator).Any(p => File.Exists(Path.Combine(p, "pwsh.exe"))) == true) ? "pwsh" : "powershell", Arguments = ["-NoProfile", "-File", Path.Combine(repository, "scripts", "start-mcp.ps1"), "-ConfigPath", configPath]
                 });
                 await using var launchedClient = await McpClient.CreateAsync(launchTransport);
                 _ = await Call(launchedClient, "workbench_info", new());

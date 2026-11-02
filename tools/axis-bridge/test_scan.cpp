@@ -22,14 +22,14 @@ int main(){
  AB_REQUEST[2]=UINT64_MAX;AB_FEEDBACKREQUEST[2]=UINT64_MAX;invalid.EXECUTE=false;invalid();invalid.EXECUTE=true;invalid.VELOCITY=1;invalid();assert(invalid.ERRORID==2009);
  Configuration_CONFIG0 configuration;AB_SCANCOUNTER=0;configuration.INSTANCE0.run();assert(AB_SCANCOUNTER==1 && axis_fixture_last.flags==1);
  axis_fixture_throw=true;try{configuration.INSTANCE0.run();assert(false);}catch(int){}assert(AB_SCANCOUNTER==1 && axis_fixture_last.flags==0);axis_fixture_throw=false;
-  MC_MOVEABSOLUTE proof{};proof.AXIS=3;proof.EXECUTE=true;proof.POSITION=12;proof.VELOCITY=2;proof();AB_FEEDBACKREQUEST[3]=1;AB_DONE[3]=true;AB_STATE[3]=2;AB_ACTUALPOSITION[3]=12;proof();assert(!proof.DONE && proof.ERRORID==2008);AB_MOTIONID[3]=87;proof();assert(proof.DONE && !proof.ERROR);
+  MC_MOVEABSOLUTE proof{};proof.AXIS=3;proof.EXECUTE=true;proof.POSITION=12;proof.VELOCITY=2;proof();AB_FEEDBACKREQUEST[3]=1;AB_DONE[3]=true;AB_STATE[3]=2;AB_ACTUALPOSITION[3]=12;proof();assert(!proof.DONE && proof.ERRORID==2008);AB_MOTIONID[3]=87;proof();assert(!proof.DONE && proof.ERRORID==2008);proof.EXECUTE=false;proof();proof.EXECUTE=true;proof();assert(proof.BUSY&&!proof.ERROR);AB_FEEDBACKREQUEST[3]=proof.REQUESTID;AB_MOTIONID[3]=88;proof();assert(proof.DONE&&!proof.ERROR);
  MC_MOVEABSOLUTE independent{};independent.AXIS=4;independent.EXECUTE=true;independent.POSITION=1;independent.VELOCITY=1;independent();assert(independent.BUSY && independent.REQUESTID==1);
  MC_STOP owner{};owner.AXIS=4;owner.EXECUTE=true;owner();assert(AB_STOPHELD[4]);owner.AXIS=5;owner();assert(AB_STOPHELD[4] && !AB_STOPHELD[5]);owner.EXECUTE=false;owner();assert(!AB_STOPHELD[4]);
  MC_POWER initialOff{};initialOff.AXIS=6;initialOff.ENABLE=false;initialOff();assert(initialOff.REQUESTID==1 && AB_KIND[6]==2);
-  MC_MOVEVELOCITY latched{};latched.AXIS=7;latched.EXECUTE=true;latched.VELOCITY=3;latched();AB_ACTUALVELOCITY[7]=3;latched.VELOCITY=2;latched();assert(latched.INVELOCITY);
+  MC_MOVEVELOCITY latched{};latched.AXIS=7;latched.EXECUTE=true;latched.VELOCITY=3;latched();AB_STATE[7]=2;AB_FEEDBACKREQUEST[7]=latched.REQUESTID;AB_BUSY[7]=true;AB_ACTUALVELOCITY[7]=3;latched.VELOCITY=2;latched();assert(latched.INVELOCITY);
  AB_ACTUALVELOCITY[7]=2;latched();assert(!latched.INVELOCITY);
  latched.AXIS=8;AB_ACTUALVELOCITY[8]=2;latched();assert(!latched.INVELOCITY);AB_ACTUALVELOCITY[7]=3;latched();assert(latched.INVELOCITY);
- latched.EXECUTE=false;latched();latched.EXECUTE=true;latched.VELOCITY=5;latched();AB_ACTUALVELOCITY[8]=5;latched();assert(latched.INVELOCITY);
+ MC_STOP cancelVelocity{};cancelVelocity.AXIS=7;cancelVelocity.EXECUTE=true;cancelVelocity();latched();assert(latched.COMMANDABORTED);latched.EXECUTE=false;latched();latched.EXECUTE=true;latched.VELOCITY=5;latched();AB_STATE[8]=2;AB_FEEDBACKREQUEST[8]=latched.REQUESTID;AB_BUSY[8]=true;AB_ACTUALVELOCITY[8]=5;latched();assert(latched.INVELOCITY);
  std::cout<<"mailbox ordering, preemption, held Stop, power edges and bounds passed\n";
 }
 

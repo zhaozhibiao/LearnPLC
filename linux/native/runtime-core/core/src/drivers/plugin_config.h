@@ -1,0 +1,37 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Autonomy®
+
+#ifndef PLUGIN_CONFIG_H
+#define PLUGIN_CONFIG_H
+
+#define MAX_PLUGIN_NAME_LEN 64
+#define MAX_PLUGIN_PATH_LEN 256
+
+typedef struct
+{
+    char name[MAX_PLUGIN_NAME_LEN];
+    char path[MAX_PLUGIN_PATH_LEN];
+    int enabled;
+    int type; // 0 = python, 1 = native
+    char plugin_related_config_path[MAX_PLUGIN_PATH_LEN];
+    char venv_path[MAX_PLUGIN_PATH_LEN]; // Path to virtual environment
+} plugin_config_t;
+
+/**
+ * Parse a plugin config the runtime owns (plugins.conf).
+ *
+ * Entries whose `path` contains a ".." component are rejected and skipped;
+ * absolute paths are allowed, because an operator may legitimately point a
+ * hand-written plugins.conf at one.
+ */
+int parse_plugin_config(const char *config_file, plugin_config_t *configs, int max_configs);
+
+/**
+ * @brief Parse a plugin config from an upload (vpp_plugins.conf). Rejects
+ *        `..` traversal AND absolute/Windows-drive-prefixed paths so the
+ *        dlopen target stays inside the runtime tree.
+ */
+int parse_plugin_config_contained(const char *config_file, plugin_config_t *configs,
+                                  int max_configs);
+
+#endif // PLUGIN_CONFIG_H

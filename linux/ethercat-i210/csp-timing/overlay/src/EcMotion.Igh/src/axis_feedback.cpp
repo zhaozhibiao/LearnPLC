@@ -41,14 +41,40 @@ double finite_value(const json& value, const char* name) {
     return result;
 }
 void validate_demand_protection(const AxisFeedbackConfiguration& c) {
+    if (!std::isfinite(c.counts_per_engineering_unit) || c.counts_per_engineering_unit <= 0.0
+        || !std::isfinite(std::numeric_limits<std::int32_t>::max()/c.counts_per_engineering_unit)
+        || (c.direction != -1 && c.direction != 1))
+        throw std::invalid_argument("Axis position units, scale or direction are invalid.");
+    for (const auto limit : {c.motion.soft_limit_negative, c.motion.soft_limit_positive}) {
+        const auto raw=limit*c.counts_per_engineering_unit*c.direction;
+        if (!std::isfinite(raw) || raw<std::numeric_limits<std::int32_t>::min()
+            || raw>std::numeric_limits<std::int32_t>::max())
+            throw std::invalid_argument("Axis travel exceeds signed 32-bit position PDO range.");
+    }
+    if (!std::isfinite(c.demand_delivery_tolerance) || c.demand_delivery_tolerance<0.0)
+        throw std::invalid_argument("demandDeliveryTolerance must be nonnegative and finite in engineering units.");
+    if (c.drive_error_only && !c.drive_demand_protection)
+        throw std::invalid_argument("driveErrorOnly requires driveDemandProtection.");
     if (!c.drive_demand_protection) return;
-    if (c.profile != "CiA402" || c.position_unit != "rev" || c.operating_mode != 8
-        || c.counts_per_engineering_unit != 1048576.0 || c.direction != 1
-        || c.motion.cycle_seconds != 0.001 || c.safety.cycle_seconds != 0.001
-        || c.safety.maximum_following_error != 0.005
-        || c.safety.following_error_timeout_seconds != 0.020)
-        throw std::invalid_argument("driveDemandProtection requires the validated CSP bench: rev, 1048576 counts/rev, direction +1, 1 ms, 0.005 rev/20 ms.");
+    if (c.profile != "CiA402" || c.operating_mode != 8 || c.position_unit.empty()
+        || c.motion.cycle_seconds != c.safety.cycle_seconds
+        || c.position_demand_key.empty() || c.following_error_key.empty()
+        || c.position_demand_key==c.following_error_key
+        || c.position_demand_key==c.position_actual_key
+        || c.following_error_key==c.position_actual_key
+        || !std::isfinite(c.position_demand_raw_per_unit) || c.position_demand_raw_per_unit<=0.0
+        || !std::isfinite(c.following_error_raw_per_unit) || c.following_error_raw_per_unit<=0.0
+        || !std::isfinite(std::numeric_limits<std::int32_t>::max()/c.position_demand_raw_per_unit)
+        || !std::isfinite(std::numeric_limits<std::int32_t>::max()/c.following_error_raw_per_unit))
+        throw std::invalid_argument("driveDemandProtection requires CSP, explicit 6062/60F4 bindings and known positive raw/engineering-unit scales.");
+    for (const auto limit : {c.motion.soft_limit_negative, c.motion.soft_limit_positive}) {
+        const auto raw=limit*c.position_demand_raw_per_unit*c.direction;
+        if (!std::isfinite(raw) || raw<std::numeric_limits<std::int32_t>::min()
+            || raw>std::numeric_limits<std::int32_t>::max())
+            throw std::invalid_argument("Axis travel exceeds signed 32-bit demand PDO range.");
+    }
 }
+
 } // namespace
 
 AxisFeedbackConfiguration AxisFeedbackConfiguration::load(
@@ -93,7 +119,8 @@ AxisFeedbackConfiguration AxisFeedbackConfiguration::load(
             finite_value(axis, "softLimitPositive"),
             positive_finite(axis, "maximumVelocity"),
             positive_finite(axis, "maximumAcceleration"),
-            positive_finite(axis, "maximumDeceleration")};
+            positive_finite(axis, "maximumDeceleration"),
+            axis.value("maximumJerk", 0.0), axis.contains("maximumJerk")};
         const auto& safety = axis.at("motionSafety");
         const auto safety_commissioning_required = safety.at("commissioningRequired").get<bool>();
         const MotionSafetyConfiguration motion_safety{
@@ -166,7 +193,14 @@ AxisFeedbackConfiguration AxisFeedbackConfiguration::load(
             axis.value("velocityFeedforwardGain", 1.0),
             axis.contains("velocityFeedbackRawPerUnitPerSecond") ? positive_finite(axis,"velocityFeedbackRawPerUnitPerSecond") : 0.0,
             axis.contains("velocityOffsetRawPerUnitPerSecond") ? positive_finite(axis,"velocityOffsetRawPerUnitPerSecond") : 0.0,
-            axis.value("driveDemandProtection", false)};
+            axis.value("driveDemandProtection", false),
+            axis.value("demandDeliveryTolerance", 0.0),
+            axis.value("demandDeliveryEnforced", false),
+            axis.value("driveErrorOnly", false),
+            entries.value("positionDemand", std::string{}),
+            entries.value("followingError", std::string{}),
+            axis.value("positionDemandRawPerUnit", 0.0),
+            axis.value("followingErrorRawPerUnit", 0.0)};
         validate_demand_protection(result);
         return result;
     }
@@ -213,13 +247,8 @@ Cia402AxisAdapter::Cia402AxisAdapter(
       safety_(configuration_.safety) {
     validate_demand_protection(configuration_);
     if (configuration_.drive_demand_protection) {
-        const std::string suffix = ".Position_actual_value.0x6064:0";
-        const auto& key = configuration_.position_actual_key;
-        if (key.size() <= suffix.size() || key.compare(key.size()-suffix.size(), suffix.size(), suffix) != 0)
-            throw std::invalid_argument("driveDemandProtection requires the standard position actual PDO suffix.");
-        const auto prefix = key.substr(0, key.size()-suffix.size());
-        position_demand_ = layout.resolve(prefix + ".Position_demand.0x6062:0");
-        drive_following_error_ = layout.resolve(prefix + ".Following_error.0x60F4:0");
+        position_demand_ = layout.resolve(configuration_.position_demand_key);
+        drive_following_error_ = layout.resolve(configuration_.following_error_key);
         require_input(layout, position_demand_, 32U, configuration_.name);
         require_input(layout, drive_following_error_, 32U, configuration_.name);
     }
@@ -232,6 +261,10 @@ Cia402AxisAdapter::Cia402AxisAdapter(
         throw std::invalid_argument("Velocity feedback and offset scales must be positive and finite.");
     if (!std::isfinite(configuration_.velocity_feedforward_gain) || configuration_.velocity_feedforward_gain < 0 || configuration_.velocity_feedforward_gain > 1)
         throw std::invalid_argument("Velocity feedforward gain must be within 0..1.");
+    const auto maximum_raw_velocity=configuration_.motion.maximum_velocity
+        * configuration_.velocity_feedforward_gain * configuration_.velocity_offset_raw_per_unit_per_second;
+    if (!std::isfinite(maximum_raw_velocity) || maximum_raw_velocity>std::numeric_limits<std::int32_t>::max())
+        throw std::invalid_argument("Velocity feedforward exceeds signed 32-bit PDO range.");
     if (configuration_.homing.method == 37
         || (configuration_.homing.method == 35 && !configuration_.homing.allow_current_position_zero))
         throw std::invalid_argument("Current-position homing requires explicit method-35 permission.");
@@ -246,42 +279,95 @@ Cia402AxisAdapter::Cia402AxisAdapter(
     require_input(layout, error_code_, 16U, configuration_.name);
 }
 
+bool Cia402AxisAdapter::can_reset_command() const noexcept {
+    if (!motion_timing_ready_) return false;
+    if (drive_fault_active_) {
+        // A driver fault is cleared by an explicit reset pulse, not by requiring
+        // 603F to be zero before the pulse can be sent. Host latches stay intact.
+        return drive_reset_feedback_healthy_ && !operation_enabled_ && !motion_busy_;
+    }
+    if (drive_reset_pending_ && (!drive_reset_feedback_healthy_
+        || last_mode_display_!=configuration_.operating_mode)) return false;
+    auto safety=safety_;
+    return (!configuration_.drive_demand_protection || demand_reset_healthy_)
+        && safety.reset_if_healthy();
+}
+
+void Cia402AxisAdapter::complete_reset() noexcept {
+    motion_timing_fault_=false;
+    demand_flow_fault_=false;
+    demand_delivery_fault_=false;
+    demand_history_size_=demand_history_next_=0;
+    if (motion_busy_) { motion_busy_=false; motion_aborted_=true; }
+    enable_requested_=false;
+    homed_=false;
+    homing_failed_=false;
+    homing_phase_=HomingPhase::Idle;
+    drive_reset_pending_=false;
+    setpoint_.stop();
+}
+
 bool Cia402AxisAdapter::can_apply_command(const RealtimeCommand& command) const noexcept {
+    if ((command.motion_profile_version != 0 && command.motion_profile_version != 2)
+        || (command.motion_profile_version == 2 && (!configuration_.motion.profile_defaults_known
+            || (command.kind!=RealtimeCommandKind::MoveAbsolute && command.kind!=RealtimeCommandKind::Jog
+                && command.kind!=RealtimeCommandKind::Stop)))) return false;
     auto setpoint = setpoint_;
-    auto safety = safety_;
     switch (command.kind) {
         case RealtimeCommandKind::Enable:
-            return motion_timing_ready_ && !motion_timing_fault_ && !demand_flow_fault_ && !configuration_.commissioning_required && !safety_.status().faulted()
+            return motion_timing_ready_ && !motion_timing_fault_ && !demand_flow_fault_ && !drive_fault_active_ && !drive_reset_pending_ && !configuration_.commissioning_required && !safety_.status().faulted()
+                && (!configuration_.drive_demand_protection || enable_requested_
+                    || (last_mode_display_==configuration_.operating_mode && demand_reset_healthy_))
                 && last_error_code_ == 0 && !homing_failed_
                 && std::abs(last_actual_velocity_) <= configuration_.safety.maximum_actual_velocity;
-        case RealtimeCommandKind::Disable:
-        case RealtimeCommandKind::Stop: return true;
-        case RealtimeCommandKind::Reset: return motion_timing_ready_ && (!configuration_.drive_demand_protection || demand_reset_healthy_) && safety.reset_if_healthy();
+        case RealtimeCommandKind::Disable: return true;
+        case RealtimeCommandKind::Stop:
+            return command.motion_profile_version != 2 || setpoint.stop_profile(command.deceleration,command.jerk);
+        case RealtimeCommandKind::Reset: return can_reset_command();
         case RealtimeCommandKind::Home:
             return motion_timing_ready_ && !motion_timing_fault_ && !demand_flow_fault_ && configuration_.homing.method != 0 && enable_requested_ && operation_enabled_
                 && !motion_busy_ && !homing_failed_ && homing_phase_ == HomingPhase::Idle
                 && last_mode_display_ == configuration_.operating_mode && last_error_code_ == 0
                 && std::abs(last_actual_velocity_) <= configuration_.completion_velocity_tolerance
                 && setpoint_.current().mode == MotionSetpointMode::Hold;
+        case RealtimeCommandKind::Jog:
+            return motion_timing_ready_ && !motion_timing_fault_ && !demand_flow_fault_ && !motion_busy_
+                && enable_requested_ && operation_enabled_ && (!configuration_.homing.required || homed_)
+                && homing_phase_ == HomingPhase::Idle && !homing_failed_
+                && last_mode_display_ == configuration_.operating_mode && last_error_code_ == 0
+                && (command.motion_profile_version == 2
+                    ? setpoint.jog_profile(command.velocity,command.acceleration,command.deceleration,command.jerk)
+                    : setpoint.jog(command.velocity));
         case RealtimeCommandKind::MoveAbsolute:
             return motion_timing_ready_ && !motion_timing_fault_ && !demand_flow_fault_ && !motion_busy_ && enable_requested_ && operation_enabled_
                 && (!configuration_.homing.required || homed_)
                 && homing_phase_ == HomingPhase::Idle && !homing_failed_
                 && last_mode_display_ == configuration_.operating_mode && last_error_code_ == 0
-                && setpoint.move_absolute(command.position, command.velocity);
+                && setpoint.move_absolute(command.position, command.velocity,
+                    command.motion_profile_version == 2 ? command.acceleration : 0.0,
+                    command.motion_profile_version == 2 ? command.deceleration : 0.0,
+                    command.motion_profile_version == 2 ? command.jerk : 0.0, command.motion_profile_version == 2);
         default: return false;
     }
 }
 
 bool Cia402AxisAdapter::apply_command(const RealtimeCommand& command) noexcept {
+    if ((command.motion_profile_version != 0 && command.motion_profile_version != 2)
+        || (command.motion_profile_version == 2 && (!configuration_.motion.profile_defaults_known
+            || (command.kind!=RealtimeCommandKind::MoveAbsolute && command.kind!=RealtimeCommandKind::Jog
+                && command.kind!=RealtimeCommandKind::Stop)))) return false;
     switch (command.kind) {
         case RealtimeCommandKind::Enable:
-            if (!motion_timing_ready_ || motion_timing_fault_ || demand_flow_fault_ || configuration_.commissioning_required || safety_.status().faulted()
+            if (!motion_timing_ready_ || motion_timing_fault_ || demand_flow_fault_ || drive_fault_active_ || drive_reset_pending_ || configuration_.commissioning_required || safety_.status().faulted()
+                || (configuration_.drive_demand_protection && !enable_requested_
+                    && (last_mode_display_!=configuration_.operating_mode || !demand_reset_healthy_))
                 || last_error_code_ != 0U || homing_failed_
                 || !(std::abs(last_actual_velocity_) <= configuration_.safety.maximum_actual_velocity)) return false;
             enable_requested_ = true;
             return true;
         case RealtimeCommandKind::Disable:
+            drive_reset_pending_=false;
+            reset_requested_=false;
             if (motion_busy_) { motion_busy_ = false; motion_aborted_ = true; }
             enable_requested_ = false;
             homed_ = false;
@@ -289,17 +375,20 @@ bool Cia402AxisAdapter::apply_command(const RealtimeCommand& command) noexcept {
             setpoint_.stop();
             return true;
         case RealtimeCommandKind::Reset:
-            if (!motion_timing_ready_ || (configuration_.drive_demand_protection && !demand_reset_healthy_) || !safety_.reset_if_healthy()) return false;
-            motion_timing_fault_=false;
-            demand_flow_fault_=false;
-            demand_history_size_=demand_history_next_=0;
-            if (motion_busy_) { motion_busy_ = false; motion_aborted_ = true; }
-            reset_requested_ = true;
-            enable_requested_ = false;
-            homed_ = false;
-            homing_failed_ = false;
-            homing_phase_ = HomingPhase::Idle;
-            setpoint_.stop();
+            if (!can_reset_command()) return false;
+            if (drive_fault_active_) {
+                // One accepted Reset has two stages: pulse, then observe a
+                // healthy driver acknowledgment before clearing host latches.
+                drive_reset_pending_=true;
+                enable_requested_=false;
+                homed_=false;
+                homing_phase_=HomingPhase::Idle;
+                setpoint_.stop();
+            } else {
+                if (!safety_.reset_if_healthy()) return false;
+                complete_reset();
+            }
+            reset_requested_=true;
             return true;
         case RealtimeCommandKind::Home:
             if (!motion_timing_ready_ || motion_timing_fault_ || demand_flow_fault_ || configuration_.homing.method == 0 || !enable_requested_
@@ -320,7 +409,10 @@ bool Cia402AxisAdapter::apply_command(const RealtimeCommand& command) noexcept {
                 || homing_phase_ != HomingPhase::Idle || homing_failed_
                 || last_mode_display_ != configuration_.operating_mode
                 || last_error_code_ != 0U
-                || !setpoint_.move_absolute(command.position, command.velocity)) return false;
+                || !setpoint_.move_absolute(command.position, command.velocity,
+                    command.motion_profile_version == 2 ? command.acceleration : 0.0,
+                    command.motion_profile_version == 2 ? command.deceleration : 0.0,
+                    command.motion_profile_version == 2 ? command.jerk : 0.0, command.motion_profile_version == 2)) return false;
             peak_error_ = excess_ms_ = max_excess_ms_ = peak_actual_velocity_ = 0;
             motion_id_ = command.sequence;
             motion_target_ = command.position;
@@ -334,15 +426,19 @@ bool Cia402AxisAdapter::apply_command(const RealtimeCommand& command) noexcept {
                 || homing_phase_ != HomingPhase::Idle || homing_failed_
                 || last_mode_display_ != configuration_.operating_mode
                 || last_error_code_ != 0U) return false;
-            return enable_requested_ && operation_enabled_ && setpoint_.jog(command.velocity);
+            return enable_requested_ && operation_enabled_ && (command.motion_profile_version == 2
+                ? setpoint_.jog_profile(command.velocity,command.acceleration,command.deceleration,command.jerk)
+                : setpoint_.jog(command.velocity));
         case RealtimeCommandKind::Stop:
+            // Validate and install the ordinary curve before changing lifecycle state.
+            if (command.motion_profile_version == 2 && !setpoint_.stop_profile(command.deceleration,command.jerk)) return false;
             if (motion_busy_) { motion_busy_ = false; motion_aborted_ = true; }
             if (homing_phase_ != HomingPhase::Idle) {
                 homing_phase_ = HomingPhase::Idle;
                 homed_ = false;
                 enable_requested_ = false;
             }
-            setpoint_.stop();
+            if (command.motion_profile_version != 2) setpoint_.stop();
             return true;
         default:
             return false;
@@ -415,6 +511,7 @@ void Cia402AxisAdapter::set_motion_timing_ready(bool ready) noexcept {
 }
 
 void Cia402AxisAdapter::apply_safe_state() noexcept {
+    drive_reset_pending_=false;
     demand_history_size_=demand_history_next_=0;
     if (motion_busy_) { motion_busy_ = false; motion_aborted_ = true; }
     enable_requested_ = false;
@@ -438,9 +535,27 @@ void Cia402AxisAdapter::process(PdoImageView& image, RealtimeAxisSnapshot& snaps
     last_actual_velocity_ = snapshot.actual_velocity;
     snapshot.commissioning_required = configuration_.commissioning_required;
     operation_enabled_ = (snapshot.statusword & 0x006FU) == 0x0027U;
+    drive_fault_active_=snapshot.error_code!=0U || (snapshot.statusword & 0x0008U)!=0U;
+    drive_reset_feedback_healthy_=motion_timing_ready_
+        && (snapshot.statusword & 0x0004U)==0U
+        && std::isfinite(snapshot.actual_position)
+        && snapshot.actual_position>=configuration_.motion.soft_limit_negative
+        && snapshot.actual_position<=configuration_.motion.soft_limit_positive
+        && std::isfinite(snapshot.actual_velocity)
+        && std::abs(snapshot.actual_velocity)<=configuration_.completion_velocity_tolerance;
     last_mode_display_ = snapshot.mode_display;
     if (!operation_enabled_ || snapshot.error_code != 0U) homed_ = false;
     const auto homing_was_active = homing_phase_ != HomingPhase::Idle;
+    if (drive_fault_active_) {
+        if (motion_busy_) { motion_busy_=false; motion_aborted_=true; }
+        enable_requested_=false;
+        homed_=false;
+        if (homing_was_active) homing_failed_=true;
+        homing_phase_=HomingPhase::Idle;
+        // A driver error invalidates the old trajectory in the same cycle,
+        // including a driver that still reports OperationEnabled during fault reaction.
+        setpoint_.synchronize(snapshot.actual_position);
+    }
     if (homing_was_active) {
         if (homing_cycles_ < std::numeric_limits<std::uint32_t>::max()) ++homing_cycles_;
         const auto expired = static_cast<double>(homing_cycles_)
@@ -485,41 +600,73 @@ void Cia402AxisAdapter::process(PdoImageView& image, RealtimeAxisSnapshot& snaps
     snapshot.max_excess_ms = max_excess_ms_;
     snapshot.peak_actual_velocity = peak_actual_velocity_;
     snapshot.feedforward_velocity = setpoint.velocity * configuration_.velocity_feedforward_gain;
+    snapshot.demand_position_error=snapshot.drive_following_error=snapshot.demand_delivery_error=0.0;
+    snapshot.demand_feedback_valid=snapshot.demand_delivery_mismatch=false;
     double protection_target = snapshot.cycle_target;
     if (configuration_.drive_demand_protection) {
         const auto demand = static_cast<std::int32_t>(image.read_signed(position_demand_));
         const auto drive_error = static_cast<std::int32_t>(image.read_signed(drive_following_error_));
         const auto pending = static_cast<std::int32_t>(image.read_signed(target_position_));
-        const auto error_counts = std::max(std::abs(static_cast<std::int64_t>(demand)-raw_position),
-            std::abs(static_cast<std::int64_t>(drive_error)));
-        const auto error = static_cast<double>(error_counts)/configuration_.counts_per_engineering_unit;
-        demand_reset_healthy_ = snapshot.mode_display == 8 && snapshot.error_code == 0
+        const auto demand_position=static_cast<double>(demand)
+            /configuration_.position_demand_raw_per_unit*configuration_.direction;
+        snapshot.demand_position_error=demand_position-snapshot.actual_position;
+        snapshot.drive_following_error=static_cast<double>(drive_error)
+            /configuration_.following_error_raw_per_unit*configuration_.direction;
+        snapshot.demand_feedback_valid=motion_timing_ready_ && snapshot.mode_display==8 && snapshot.error_code==0;
+        const auto error=std::max(std::abs(snapshot.demand_position_error),std::abs(snapshot.drive_following_error));
+        demand_reset_healthy_ = snapshot.demand_feedback_valid
             && error <= configuration_.safety.maximum_following_error
-            && std::abs(static_cast<double>(static_cast<std::int64_t>(pending)-demand)/configuration_.counts_per_engineering_unit) <= configuration_.safety.maximum_following_error
+            && std::abs(snapshot.cycle_target-demand_position) <= configuration_.safety.maximum_following_error
             && std::abs(snapshot.actual_velocity) <= configuration_.completion_velocity_tolerance;
         if (enable_requested_ && operation_enabled_ && homed_ && !homing_was_active
             && snapshot.mode_display != 8) demand_flow_fault_ = true;
         const bool eligible = motion_timing_ready_ && enable_requested_ && operation_enabled_
             && homed_ && homing_phase_ == HomingPhase::Idle && !homing_was_active
             && snapshot.mode_display == 8 && snapshot.error_code == 0;
+        // Optional auxiliary supervision uses the drive's own following-error value.
+        // Host delivery history is diagnostic unless explicitly selected as a fault source.
+        if (eligible && configuration_.drive_error_only)
+            protection_target = snapshot.actual_position
+                + std::abs(snapshot.drive_following_error);
         if (!eligible) {
             demand_history_size_=demand_history_next_=0;
         } else {
             if (demand_history_size_ == demand_history_.size()) {
-                if (demand != demand_history_[demand_history_next_]) demand_flow_fault_ = true;
+                const auto historic_position=static_cast<double>(demand_history_[demand_history_next_])
+                    /configuration_.counts_per_engineering_unit*configuration_.direction;
+                snapshot.demand_delivery_error=demand_position-historic_position;
+                snapshot.demand_delivery_mismatch=std::abs(snapshot.demand_delivery_error)
+                    > configuration_.demand_delivery_tolerance;
+                if (snapshot.demand_delivery_mismatch && configuration_.demand_delivery_enforced) {
+                    demand_flow_fault_=true;
+                    demand_delivery_fault_=true;
+                }
                 // Keep absolute position/velocity supervision on real feedback; change only error reference.
-                if (!demand_flow_fault_) protection_target = snapshot.actual_position + error;
+                if (!demand_flow_fault_ && !configuration_.drive_error_only)
+                    protection_target = snapshot.actual_position + error;
             }
             demand_history_[demand_history_next_] = pending;
             demand_history_next_ = (demand_history_next_+1)%demand_history_.size();
             if (demand_history_size_ < demand_history_.size()) ++demand_history_size_;
         }
     }
-    const auto safety = safety_.update(snapshot.actual_position, protection_target,
+    snapshot.demand_delivery_fault=demand_delivery_fault_;
+    auto safety = safety_.update(snapshot.actual_position, protection_target,
         snapshot.actual_velocity, operation_enabled_ && enable_requested_
             && homing_phase_ == HomingPhase::Idle && !homing_was_active,
         (!configuration_.homing.required || homed_) && homing_phase_ == HomingPhase::Idle,
         (snapshot.statusword & 0x0004U) != 0U); // Includes Quick Stop Active while torque remains enabled.
+    if (drive_reset_pending_ && !reset_requested_ && !drive_fault_active_
+        && drive_reset_feedback_healthy_ && !operation_enabled_
+        && snapshot.mode_display==configuration_.operating_mode
+        && (!configuration_.drive_demand_protection || demand_reset_healthy_)
+        && safety_.reset_if_healthy()) {
+        // This completion belongs to the earlier explicit Reset. It never
+        // sends another pulse, enables the drive, homes or resumes a curve.
+        complete_reset();
+        safety=safety_.status();
+        snapshot.demand_delivery_fault=demand_delivery_fault_;
+    }
     snapshot.software_limit_violation = safety.software_limit_violation;
     snapshot.following_error_fault = safety.following_error_fault || demand_flow_fault_;
     snapshot.overspeed_fault = safety.overspeed_fault;
@@ -574,7 +721,7 @@ void Cia402AxisAdapter::process(PdoImageView& image, RealtimeAxisSnapshot& snaps
     snapshot.homed = homed_;
     snapshot.homing_failed = homing_failed_;
     snapshot.motion_timing_ready=motion_timing_ready_;snapshot.motion_timing_fault=motion_timing_fault_;
-    if (motion_timing_fault_ || demand_flow_fault_ || homing_failed_ || safety.faulted() || snapshot.error_code != 0U
+    if (motion_timing_fault_ || demand_flow_fault_ || homing_failed_ || safety.faulted() || drive_fault_active_ || drive_reset_pending_ || snapshot.error_code != 0U
         || (snapshot.statusword & 0x006FU) == 0x0008U) {
         snapshot.state = RealtimeAxisState::ErrorStop;
     } else if (homing_phase_ != HomingPhase::Idle) {

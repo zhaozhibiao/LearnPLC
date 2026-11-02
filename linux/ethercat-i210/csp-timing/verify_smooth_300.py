@@ -108,15 +108,17 @@ try:
     assert sdo('0x607e',0,'uint8')==0, 'Unexpected polarity'
     record['effectiveParametersConfirmed']=True
     assert axis['driveDemandProtection'] is True
+    assert axis['driveErrorOnly'] is True and axis['demandDeliveryEnforced'] is False
+    assert sdo('0x6065',0,'uint32')==10486
     assert full['axes'][0]['timingReady'] and not full['axes'][0]['timingFault']
     assert machine['cycleTiming']['enabled'] is True
     pid=run(['systemctl','show',UNIT,'--property=MainPID','--value']).stdout.decode().strip()
     def export_trace():
-        existing={str(p) for p in (ROOT/'traces').glob('smooth-300a.csv.capture-*.csv')}
+        existing={str(p) for p in (ROOT/'traces').glob('smooth-layered1.csv.capture-*.csv')}
         run(['kill','-USR1',pid]);deadline=time.monotonic()+5
         while time.monotonic()<deadline:
             client.heartbeat()
-            files=[p for p in (ROOT/'traces').glob('smooth-300a.csv.capture-*.csv') if str(p) not in existing]
+            files=[p for p in (ROOT/'traces').glob('smooth-layered1.csv.capture-*.csv') if str(p) not in existing]
             if files:
                 text=files[0].read_text()
                 if not text.endswith('# complete=1\n'):

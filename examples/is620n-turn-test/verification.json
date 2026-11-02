@@ -1,0 +1,31 @@
+{
+  "BuildHash": "7A4F4FE4D7FF179DF0F4243CB6F97A450141E82542290C9EE723551CBB72B126",
+  "McpAuthoredSavedBuilt": true,
+  "LinuxGeneratedCppCompiled": true,
+  "PureMemoryScenariosPassed": [
+    "cold",
+    "unconfirmed",
+    "sequence",
+    "offset",
+    "offline",
+    "moving",
+    "nan-position",
+    "nan-distance",
+    "cancel-before-start",
+    "home-failure",
+    "cancel-dwell",
+    "feedback-loss",
+    "timeout"
+  ],
+  "PassedCount": 13,
+  "NativeBundleValidation": "c4f5066aaa5afd0b4edf05bd4f6ac2455422c79f23e10a04d153f4846cd71670",
+  "SourceSha256": "6179df103cbd6988dda7b51651e0a5159922270e3d91ec0e74d183150aa896cf",
+  "PhysicalMotionTested": false,
+  "Downloaded": false,
+  "Activated": false,
+  "InstalledHardwareUnchanged": true,
+  "FinalObservedPlcState": "stopped",
+  "FinalObservedAxisState": "Disabled",
+  "FinalObservedCommandSequence": 0,
+  "IndependentStaticReview": "No serious findings; saved source matches Main.st byte-for-byte"
+}

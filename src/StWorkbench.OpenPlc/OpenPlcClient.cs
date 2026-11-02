@@ -28,10 +28,12 @@ public sealed class OpenPlcClient : IDisposable
     private string? token;
     private long authenticationGeneration;
     private bool disposed;
+    private readonly string? engineeringToken;
 
-    public OpenPlcClient(Uri baseUri, HttpClient? httpClient = null, string? certificateFingerprint = null)
+    public OpenPlcClient(Uri baseUri, HttpClient? httpClient = null, string? certificateFingerprint = null, string? engineeringToken = null)
     {
         ArgumentNullException.ThrowIfNull(baseUri);
+        this.engineeringToken = engineeringToken;
         if (!baseUri.IsAbsoluteUri || baseUri.Scheme != Uri.UriSchemeHttps || string.IsNullOrEmpty(baseUri.Host)
             || baseUri.UserInfo.Length != 0 || baseUri.Query.Length != 0 || baseUri.Fragment.Length != 0 || baseUri.AbsolutePath != "/")
             throw new ArgumentException("A HTTPS origin without credentials, path, query or fragment is required.",nameof(baseUri));
@@ -97,6 +99,7 @@ public sealed class OpenPlcClient : IDisposable
             if (http.Timeout != Timeout.InfiniteTimeSpan) deadline.CancelAfter(http.Timeout);
             var requestToken=deadline.Token;
             using var request = new HttpRequestMessage(method,new Uri(origin,endpoint)) { Content = content };
+            if (engineeringToken is not null) request.Headers.Add("X-Engineering-Token", engineeringToken);
             if (authenticated)
             {
                 string? currentToken;

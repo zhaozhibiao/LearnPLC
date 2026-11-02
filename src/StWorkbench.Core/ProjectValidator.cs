@@ -37,8 +37,14 @@ public static class ProjectValidator
             if (!Regex.IsMatch(task.Name, @"^[A-Za-z_][A-Za-z0-9_]*$") || !taskNames.Add(task.Name)) Error("任务名称无效或重复");
             if (task.IntervalMilliseconds < 1 || task.IntervalMilliseconds > 60000) Error("任务周期必须在 1–60000 ms 范围内");
             if (!project.Items.Any(i => i.Id == task.ProgramId && i.Kind == ItemKind.Program)) Error("任务必须绑定程序对象");
+            if (!Enum.IsDefined(task.Scheduling)) Error("任务调度方式无效");
+            if (task.Priority is < 0 or > 31) Error("任务 IEC 优先级必须为 0–31，0 最高");
+            if (task.Cpu is < 0 or > 1023) Error("任务 CPU 编号必须为 0–1023，或不绑定");
+            if (task.Enabled && task.Scheduling == PlcTaskScheduling.Realtime && task.Cpu.HasValue && project.MotionCycle is { Enabled: true } motion && motion.Cpu == task.Cpu)
+                Error("PLC 实时任务不能绑定轴控实时周期使用的 CPU");
         }
-        if (project.Tasks.Count(t => t.Enabled) != 1) Error("当前版本只支持一个启用的周期任务");
+        if (!project.Tasks.Any(t => t.Enabled)) Error("工程必须至少启用一个周期任务");
+        if (project.Tasks.Where(t => t.Enabled).GroupBy(t => t.ProgramId).Any(g => g.Count() > 1)) Error("同一个程序不能绑定多个启用任务，以免并发访问同一程序实例");
         var resourceNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var deviceIds = new HashSet<Guid>();
         foreach (var device in project.Hardware.Devices)
@@ -62,7 +68,8 @@ public static class ProjectValidator
             foreach (var message in AxisMechanicsValidator.Validate(axis)) Error(message);
             if (!Regex.IsMatch(axis.Name, @"^[A-Za-z_][A-Za-z0-9_]*$") || !resourceNames.Add(axis.Name) || string.IsNullOrWhiteSpace(axis.ControllerAxis) || !controllerAxes.Add(axis.ControllerAxis)) Error("轴名称/控制器轴引用无效或重复");
             if (!double.IsFinite(axis.MinPosition) || !double.IsFinite(axis.MaxPosition) || axis.MinPosition >= axis.MaxPosition || string.IsNullOrWhiteSpace(axis.Unit)) Error("轴单位或限位无效");
-            if (new[] { axis.MaximumVelocity, axis.MaximumAcceleration, axis.MaximumDeceleration, axis.MaximumJerk }.Any(v => v.HasValue && (!double.IsFinite(v.Value) || v.Value <= 0))) Error("轴动态限制必须是正的有限数值");
+            if (axis.MaximumJerk is double jerk && (!double.IsFinite(jerk) || jerk < 0)) Error("Axis jerk must be finite and nonnegative.");
+            if (new[] { axis.MaximumVelocity, axis.MaximumAcceleration, axis.MaximumDeceleration }.Any(v => v.HasValue && (!double.IsFinite(v.Value) || v.Value <= 0))) Error("轴动态限制必须是正的有限数值");
         }
         if (project.Paths.Count > 64) Error("工程路径版本超过 64，请拆分工程");
         var pathVersions = new HashSet<(Guid, uint)>();
@@ -81,7 +88,7 @@ public static class ProjectValidator
         if (errors.Count == 0 && Encoding.UTF8.GetByteCount(JsonSerializer.Serialize(project.Paths)) > 2 * 1024 * 1024) Error("工程内路径资产超过 2 MiB，请拆分路径或工程");
         errors.AddRange(PathBindingValidator.Validate(sources, project.Paths));
         foreach (var message in MotionCycleValidator.Validate(project.MotionCycle, project.Hardware.Axes, project.Paths)) Error(message);
-        errors.AddRange(AxisControlBinding.Validate(sources, project.Hardware.Axes, project.Tasks.Select(t => new TaskSnapshot(t.Name, t.ProgramId, t.IntervalMilliseconds, t.Enabled)).ToArray()));
+        errors.AddRange(AxisControlBinding.Validate(sources, project.Hardware.Axes, project.Tasks.Select(TaskSnapshot.From).ToArray()));
         return errors.AsReadOnly();
     }
     public static bool IsSafeRelativePath(string path)
@@ -105,7 +112,7 @@ public static class ProjectValidator
         var errors = Validate(project, sources);
         if (errors.Count > 0) throw new InvalidDataException(string.Join(Environment.NewLine, errors.Select(e => e.Message)));
         var copy = Array.AsReadOnly(sources.OrderBy(s => s.RelativePath, StringComparer.Ordinal).Select(s => s with { }).ToArray());
-        var tasks = Array.AsReadOnly(project.Tasks.Select(t => new TaskSnapshot(t.Name, t.ProgramId, t.IntervalMilliseconds, t.Enabled)).ToArray());
+        var tasks = Array.AsReadOnly(project.Tasks.Select(TaskSnapshot.From).ToArray());
         var pathAssets = Array.AsReadOnly(project.Paths.Select(p => p with { Axes = p.Axes.ToArray(), Segments = p.Segments.ToArray(), Profile = p.Profile with { } }).ToArray());
         var identity = pathAssets.Count == 0
             ? JsonSerializer.Serialize(new { project.Id, project.Name, Sources = copy, Tasks = tasks })
@@ -114,10 +121,10 @@ public static class ProjectValidator
         var communication = project.Communication is { } comm ? comm with { Channels = comm.Channels.Select(c => c with { }).ToArray() } : null;
         var hardwareIdentity = cycle is null ? JsonSerializer.Serialize(project.Hardware) : JsonSerializer.Serialize(new { Hardware = project.Hardware, MotionCycle = cycle });
         string? configurationJson = null;
-        if (project.Network is not null || project.Hardware.Stations is not null || project.Hardware.Axes.Any(a => a.Mechanics is not null) || communication is not null)
+        if (project.Network is not null || project.Hardware.Stations is not null || project.Hardware.Runtime is not null || project.Hardware.Axes.Any(a => a.Mechanics is not null) || communication is not null)
             hardwareIdentity = configurationJson = JsonSerializer.Serialize(new HardwareConfigurationDocument(project.Hardware) { Network = project.Network, MotionCycle = cycle, Communication = communication });
         return new(project.Id, project.Name, Hash(identity), Hash(hardwareIdentity), copy, tasks)
-        { HardwareConfigurationJson = configurationJson, Paths = pathAssets, Axes = Array.AsReadOnly(project.Hardware.Axes.Select(a => a with { }).ToArray()), MotionCycle = cycle, Communication = communication };
+        { ProjectJson = JsonSerializer.Serialize(project), HardwareConfigurationJson = configurationJson, Paths = pathAssets, Axes = Array.AsReadOnly(project.Hardware.Axes.Select(a => a with { }).ToArray()), MotionCycle = cycle, Communication = communication };
     }
 }
 

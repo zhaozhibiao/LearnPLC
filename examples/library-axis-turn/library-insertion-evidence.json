@@ -1,0 +1,159 @@
+[
+  {
+    "Role": "AxisStatus",
+    "InstructionId": "Axis_X_MC_ReadAxisStatus",
+    "Instance": "SnippetAxis_X_MC_ReadAxisStatus1",
+    "CatalogCall": "SnippetAxis_X_MC_ReadAxisStatus1(Axis := AXIS_X, Enable := TRUE);",
+    "Declarations": [
+      "SnippetAxis_X_MC_ReadAxisStatus1 : MC_ReadAxisStatus;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "AxisPosition",
+    "InstructionId": "Axis_X_MC_ReadActualPosition",
+    "Instance": "SnippetAxis_X_MC_ReadActualPosition1",
+    "CatalogCall": "SnippetAxis_X_MC_ReadActualPosition1(Axis := AXIS_X, Enable := TRUE);",
+    "Declarations": [
+      "SnippetAxis_X_MC_ReadActualPosition1 : MC_ReadActualPosition;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "AxisVelocity",
+    "InstructionId": "Axis_X_MC_ReadActualVelocity",
+    "Instance": "SnippetAxis_X_MC_ReadActualVelocity1",
+    "CatalogCall": "SnippetAxis_X_MC_ReadActualVelocity1(Axis := AXIS_X, Enable := TRUE);",
+    "Declarations": [
+      "SnippetAxis_X_MC_ReadActualVelocity1 : MC_ReadActualVelocity;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "AxisStop",
+    "InstructionId": "Axis_X_MC_Stop",
+    "Instance": "SnippetAxis_X_MC_Stop1",
+    "CatalogCall": "SnippetAxis_X_MC_Stop1(Axis := AXIS_X, Execute := SnippetAxis_X_MC_Stop1Execute);",
+    "Declarations": [
+      "SnippetAxis_X_MC_Stop1 : MC_Stop;",
+      "SnippetAxis_X_MC_Stop1Execute : BOOL := FALSE;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "AxisPower",
+    "InstructionId": "Axis_X_MC_Power",
+    "Instance": "SnippetAxis_X_MC_Power1",
+    "CatalogCall": "SnippetAxis_X_MC_Power1(Axis := AXIS_X, Enable := SnippetAxis_X_MC_Power1Enable);",
+    "Declarations": [
+      "SnippetAxis_X_MC_Power1 : MC_Power;",
+      "SnippetAxis_X_MC_Power1Enable : BOOL := FALSE;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "AxisReset",
+    "InstructionId": "Axis_X_MC_Reset",
+    "Instance": "SnippetAxis_X_MC_Reset1",
+    "CatalogCall": "SnippetAxis_X_MC_Reset1(Axis := AXIS_X, Execute := SnippetAxis_X_MC_Reset1Execute);",
+    "Declarations": [
+      "SnippetAxis_X_MC_Reset1 : MC_Reset;",
+      "SnippetAxis_X_MC_Reset1Execute : BOOL := FALSE;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "AxisHome",
+    "InstructionId": "Axis_X_MC_Home",
+    "Instance": "SnippetAxis_X_MC_Home1",
+    "CatalogCall": "SnippetAxis_X_MC_Home1(Axis := AXIS_X, Execute := SnippetAxis_X_MC_Home1Execute);",
+    "Declarations": [
+      "SnippetAxis_X_MC_Home1 : MC_Home;",
+      "SnippetAxis_X_MC_Home1Execute : BOOL := FALSE;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "ForwardMove",
+    "InstructionId": "Axis_X_MC_MoveAbsolute",
+    "Instance": "SnippetAxis_X_MC_MoveAbsolute1",
+    "CatalogCall": "SnippetAxis_X_MC_MoveAbsolute1(Axis := AXIS_X, Execute := SnippetAxis_X_MC_MoveAbsolute1Execute, Position := SnippetAxis_X_MC_MoveAbsolute1Position, Velocity := SnippetAxis_X_MC_MoveAbsolute1Velocity);",
+    "Declarations": [
+      "SnippetAxis_X_MC_MoveAbsolute1 : MC_MoveAbsolute;",
+      "SnippetAxis_X_MC_MoveAbsolute1Execute : BOOL := FALSE;",
+      "SnippetAxis_X_MC_MoveAbsolute1Position : LREAL := 0.0;",
+      "SnippetAxis_X_MC_MoveAbsolute1Velocity : LREAL := 1.0;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "ReverseMove",
+    "InstructionId": "Axis_X_MC_MoveAbsolute",
+    "Instance": "SnippetAxis_X_MC_MoveAbsolute2",
+    "CatalogCall": "SnippetAxis_X_MC_MoveAbsolute2(Axis := AXIS_X, Execute := SnippetAxis_X_MC_MoveAbsolute2Execute, Position := SnippetAxis_X_MC_MoveAbsolute2Position, Velocity := SnippetAxis_X_MC_MoveAbsolute2Velocity);",
+    "Declarations": [
+      "SnippetAxis_X_MC_MoveAbsolute2 : MC_MoveAbsolute;",
+      "SnippetAxis_X_MC_MoveAbsolute2Execute : BOOL := FALSE;",
+      "SnippetAxis_X_MC_MoveAbsolute2Position : LREAL := 0.0;",
+      "SnippetAxis_X_MC_MoveAbsolute2Velocity : LREAL := 1.0;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "Dwell",
+    "InstructionId": "TON",
+    "Instance": "SnippetTON1",
+    "CatalogCall": "SnippetTON1(IN := SnippetTON1Input, PT := T#1s);",
+    "Declarations": [
+      "SnippetTON1 : TON;",
+      "SnippetTON1Input : BOOL := FALSE;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "CycleTimeout",
+    "InstructionId": "TON",
+    "Instance": "SnippetTON2",
+    "CatalogCall": "SnippetTON2(IN := SnippetTON2Input, PT := T#1s);",
+    "Declarations": [
+      "SnippetTON2 : TON;",
+      "SnippetTON2Input : BOOL := FALSE;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "StopTimeout",
+    "InstructionId": "TON",
+    "Instance": "SnippetTON3",
+    "CatalogCall": "SnippetTON3(IN := SnippetTON3Input, PT := T#1s);",
+    "Declarations": [
+      "SnippetTON3 : TON;",
+      "SnippetTON3Input : BOOL := FALSE;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  },
+  {
+    "Role": "CycleTrigger",
+    "InstructionId": "R_TRIG",
+    "Instance": "SnippetR_TRIG1",
+    "CatalogCall": "SnippetR_TRIG1(CLK := SnippetR_TRIG1Signal);",
+    "Declarations": [
+      "SnippetR_TRIG1 : R_TRIG;",
+      "SnippetR_TRIG1Signal : BOOL := FALSE;"
+    ],
+    "InsertedThroughMcp": true,
+    "MatchesDesktopInsertion": true
+  }
+]

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 #include "cyclic_trace.hpp"
+#include "axis_feedback.hpp"
 #include <cerrno>
 #include <fcntl.h>
 #include <iomanip>
@@ -11,24 +12,44 @@
 #include <unistd.h>
 
 namespace ecmotion {
-CyclicAxisTrace::CyclicAxisTrace(const PdoLayout& layout,const std::string& prefix,std::size_t capacity) {
+CyclicAxisTraceBindings CyclicAxisTraceBindings::from_axis(const AxisFeedbackConfiguration& axis) {
+    return {axis.target_position_key,axis.velocity_offset_key,axis.position_actual_key,axis.velocity_actual_key,
+        axis.position_demand_key,axis.following_error_key,{},axis.controlword_key,axis.statusword_key,
+        axis.error_code_key,axis.mode_display_key};
+}
+namespace {
+CyclicAxisTraceBindings legacy_bindings(const std::string& prefix) {
+    return {prefix+".Target_position.0x607A:0",prefix+".Velocity_offset.0x60B1:0",
+        prefix+".Position_actual_value.0x6064:0",prefix+".Velocity_actual_value.0x606C:0",
+        prefix+".Position_demand.0x6062:0",prefix+".Following_error.0x60F4:0",
+        prefix+".Torque_actual.0x6077:0",prefix+".Controlword.0x6040:0",
+        prefix+".Statusword.0x6041:0",prefix+".Error_code.0x603F:0",
+        prefix+".Modes_of_operation_display.0x6061:0"};
+}
+}
+CyclicAxisTrace::CyclicAxisTrace(const PdoLayout& layout,const std::string& prefix,std::size_t capacity)
+    : CyclicAxisTrace(layout,legacy_bindings(prefix),capacity) {}
+CyclicAxisTrace::CyclicAxisTrace(const PdoLayout& layout,const CyclicAxisTraceBindings& bindings,std::size_t capacity) {
     if(capacity==0 || capacity>maximum_capacity) throw std::invalid_argument("Trace capacity must be 1..120000");
-    struct Required {const char* suffix;PdoDirection direction;std::uint8_t bits;};
+    struct Required {const std::string& key;PdoDirection direction;std::uint8_t bits;};
     using D=PdoDirection;
     const std::array<Required,Count> required{{
-        {"Target_position.0x607A:0",D::ControllerOutput,32},
-        {"Velocity_offset.0x60B1:0",D::ControllerOutput,32},
-        {"Position_actual_value.0x6064:0",D::ControllerInput,32},
-        {"Velocity_actual_value.0x606C:0",D::ControllerInput,32},
-        {"Position_demand.0x6062:0",D::ControllerInput,32},
-        {"Following_error.0x60F4:0",D::ControllerInput,32},
-        {"Torque_actual.0x6077:0",D::ControllerInput,16},
-        {"Controlword.0x6040:0",D::ControllerOutput,16},
-        {"Statusword.0x6041:0",D::ControllerInput,16},
-        {"Error_code.0x603F:0",D::ControllerInput,16},
-        {"Modes_of_operation_display.0x6061:0",D::ControllerInput,8}}};
+        {bindings.target_position_key,D::ControllerOutput,32},
+        {bindings.velocity_offset_key,D::ControllerOutput,32},
+        {bindings.position_actual_key,D::ControllerInput,32},
+        {bindings.velocity_actual_key,D::ControllerInput,32},
+        {bindings.position_demand_key,D::ControllerInput,32},
+        {bindings.following_error_key,D::ControllerInput,32},
+        {bindings.torque_actual_key,D::ControllerInput,16},
+        {bindings.controlword_key,D::ControllerOutput,16},
+        {bindings.statusword_key,D::ControllerInput,16},
+        {bindings.error_code_key,D::ControllerInput,16},
+        {bindings.mode_display_key,D::ControllerInput,8}}};
+    torque_valid_=!bindings.torque_actual_key.empty();
     for(std::size_t i=0;i<Count;++i) {
-        handles_[i]=layout.resolve(prefix+"."+required[i].suffix);
+        if(i==Torque && !torque_valid_) continue;
+        if(required[i].key.empty()) throw std::invalid_argument("Trace required PDO binding is empty");
+        handles_[i]=layout.resolve(required[i].key);
         const auto& entry=layout.entry(handles_[i]);
         if(entry.direction!=required[i].direction || entry.bit_length!=required[i].bits)
             throw std::invalid_argument("Trace PDO type/direction mismatch: "+entry.key);
@@ -67,7 +88,8 @@ void CyclicAxisTrace::capture(const PdoImageView& image,const RealtimeAxisSnapsh
     row.velocity_raw=static_cast<std::int32_t>(image.read_signed(handles_[Velocity]));
     row.demand_raw=static_cast<std::int32_t>(image.read_signed(handles_[Demand]));
     row.drive_error_raw=static_cast<std::int32_t>(image.read_signed(handles_[DriveError]));
-    row.torque_raw=static_cast<std::int16_t>(image.read_signed(handles_[Torque]));
+    row.torque_valid=torque_valid_;
+    row.torque_raw=torque_valid_?static_cast<std::int16_t>(image.read_signed(handles_[Torque])):0;
     row.controlword=static_cast<std::uint16_t>(image.read_unsigned(handles_[Controlword]));
     row.statusword=static_cast<std::uint16_t>(image.read_unsigned(handles_[Statusword]));
     row.error_code=static_cast<std::uint16_t>(image.read_unsigned(handles_[ErrorCode]));
@@ -88,14 +110,18 @@ bool CyclicAxisTrace::request_rearm() noexcept {
 void CyclicAxisTrace::write_csv(std::ostream& output) const {
     output.imbue(std::locale::classic());output<<std::noboolalpha<<std::setprecision(17);
     output<<"# format=ecmotion-cyclic-axis-trace-v2\n# capacity="<<storage_.size()<<"\n# dropped="<<dropped_<<'\n';
-    output<<"cycle,scheduled_ns,monotonic_ns,bus_ready,motion_id,state,previous_target_raw,sent_target_raw,offset_raw,actual_raw,velocity_raw,demand_raw,drive_error_raw,torque_raw,controlword,statusword,error_code,mode,cycle_target,cycle_error,actual_position,actual_velocity,rx_call_start_ns,rx_call_end_ns,process_end_ns,tx_call_start_ns,tx_call_end_ns,reference_cycle,reference_tx_call_start_ns,reference_time_low32,reference_valid,reference_scheduled_ns,cycle_timing_enabled,motion_timing_ready,delivery_metadata_valid,delivery_reference_phase_valid,delivery_predicted_phase_valid,delivery_reference_step_valid,delivery_valid,delivery_ready,delivery_good_cycles,delivery_reference_phase_ns,delivery_predicted_phase_ns,delivery_reference_step_ns,pre_send_check_ns,pre_send_budget_overrun,actual_send_budget_overrun,send_host_deadline_overrun,homed,shadow_eligible,shadow_ready,shadow_fault,shadow_error_raw,shadow_excess_cycles\n";
-    for(const auto& r:frames()) output<<r.cycle<<','<<r.scheduled_ns<<','<<r.monotonic_ns<<','<<static_cast<unsigned>(r.bus_ready)<<','<<r.motion_id<<','<<static_cast<unsigned>(r.state)<<','
-        <<r.previous_target_raw<<','<<r.sent_target_raw<<','<<r.offset_raw<<','<<r.actual_raw<<','<<r.velocity_raw<<','<<r.demand_raw<<','<<r.drive_error_raw<<','<<r.torque_raw<<','
+    output<<"cycle,scheduled_ns,monotonic_ns,bus_ready,motion_id,state,previous_target_raw,sent_target_raw,offset_raw,actual_raw,velocity_raw,demand_raw,drive_error_raw,torque_raw,torque_valid,controlword,statusword,error_code,mode,cycle_target,cycle_error,actual_position,actual_velocity,rx_call_start_ns,rx_call_end_ns,process_end_ns,tx_call_start_ns,tx_call_end_ns,reference_cycle,reference_tx_call_start_ns,reference_time_low32,reference_valid,reference_scheduled_ns,cycle_timing_enabled,motion_timing_ready,delivery_metadata_valid,delivery_reference_phase_valid,delivery_predicted_phase_valid,delivery_reference_step_valid,delivery_valid,delivery_ready,delivery_good_cycles,delivery_reference_phase_ns,delivery_predicted_phase_ns,delivery_reference_step_ns,pre_send_check_ns,pre_send_budget_overrun,actual_send_budget_overrun,send_host_deadline_overrun,homed,shadow_eligible,shadow_ready,shadow_fault,shadow_error_raw,shadow_excess_cycles\n";
+    for(const auto& r:frames()) {
+        output<<r.cycle<<','<<r.scheduled_ns<<','<<r.monotonic_ns<<','<<static_cast<unsigned>(r.bus_ready)<<','<<r.motion_id<<','<<static_cast<unsigned>(r.state)<<','
+        <<r.previous_target_raw<<','<<r.sent_target_raw<<','<<r.offset_raw<<','<<r.actual_raw<<','<<r.velocity_raw<<','<<r.demand_raw<<','<<r.drive_error_raw<<',';
+        if(r.torque_valid) output<<r.torque_raw;
+        output<<','<<r.torque_valid<<','
         <<r.controlword<<','<<r.statusword<<','<<r.error_code<<','<<static_cast<int>(r.mode)<<','<<r.cycle_target<<','<<r.cycle_error<<','<<r.actual_position<<','<<r.actual_velocity<<','<<r.timing.rx_start_ns<<','<<r.timing.rx_end_ns<<','<<r.timing.process_end_ns<<','<<r.timing.tx_start_ns<<','<<r.timing.tx_end_ns<<','<<r.timing.reference_cycle<<','<<r.timing.reference_tx_start_ns<<','<<r.timing.reference_time_low32<<','<<static_cast<unsigned>(r.timing.reference_valid)<<','
         <<r.timing.reference_scheduled_ns<<','<<r.timing.cycle_timing_enabled<<','<<r.timing.motion_timing_ready<<','
         <<r.timing.delivery.metadata_valid<<','<<r.timing.delivery.reference_phase_valid<<','<<r.timing.delivery.predicted_phase_valid<<','<<r.timing.delivery.reference_step_valid<<','
         <<r.timing.delivery.valid<<','<<r.timing.delivery.ready<<','<<r.timing.delivery.good_cycles<<','<<r.timing.delivery.reference_phase_ns<<','<<r.timing.delivery.predicted_phase_ns<<','<<r.timing.delivery.reference_step_ns<<','
         <<r.timing.pre_send_check_ns<<','<<r.timing.pre_send_budget_overrun<<','<<r.timing.actual_send_budget_overrun<<','<<r.timing.send_host_deadline_overrun<<','<<r.homed<<','<<r.demand_shadow.eligible<<','<<r.demand_shadow.ready<<','<<r.demand_shadow.fault<<','<<r.demand_shadow.error<<','<<r.demand_shadow.excess<<'\n';
+    }
     output<<"# complete=1\n";
     if(!output) throw std::runtime_error("Trace CSV serialization failed");
 }

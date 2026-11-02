@@ -1,0 +1,495 @@
+--- a/core/src/plc_app/debug_handler.c
++++ b/core/src/plc_app/debug_handler.c
+@@ -6,10 +6,12 @@
+  * the editor's debug-map.json carries path→(arr, elem). */
+ 
+ #include <string.h>
++#include <pthread.h>
+ 
+ #include "debug_handler.h"
+ #include "debug_write_journal.h"
+ #include "image_tables.h"
++#include "plc_state_manager.h"
+ #include "utils/log.h"
+ #include "utils/utils.h"
+ 
+@@ -20,11 +22,39 @@
+ #define MB_FC_DEBUG_GET      0x43
+ #define MB_FC_DEBUG_GET_LIST 0x44
+ #define MB_FC_DEBUG_GET_MD5  0x45
++#define MB_FC_DEBUG_WRITE    0x46
+ 
+ #define MB_DEBUG_SUCCESS              0x7E
+ #define MB_DEBUG_ERROR_OUT_OF_BOUNDS  0x81
+ #define MB_DEBUG_ERROR_OUT_OF_MEMORY  0x82
+ #define MB_DEBUG_ERROR_NOT_LOADED     0x83
++#define MB_DEBUG_ERROR_IDENTITY       0x84
++
++/* Statically initialized: available even before the first symbols_init.
++ * All FC46 export dereferences + enqueue are one lifecycle transaction.
++ * Closing the gate and resetting before teardown prevents an old-program
++ * address from surviving into the next program's dispatcher. */
++static pthread_mutex_t debug_write_program_mutex = PTHREAD_MUTEX_INITIALIZER;
++static bool debug_write_program_ready = false;
++
++void debug_write_program_begin_load(void)
++{
++    pthread_mutex_lock(&debug_write_program_mutex);
++    debug_write_program_ready = false;
++    debug_write_journal_reset();
++}
++
++void debug_write_program_end_load(bool ready)
++{
++    debug_write_program_ready = ready;
++    pthread_mutex_unlock(&debug_write_program_mutex);
++}
++
++void debug_write_program_invalidate(void)
++{
++    debug_write_program_begin_load();
++    debug_write_program_end_load(false);
++}
+ 
+ /* Each FC 0x44 request entry is 3 bytes (arr + elem_hi + elem_lo). With
+  * MAX_DEBUG_FRAME = 4096, 1024 entries fit comfortably plus the response
+@@ -339,6 +369,57 @@
+     *frame_len = pos;
+ }
+ 
++/* FC46 v1: capability [46,00] -> [46,7e,01]; task scheduling ABI
++ * capability [46,02] -> [46,7e,01] (also available with no program loaded).
++ * One-shot BOOL write
++ * [46,01,md5-ascii:32,arr:u8,elem:be16,value:u8] -> [46,status].
++ * Success means queued; it does not acknowledge application or override force. */
++static void debugWriteBool(uint8_t *frame, size_t *frame_len, size_t length)
++{
++    if (length == 2 && (frame[1] == 0 || frame[1] == 2))
++    {
++        frame[0] = MB_FC_DEBUG_WRITE;
++        frame[1] = MB_DEBUG_SUCCESS;
++        frame[2] = 1;
++        *frame_len = 3;
++        return;
++    }
++    uint8_t status = MB_DEBUG_ERROR_OUT_OF_BOUNDS;
++    if (length != 38 || frame[1] != 1 || frame[37] > 1)
++    {
++        respond_short(frame, frame_len, MB_FC_DEBUG_WRITE, status);
++        return;
++    }
++
++    pthread_mutex_lock(&debug_write_program_mutex);
++    if (!debug_write_program_ready || plc_get_state() != PLC_STATE_RUNNING ||
++        !debug_symbols_ready() || !ext_strucpp_debug_write || !ext_strucpp_program_md5)
++        status = MB_DEBUG_ERROR_NOT_LOADED;
++    else
++    {
++        size_t md5_len = 0;
++        while (md5_len < MD5_HEX_LEN && ext_strucpp_program_md5[md5_len] != '\0')
++            ++md5_len;
++        if (md5_len != MD5_HEX_LEN)
++            status = MB_DEBUG_ERROR_NOT_LOADED;
++        else if (memcmp(ext_strucpp_program_md5, &frame[2], MD5_HEX_LEN) != 0)
++            status = MB_DEBUG_ERROR_IDENTITY;
++        else
++        {
++            uint8_t arr = frame[34];
++            uint16_t elem = read_u16_be(&frame[35]);
++            if (!debug_arr_in_range(arr) || elem >= ext_strucpp_debug_elem_count(arr) ||
++                ext_strucpp_debug_size(arr, elem) != 1)
++                status = MB_DEBUG_ERROR_OUT_OF_BOUNDS;
++            else
++                status = runtime_external_write(arr, elem, DBGW_OP_WRITE, &frame[37], 1) == 0
++                    ? MB_DEBUG_SUCCESS : MB_DEBUG_ERROR_OUT_OF_MEMORY;
++        }
++    }
++    pthread_mutex_unlock(&debug_write_program_mutex);
++    respond_short(frame, frame_len, MB_FC_DEBUG_WRITE, status);
++}
++
+ size_t process_debug_data(uint8_t *data, size_t length)
+ {
+     if (length < 1)
+@@ -357,6 +438,7 @@
+     case MB_FC_DEBUG_GET:      debugGetTrace(data, &response_len, length);      break;
+     case MB_FC_DEBUG_GET_LIST: debugGetTraceList(data, &response_len, length);  break;
+     case MB_FC_DEBUG_GET_MD5:  debugGetMd5(data, &response_len, length);        break;
++    case MB_FC_DEBUG_WRITE:    debugWriteBool(data, &response_len, length);     break;
+     default:
+         log_error("[debug] unknown function code 0x%02X", fcode);
+         return 0;
+--- a/core/src/plc_app/debug_handler.h
++++ b/core/src/plc_app/debug_handler.h
+@@ -9,6 +9,18 @@
+ #include <stdlib.h>
+ #include <stdint.h>
+ 
++#ifdef __cplusplus
++extern "C" {
++#endif
+ size_t process_debug_data(uint8_t *data, size_t length);
++/* Narrow FC46 lifecycle gate. Begin/end bracket symbols_init. Invalidate
++ * before joining/stopping/unloading a program. Never hold across a join.
++ * Gate -> debug journal is the only nested lock order. */
++void debug_write_program_begin_load(void);
++void debug_write_program_end_load(bool ready);
++void debug_write_program_invalidate(void);
++#ifdef __cplusplus
++}
++#endif
+ 
+ #endif // DEBUG_HANDLER_H
+--- a/core/src/plc_app/image_tables.cpp
++++ b/core/src/plc_app/image_tables.cpp
+@@ -22,6 +22,7 @@
+ #include "../lib/strucpp_abi.hpp"
+ 
+ #include "image_tables.h"
++#include "debug_handler.h"
+ #include "journal_buffer.h"
+ #include "plcapp_manager.h"
+ #include "utils/log.h"
+@@ -198,7 +199,17 @@
+     if (gcd_ns != 0) base_tick_ns = gcd_ns;
+ }
+ 
++static int symbols_init_locked(PluginManager *pm);
++
+ extern "C" int symbols_init(PluginManager *pm)
++{
++    debug_write_program_begin_load();
++    int rc = symbols_init_locked(pm);
++    debug_write_program_end_load(rc == 0);
++    return rc;
++}
++
++static int symbols_init_locked(PluginManager *pm)
+ {
+     *(void **)&ext_strucpp_advance_time      = resolve(pm, "strucpp_advance_time",      true);
+     *(void **)&ext_strucpp_set_current_time  = resolve(pm, "strucpp_set_current_time",  true);
+--- a/core/src/plc_app/plc_state_manager.cpp
++++ b/core/src/plc_app/plc_state_manager.cpp
+@@ -2,8 +2,8 @@
+ // Copyright (c) 2026 Autonomy®
+ 
+ // Walks the loaded program's ConfigurationInstance via virtual dispatch,
+-// spawns one SCHED_FIFO pthread per IEC task, and anchors per-cycle
+-// housekeeping on the fastest task's thread. Linux-only.
++// spawns one explicitly scheduled pthread per IEC task. The GCD dispatcher
++// owns cycle housekeeping. Linux-only.
+ 
+ #ifndef _GNU_SOURCE
+ #define _GNU_SOURCE
+@@ -18,6 +18,7 @@
+ #include <cstring>
+ #include <ctime>
+ #include <exception>
++#include <vector>
+ 
+ #include <pthread.h>
+ #include <sched.h>
+@@ -31,6 +32,7 @@
+ #include "../lib/strucpp_abi.hpp"
+ 
+ #include "debug_write_journal.h"
++#include "debug_handler.h"
+ #include "image_tables.h"
+ #include "journal_buffer.h"
+ #include "plc_retain.h"
+@@ -38,6 +40,7 @@
+ #include "plcapp_manager.h"
+ #include "scan_cycle_manager.h"
+ #include "task_policy.h"
++#include "workbench_task_scheduling.h"
+ #include "utils/log.h"
+ #include "utils/rt_mutex.h"
+ #include "utils/utils.h"
+@@ -186,50 +189,6 @@
+     current_task_ctx = ctx;
+ 
+     pthread_setname_np(pthread_self(), ctx->name);
+-
+-    /* IEC 0 (highest) -> FIFO 49; always below the dispatcher and watchdog. */
+-    bool clamped = false;
+-    int  rt      = plc_task_fifo_priority(ctx->priority, &clamped);
+-    if (clamped)
+-    {
+-        log_warn("[task %s] IEC priority %d outside %d..%d, clamped", ctx->name, ctx->priority,
+-                 PLC_IEC_PRIORITY_MIN, PLC_IEC_PRIORITY_MAX);
+-    }
+-    sched_param sp{};
+-    sp.sched_priority = rt;
+-    int sp_rc = pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp);
+-    if (sp_rc != 0)
+-    {
+-        log_warn("[task %s] SCHED_FIFO(%d) failed: %s — running default scheduling",
+-                 ctx->name, rt, strerror(sp_rc));
+-    }
+-    else
+-    {
+-        log_info("[task %s] SCHED_FIFO priority %d (IEC priority %d)", ctx->name, rt,
+-                 ctx->priority);
+-    }
+-
+-    if (ctx->cpu_affinity_mask != 0)
+-    {
+-        // CPU affinity is Linux-only (cpu_set_t family). SCHED_FIFO is
+-        // also unavailable on Windows, so skip silently off-Linux.
+-#if !defined(__CYGWIN__) && !defined(__MSYS__) && defined(__linux__)
+-        cpu_set_t cs;
+-        CPU_ZERO(&cs);
+-        for (int cpu = 0; cpu < 64 && cpu < CPU_SETSIZE; ++cpu)
+-        {
+-            if (ctx->cpu_affinity_mask & (1ULL << cpu)) CPU_SET(cpu, &cs);
+-        }
+-        if (pthread_setaffinity_np(pthread_self(), sizeof cs, &cs) != 0)
+-        {
+-            log_warn("[task %s] pthread_setaffinity_np failed: %s",
+-                     ctx->name, strerror(errno));
+-        }
+-#else
+-        log_info("[task %s] CPU affinity requested but unsupported on this platform",
+-                 ctx->name);
+-#endif
+-    }
+ 
+     /* Recovery point for SIGSEGV/SIGFPE from IEC code and for the watchdog abort
+      * (PLC_TASK_ABORT_SIGNAL): release held locks, mark the task dead, exit this thread. */
+@@ -673,6 +632,46 @@
+                  (unsigned long long)(1000000000ULL / (base_ns ? base_ns : 1)));
+     }
+ 
++    auto scheduling_getter = reinterpret_cast<WorkbenchTaskSchedulingGetter>(
++        plugin_manager_try_get_symbol(pm, "workbench_task_scheduling_v1"));
++    std::vector<WorkbenchTaskScheduling> scheduling;
++    if (scheduling_getter)
++    {
++        scheduling.reserve(total_tasks);
++        for (size_t r = 0; r < cfg->get_resource_count(); ++r)
++        {
++            for (size_t t = 0; t < resources[r].task_count; ++t)
++            {
++                WorkbenchTaskScheduling c{-1, -1, -2};
++                if (!workbench_read_task_scheduling(scheduling_getter,
++                                                     (unsigned)r, (unsigned)t, c))
++                {
++                    log_error("Invalid/missing task scheduling metadata for resource %zu task %zu", r, t);
++                    plc_publish_final_state(PLC_STATE_ERROR);
++                    return NULL;
++                }
++#if defined(__linux__)
++                if (c.cpu >= CPU_SETSIZE)
++                {
++                    log_error("Task CPU %d exceeds CPU_SETSIZE", c.cpu);
++                    plc_publish_final_state(PLC_STATE_ERROR);
++                    return NULL;
++                }
++#else
++                if (c.cpu >= 0)
++                {
++                    log_error("Task CPU affinity is unsupported on this platform");
++                    plc_publish_final_state(PLC_STATE_ERROR);
++                    return NULL;
++                }
++#endif
++                scheduling.push_back(c);
++            }
++        }
++    }
++    else
++        log_warn("Program has no workbench task scheduling metadata: using legacy FIFO task semantics");
++
+     /* Allocate per-task contexts and spawn one thread per IEC task.
+      * Hold plc_tasks_lock across the alloc + count publish so a STATS
+      * reader doesn't observe a non-NULL pointer with the old (zero)
+@@ -701,7 +700,7 @@
+                 auto       &tk  = resources[r].tasks[t];
+                 ctx->idx               = flat_idx;
+                 ctx->interval_ns       = tk.interval_ns > 0 ? tk.interval_ns : (int64_t)base_ns;
+-                ctx->priority          = tk.priority;
++                ctx->priority          = scheduling_getter ? scheduling[flat_idx].priority : tk.priority;
+                 ctx->cpu_affinity_mask = 0;       /* Phase 8 will plumb this from CPU_AFFINITY */
+                 ctx->is_fastest_task   = false;   /* set below */
+                 ctx->task_handle       = &tk;
+@@ -757,7 +756,7 @@
+             PlcTaskCtx *c = &plc_tasks[i];
+             PlcTaskCtx *f = &plc_tasks[fastest_idx];
+             if (c->interval_ns < f->interval_ns ||
+-                (c->interval_ns == f->interval_ns && c->priority > f->priority))
++                (c->interval_ns == f->interval_ns && c->priority < f->priority))
+             {
+                 fastest_idx = i;
+             }
+@@ -779,11 +778,54 @@
+     size_t spawned = 0;
+     for (; spawned < plc_task_count; ++spawned)
+     {
+-        if (pthread_create(&plc_tasks[spawned].thread, NULL,
+-                           plc_task_thread, &plc_tasks[spawned]) != 0)
+-        {
+-            log_error("Failed to spawn task %zu thread: %s",
+-                      spawned, strerror(errno));
++        int startup_rc = pthread_create(&plc_tasks[spawned].thread, NULL,
++                                         plc_task_thread, &plc_tasks[spawned]);
++        size_t created = spawned;
++        if (startup_rc == 0)
++        {
++            ++created;
++            PlcTaskCtx *ctx = &plc_tasks[spawned];
++            if (scheduling_getter)
++            {
++                const auto &c = scheduling[spawned];
++                startup_rc = workbench_apply_task_scheduling(c,
++                    [ctx](int policy, int priority) {
++                        sched_param sp{};
++                        sp.sched_priority = priority;
++                        return pthread_setschedparam(ctx->thread,
++                            policy == 1 ? SCHED_FIFO : SCHED_OTHER, &sp);
++                    },
++                    [ctx](int cpu) {
++#if defined(__linux__)
++                        cpu_set_t cs;
++                        CPU_ZERO(&cs);
++                        CPU_SET(cpu, &cs);
++                        return pthread_setaffinity_np(ctx->thread, sizeof cs, &cs);
++#else
++                        (void)cpu;
++                        return ENOTSUP;
++#endif
++                    });
++                if (startup_rc == 0)
++                    log_info("[task %s] policy=%s IEC priority=%d CPU=%d", ctx->name,
++                             c.policy == 1 ? "FIFO" : "OTHER", c.priority, c.cpu);
++            }
++            else
++            {
++                bool clamped = false;
++                sched_param sp{};
++                sp.sched_priority = plc_task_fifo_priority(ctx->priority, &clamped);
++                int rc = pthread_setschedparam(ctx->thread, SCHED_FIFO, &sp);
++                if (clamped)
++                    log_warn("[task %s] legacy IEC priority %d clamped", ctx->name, ctx->priority);
++                if (rc != 0)
++                    log_warn("[task %s] legacy FIFO scheduling failed: %s (legacy fallback)", ctx->name, strerror(rc));
++            }
++        }
++        if (startup_rc != 0)
++        {
++            log_error("Failed to create/configure task %zu thread: %s; refusing RUNNING",
++                      spawned, strerror(startup_rc));
+ 
+             /* Flip to ERROR FIRST so the running tasks exit. */
+             pthread_mutex_lock(&state_mutex);
+@@ -793,12 +835,12 @@
+             /* Wake any worker blocked on its release semaphore so it observes
+              * the state change and exits; SIGUSR1 also breaks one blocked in a
+              * syscall. */
+-            for (size_t k = 0; k < spawned; ++k)
++            for (size_t k = 0; k < created; ++k)
+             {
+                 sem_post(&plc_tasks[k].go);
+                 pthread_kill(plc_tasks[k].thread, SIGUSR1);
+             }
+-            for (size_t k = 0; k < spawned; ++k)
++            for (size_t k = 0; k < created; ++k)
+             {
+                 pthread_join(plc_tasks[k].thread, nullptr);
+             }
+@@ -818,6 +860,25 @@
+         }
+     }
+     log_info("Spawned %zu PLC task thread(s)", plc_task_count);
++
++    /* New packages keep the management/dispatch thread ordinary. Legacy
++     * packages retain the upstream FIFO dispatcher and its fallback behavior. */
++    pthread_setname_np(pthread_self(), "plc_dispatch");
++    sched_param dsp{};
++    dsp.sched_priority = scheduling_getter ? 0 : PLC_FIFO_DISPATCHER;
++    int dispatcher_rc = pthread_setschedparam(pthread_self(),
++        scheduling_getter ? SCHED_OTHER : SCHED_FIFO, &dsp);
++    if (dispatcher_rc != 0)
++    {
++        if (scheduling_getter)
++        {
++            log_error("Dispatcher ordinary scheduling failed: %s", strerror(dispatcher_rc));
++            plc_publish_final_state(PLC_STATE_ERROR);
++            reap_task_threads();
++            return NULL;
++        }
++        log_warn("Legacy dispatcher FIFO scheduling failed: %s", strerror(dispatcher_rc));
++    }
+ 
+     /* Publish RUNNING only while OUR start is still the claimed
+      * transition. Erasing a watchdog-ERROR or shutdown-TRANSITIONING_TO_STOP
+@@ -832,16 +893,6 @@
+         signal(SIGFPE,  SIG_DFL);
+         signal(SIGSEGV, SIG_DFL);
+         return NULL;
+-    }
+-
+-    
+-    {
+-        pthread_setname_np(pthread_self(), "plc_dispatch");
+-        sched_param dsp{};
+-        dsp.sched_priority = PLC_FIFO_DISPATCHER;
+-        int rc             = pthread_setschedparam(pthread_self(), SCHED_FIFO, &dsp);
+-        if (rc != 0)
+-            log_warn("dispatcher SCHED_FIFO(%d) failed: %s", PLC_FIFO_DISPATCHER, strerror(rc));
+     }
+ 
+     /* Completion-signal condvar shares the CLOCK_MONOTONIC timeline with the
+@@ -1196,6 +1247,9 @@
+ {
+     if (pm && pm == plc_program)
+     {
++        /* Wait for any FC46 enqueue, then close its export gate and discard
++         * pending entries before dispatcher join or .so pointer teardown. */
++        debug_write_program_invalidate();
+         /* Publish TRANSITIONING_TO_STOP to break the dispatcher and
+          * workers out of their RUNNING loops. Overwrite anything but
+          * ERROR, which must survive teardown. */
+--- /dev/null
++++ b/core/src/plc_app/workbench_task_scheduling.h
+@@ -0,0 +1,41 @@
++// SPDX-License-Identifier: MIT
++#ifndef WORKBENCH_TASK_SCHEDULING_H
++#define WORKBENCH_TASK_SCHEDULING_H
++
++/* Optional program ABI, resolved only on the loaded program's own handle.
++ * Missing symbol means legacy upstream semantics. When present every task
++ * must return 1 and provide a valid record; no implicit fallback is allowed. */
++using WorkbenchTaskSchedulingGetter = int (*)(unsigned, unsigned, int *, int *, int *);
++struct WorkbenchTaskScheduling
++{
++    int policy;    // 0 = SCHED_OTHER, 1 = SCHED_FIFO
++    int priority;  // IEC 0 (highest) .. 31
++    int cpu;       // -1 = no requested affinity
++};
++
++inline bool workbench_task_scheduling_valid(const WorkbenchTaskScheduling &c)
++{
++    return (c.policy == 0 || c.policy == 1) && c.priority >= 0 &&
++           c.priority <= 31 && c.cpu >= -1;
++}
++
++inline bool workbench_read_task_scheduling(WorkbenchTaskSchedulingGetter getter,
++    unsigned resource, unsigned task, WorkbenchTaskScheduling &c)
++{
++    c = {-1, -1, -2};
++    return getter && getter(resource, task, &c.policy, &c.priority, &c.cpu) == 1 &&
++           workbench_task_scheduling_valid(c);
++}
++
++/* Callbacks keep error propagation testable without requiring RT privileges.
++ * FIFO 49..18 leaves all PLC task priorities below motion's FIFO 80,
++ * the runtime dispatcher/watchdog and default PREEMPT_RT IRQ threads. */
++template<class Scheduling, class Affinity>
++int workbench_apply_task_scheduling(const WorkbenchTaskScheduling &c,
++                                    Scheduling scheduling, Affinity affinity)
++{
++    const int rc = scheduling(c.policy, c.policy == 1 ? 49 - c.priority : 0);
++    if (rc != 0) return rc;
++    return c.cpu < 0 ? 0 : affinity(c.cpu);
++}
++#endif

@@ -66,6 +66,16 @@ class AxisTests(unittest.TestCase):
                     ValueError, 'mechanical/rotary/homing configuration is offline only; controller apply/confirm is not implemented'):
                 w.Manifest.from_object(data)
 
+    def test_manifest_accepts_explicit_zero_jerk_legacy_planner_metadata(self):
+        data = manifest()
+        data['Axes'][0]['MaximumJerk'] = 0
+        self.assertEqual(0, w.Manifest.from_object(data).axes[0]['MaximumJerk'])
+        for key in ('MaximumAcceleration', 'MaximumDeceleration'):
+            data['Axes'][0][key] = 0
+            with self.assertRaises(ValueError):
+                w.Manifest.from_object(data)
+            del data['Axes'][0][key]
+
     def test_manifest_accepts_legacy_missing_or_null_mechanics(self):
         data = manifest()
         self.assertEqual('Axis1', w.Manifest.from_object(data).axes[0]['Name'])
@@ -252,7 +262,7 @@ class AxisTests(unittest.TestCase):
                             MaximumDeceleration=None, MaximumJerk=None)
         w.Manifest.from_object(m)
         for field in ('MaximumVelocity','MaximumAcceleration','MaximumDeceleration','MaximumJerk'):
-            for value in (float('nan'),-1,0,True,'1'):
+            for value in ((float('nan'),-1,True,'1') if field == 'MaximumJerk' else (float('nan'),-1,0,True,'1')):
                 invalid = copy.deepcopy(m)
                 invalid['Axes'][0][field] = value
                 with self.assertRaises(ValueError): w.Manifest.from_object(invalid)
@@ -426,8 +436,10 @@ class WireTests(unittest.TestCase):
                         capability_path = bridge_path+'.capabilities.json'
                         first_stamp = os.stat(capability_path).st_mtime_ns
                         bridge.settimeout(.04)
-                        # No unsolicited feedback, even while status and sidecar refresh.
+                        # No unsolicited feedback; state polling remains 10ms,
+                        # unchanged disk heartbeat is bounded to once a second.
                         with self.assertRaises(socket.timeout): bridge.recv(1)
+                        w.time.sleep(1.05)
                         self.assertGreater(os.stat(capability_path).st_mtime_ns,first_stamp)
                         self.assertGreater(sum(k=='ReadSnapshotRequest' for k,p in fake.calls),1)
                         self.assertFalse(any(k=='AcquireControlRequest' for k,p in fake.calls))
@@ -449,6 +461,10 @@ class WireTests(unittest.TestCase):
                             w.time.sleep(.001)
                         with self.assertRaises(socket.timeout): bridge.recv(1)
                     finally:
+                        # Invalid scan flags terminate this isolated server;
+                        # normal EOF now leaves it available for a new PLC load.
+                        try: bridge.sendall(w.HEADER.pack(61, 2) + packet()[w.HEADER.size:])
+                        except OSError: pass
                         bridge.close()
                         thread.join(timeout=2)
                         peer.close()

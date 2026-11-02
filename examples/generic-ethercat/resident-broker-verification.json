@@ -1,0 +1,81 @@
+{
+  "ordinaryUid": 1000,
+  "usedSudo": false,
+  "requestId": "broker_live_67e67b1227f8476ba5d6f20504e55740",
+  "oldCorePid": "4166",
+  "newCorePid": "4844",
+  "validation": {
+    "status": "validated",
+    "buildHash": "6cfbaef527be3a98857d5d95fad50f2ccb19a28faa9f5e9aeaaab00da2479581",
+    "topologyFingerprint": "8ab0676d3a3532efa5ce2453d2b23adabe7c59cabec101c0346af9f9dddc2577",
+    "machineSha256": "66f7d07eceafcbc1c337001982f606cba7b7a1a0607c02b593ac61ad6bbcf927",
+    "ioMapSha256": "3a3fb7131da64be52172a8ca66fe0129c0715f0753ca17799a3089333ab96a69"
+  },
+  "apply": {
+    "state": "hardware-applied",
+    "active": {
+      "build_hash": "5CB4FA5793460A1B3646544B31032B0FDFE6EE403A16E59934BB517D153655E1",
+      "library_path": "/home/a/.local/share/st-workbench/runtime-v4.3.0/source/build/libplc_stworkbench.so",
+      "library_sha256": "e6546ec993f7b91cdd8677da261d6e53374327927a6261755979a4c6e21f8419",
+      "program_md5": "b6a9c575e9404bf7d1e30952c1175546",
+      "symbol_table_hash": "D5FE7E9C8FDEA1CA98E5FD46657B164F6ADB65E33192EA4AEF80BD5EC002283B",
+      "hardware_hash": "f001fd3427cdcea3edc2f7a2b330bb6a9bf49bf9027796bc86906c84f9fdddca",
+      "runtime_commit": "a9e38d901fb87deb5a8cf778b52639b9387834d0",
+      "request_id": "1e97b9161e77417d8d8d745433f6cb97"
+    },
+    "hardware": {
+      "status": "applied",
+      "buildHash": "6cfbaef527be3a98857d5d95fad50f2ccb19a28faa9f5e9aeaaab00da2479581",
+      "topologyFingerprint": "8ab0676d3a3532efa5ce2453d2b23adabe7c59cabec101c0346af9f9dddc2577",
+      "machineSha256": "66f7d07eceafcbc1c337001982f606cba7b7a1a0607c02b593ac61ad6bbcf927",
+      "ioMapSha256": "3a3fb7131da64be52172a8ca66fe0129c0715f0753ca17799a3089333ab96a69",
+      "verified": true,
+      "rollback": "not-required"
+    },
+    "message": "\u603b\u7ebf\u7ec4\u6001\u5df2\u5e94\u7528\u5e76\u53d6\u5f97\u6838\u5fc3\u6307\u7eb9\u548c\u5b9e\u65f6\u53cd\u9988\u786e\u8ba4\uff1bPLC \u4fdd\u6301\u505c\u6b62\uff0c\u8bf7\u91cd\u65b0\u7f16\u8bd1\u8bbe\u5907\u5019\u9009\u540e\u6fc0\u6d3b\u3002",
+    "hardware_matches_active": false,
+    "success": true,
+    "request_id": "broker_live_67e67b1227f8476ba5d6f20504e55740"
+  },
+  "after": {
+    "plcState": "STOPPED",
+    "nativeReady": true,
+    "topologyFingerprint": "8ab0676d3a3532efa5ce2453d2b23adabe7c59cabec101c0346af9f9dddc2577",
+    "snapshot": {
+      "axes": [
+        {
+          "actualPosition": 5.340576171875e-05,
+          "actualVelocity": -0.0149993896484375,
+          "fault": null,
+          "homed": false,
+          "motionAborted": false,
+          "motionBusy": false,
+          "motionDone": false,
+          "motionId": 0,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Disabled"
+        }
+      ],
+      "diagnostics": null,
+      "digitalInputs": {},
+      "digitalOutputs": {},
+      "ioReady": true,
+      "lastAppliedCommandCycle": 0,
+      "lastAppliedCommandSequence": 0,
+      "outputFeedbackAvailable": false,
+      "outputsAtConfiguredSafeState": true,
+      "pathCompletedPoints": 0,
+      "pathExecutionId": 0,
+      "pathStatus": 0,
+      "pathTotalPoints": 0,
+      "runtimeReady": true,
+      "sampleCycle": 6538,
+      "sampleMonotonicNs": 10052664867906,
+      "scalarIo": [],
+      "timestamp": "2026-10-20T14:04:25.523Z"
+    }
+  },
+  "duplicateRejected": "Hardware broker rejected or unconfirmed: Apply request already consumed; query actual status",
+  "duplicateDidNotRestartCore": true
+}

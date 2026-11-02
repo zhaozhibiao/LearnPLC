@@ -1,0 +1,57 @@
+{
+  "src/EcMotion.Igh/CMakeLists.txt": {
+    "baseSha256": "1118a8b7811d2fe2200f69283f7786a7a1f5cf41b0b3c7ad92531459d9c32db3",
+    "patchedSha256": "f05a29c1069b50fe99033dba110493904db52546ec730cf1f2afef48ddcc8d66",
+    "kind": "modified"
+  },
+  "src/EcMotion.Igh/generated/is620n_ethercat_config.hpp": {
+    "baseSha256": "70cd29c55b1d010ec11ae750b32d3ec0a6d27d11deff8c8e0f33509de52c3b35",
+    "patchedSha256": "7304201a72e23f3172f350403b5ab566f4292fa039a273c41b18a8a49af311e6",
+    "kind": "modified"
+  },
+  "src/EcMotion.Igh/include/axis_feedback.hpp": {
+    "baseSha256": "48979e60a77a9536332bfb2dc477945c68678b1fef25fff6be7dbc6da38b870b",
+    "patchedSha256": "667abe73ef36e0455a608bbb35f5816bc5b7de95db9a0f71066141165d7ec7f4",
+    "kind": "modified"
+  },
+  "src/EcMotion.Igh/include/slave_identity.hpp": {
+    "baseSha256": null,
+    "patchedSha256": "c7fecee09482438f252bc9fc49ea59658b8e848c184ba00846d836d3efa92f19",
+    "kind": "added"
+  },
+  "src/EcMotion.Igh/src/axis_feedback.cpp": {
+    "baseSha256": "1443ba9dc5948a13c16fbdbf5f36e39a2698be695c10c946075dda658b393459",
+    "patchedSha256": "e77a233fd6be5994b20bb7df4a1bb947e8b1862124efa850cebc2491bdac7d2a",
+    "kind": "modified"
+  },
+  "src/EcMotion.Igh/src/ethercat_runtime_cli_selftest.py": {
+    "baseSha256": "2ab770325b6ae9f7dea2cf632297bb7c012121a0c289008938366d7ed267f5bd",
+    "patchedSha256": "87b099b65f1325b218e03520d8c65b6e0444fe98fd0b86176ae374c35d886cf4",
+    "kind": "modified"
+  },
+  "src/EcMotion.Igh/src/ethercat_runtime_config.cpp": {
+    "baseSha256": "0607e7e2a462f8f281ba7cd267a07b980fc5232fd5583567dea2df121101692e",
+    "patchedSha256": "e74476adf6c21bc27186cd8fe058d8226897e6d219422b4f2e46a70fc4086484",
+    "kind": "modified"
+  },
+  "src/EcMotion.Igh/src/ethercat_runtime_config_selftest.cpp": {
+    "baseSha256": "6040fc52fd51c0c6c3538c6a84a05834f4bde5f5c65de9177e467f550625f653",
+    "patchedSha256": "307883945f8ab61a9ab05217ac052360c03e2d702d7dd3d1ddb6090a68d39284",
+    "kind": "modified"
+  },
+  "src/EcMotion.Igh/src/io_map_config_selftest.cpp": {
+    "baseSha256": "076133571d06ffa2331bde3ddd2b3b22fd6e08fe1f56f593c3a97cd3ccf63920",
+    "patchedSha256": "5d68746815769458a5171adca07a19ee3069792ae4a804a27a43e24742771e96",
+    "kind": "modified"
+  },
+  "src/EcMotion.Igh/src/main.cpp": {
+    "baseSha256": "365430d2346785d508661fc494da99fbb793ba269ad03f7319296cbd13ca44ca",
+    "patchedSha256": "584029510b1c91ca2f0d8d49265be37ada1458bb6a68a120f1c90780ed849283",
+    "kind": "modified"
+  },
+  "src/EcMotion.Igh/src/slave_identity_selftest.cpp": {
+    "baseSha256": null,
+    "patchedSha256": "e9e633a2bc5fc3f916785fb7c4c4ea8810e79bfd329e2c1cfdcddd58af482ccd",
+    "kind": "added"
+  }
+}

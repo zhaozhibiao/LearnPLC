@@ -101,7 +101,10 @@
         "Name": "Cyclic",
         "ProgramId": "b12b717d-ef7c-47e9-9369-9b22d1c90610",
         "IntervalMilliseconds": 10,
-        "Enabled": true
+        "Enabled": true,
+        "Scheduling": 0,
+        "Priority": 10,
+        "Cpu": null
       }
     ],
     "Hardware": {
@@ -112,6 +115,6 @@
     "Paths": []
   },
   "SourceFiles": {
-    "b12b717d-ef7c-47e9-9369-9b22d1c90610": ".stversions/befc5c0f1946957e932f9f4e35ef711b67ec28e15a6b9a8fc16838e889d5b76f/bc493104f8053331a49da9aedf87e2d595efbd7307619a900db7456a1481ddb6/sources/Main.st"
+    "b12b717d-ef7c-47e9-9369-9b22d1c90610": ".stversions/6452fc824b5b8c337c97a45df583796d981f9d06c13cea13ac4afa6cab36847a/bc493104f8053331a49da9aedf87e2d595efbd7307619a900db7456a1481ddb6/sources/Main.st"
   }
 }

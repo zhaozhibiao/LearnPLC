@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "cycleTimeMicroseconds": 1000,
+  "commandWatchdogMilliseconds": 500,
+  "safeOutputPolicy": "all-digital-outputs-off",
+  "slaves": [
+    {
+      "position": 0,
+      "role": "servo",
+      "vendor": "Inovance",
+      "model": "IS620N_ECAT_v2.6.2",
+      "identitySource": "examples/is620n-test/hardware-probe.txt: online 0x1018 reads",
+      "vendorId": "0x00100000",
+      "productCode": "0x000C0108",
+      "revisionNumber": "0x00010001",
+      "pdoProfile": "is620n-custom-1600-1a00-disabled-startup-candidate"
+    }
+  ],
+  "axes": [
+    {
+      "name": "Axis1",
+      "slavePosition": 0,
+      "drive": "Inovance IS620N",
+      "profile": "CiA402",
+      "mode": "Csp",
+      "modeOfOperation": 8,
+      "positionUnit": "rev",
+      "pdoEntries": {
+        "controlword": "Axis1Drive.Controlword.0x6040:0",
+        "targetPosition": "Axis1Drive.Target_position.0x607A:0",
+        "velocityOffset": "Axis1Drive.Velocity_offset.0x60B1:0",
+        "modeOfOperation": "Axis1Drive.Modes_of_operation.0x6060:0",
+        "statusword": "Axis1Drive.Statusword.0x6041:0",
+        "positionActual": "Axis1Drive.Position_actual_value.0x6064:0",
+        "velocityActual": "Axis1Drive.Velocity_actual_value.0x606C:0",
+        "modeDisplay": "Axis1Drive.Modes_of_operation_display.0x6061:0",
+        "errorCode": "Axis1Drive.Error_code.0x603F:0"
+      },
+      "mechanics": {
+        "commissioningRequired": false,
+        "motorModel": "ISMH1-10B30CB-U230Z",
+        "encoderCountsPerMotorRevolution": 1048576,
+        "motorTurnsPerOutputTurn": 1.0,
+        "engineeringUnitsPerOutputTurn": 1.0,
+        "direction": 1
+      },
+      "softLimitNegative": -1.0,
+      "softLimitPositive": 1.0,
+      "maximumVelocity": 1.0,
+      "maximumAcceleration": 2.0,
+      "maximumDeceleration": 2.0,
+      "homing": {
+        "required": true,
+        "method": 35,
+        "allowCurrentPositionZero": true,
+        "searchSpeedRaw": 1048,
+        "latchSpeedRaw": 1048,
+        "accelerationRaw": 10485,
+        "offsetRaw": 0,
+        "timeoutMilliseconds": 5000
+      },
+      "motionCompletion": {
+        "positionTolerance": 0.001,
+        "velocityTolerance": 0.005,
+        "dwellMilliseconds": 100,
+        "positionStabilityCompletion": true
+      },
+      "motionSafety": {
+        "commissioningRequired": false,
+        "maximumActualVelocity": 1.5,
+        "maximumFollowingError": 0.005,
+        "followingErrorTimeoutMilliseconds": 20
+      }
+    }
+  ],
+  "digitalOutputs": []
+}

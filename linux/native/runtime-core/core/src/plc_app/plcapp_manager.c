@@ -1,0 +1,134 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Autonomy®
+
+#include "plcapp_manager.h"
+#include <dirent.h>
+#include <dlfcn.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "utils/log.h"
+
+struct PluginManager
+{
+    char *so_path;
+    void *handle;
+};
+
+char *find_libplc_file(const char *build_dir)
+{
+    DIR *dir = opendir(build_dir);
+    if (!dir)
+    {
+        log_error("Failed to open build directory: %s", build_dir);
+        return NULL;
+    }
+
+    struct dirent *entry;
+    char *found_path = NULL;
+
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (strncmp(entry->d_name, "libplc_", 7) == 0 && strstr(entry->d_name, ".so") != NULL)
+        {
+            size_t path_len = strlen(build_dir) + strlen(entry->d_name) + 2;
+            found_path      = malloc(path_len);
+            if (found_path)
+            {
+                snprintf(found_path, path_len, "%s/%s", build_dir, entry->d_name);
+            }
+            break;
+        }
+    }
+
+    closedir(dir);
+
+    if (!found_path)
+    {
+        log_error("No libplc_*.so file found in %s", build_dir);
+    }
+
+    return found_path;
+}
+
+PluginManager *plugin_manager_create(const char *so_path)
+{
+    PluginManager *pm = calloc(1, sizeof(PluginManager));
+    if (!pm)
+    {
+        return NULL;
+    }
+    pm->so_path = strdup(so_path);
+    pm->handle  = NULL;
+    return pm;
+}
+
+void plugin_manager_destroy(PluginManager *pm)
+{
+    if (!pm)
+    {
+        return;
+    }
+    if (pm->handle)
+    {
+        dlclose(pm->handle);
+    }
+    free(pm->so_path);
+    free(pm);
+}
+
+bool plugin_manager_load(PluginManager *pm)
+{
+    if (!pm)
+    {
+        return false;
+    }
+    if (pm->handle)
+    {
+        return true; // already loaded
+    }
+
+    pm->handle = dlopen(pm->so_path, RTLD_NOW);
+    if (!pm->handle)
+    {
+        log_error("Failed to load plugin %s: %s", pm->so_path, dlerror());
+        return false;
+    }
+    return true;
+}
+
+void *plugin_manager_get_symbol(PluginManager *pm, const char *symbol_name)
+{
+    if (!pm || !pm->handle)
+    {
+        return NULL;
+    }
+    dlerror(); // clear old error
+    void *sym = dlsym(pm->handle, symbol_name);
+    char *err = dlerror();
+    if (err)
+    {
+        log_error("dlsym error: %s", err);
+        return NULL;
+    }
+    return sym;
+}
+
+void *plugin_manager_try_get_symbol(PluginManager *pm, const char *symbol_name)
+{
+    if (!pm || !pm->handle)
+    {
+        return NULL;
+    }
+    dlerror(); // clear old error
+    void *sym = dlsym(pm->handle, symbol_name);
+    /* Consume this lookup's error without reporting it: the caller asked for a
+     * symbol it can do without. Leaving it pending would hand it to whichever
+     * required lookup ran next. */
+    if (dlerror())
+    {
+        return NULL;
+    }
+    return sym;
+}

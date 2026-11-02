@@ -46,7 +46,7 @@ public sealed partial class MainWindow : Window
     private readonly ListBox deviceList = new() { MinHeight = 90 };
     private readonly ListBox pdoList = new() { MinHeight = 90 };
     private readonly TextBox runtimeDetails = new() { AcceptsReturn = true, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, Height = 90 };
-    private readonly TextBox monitorExplanation = new() { AcceptsReturn = true, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, Text = "变量监视尚未绑定。\n通过 SSH 连接 Runtime，生成与已激活程序一致的工程候选包，然后点击下方“绑定已激活程序并开始只读监视”。\n绑定后显示真实变量值、实例树和趋势。" };
+    private readonly TextBox monitorExplanation = new() { AcceptsReturn = true, IsReadOnly = true, TextWrapping = TextWrapping.Wrap, Text = "未连接监视 · 连接设备并编译当前工程后，点击“开始监视”。" };
     private readonly ProjectStore store = new();
     private readonly StLanguageService language = new();
     private StProject project = new();
@@ -82,8 +82,8 @@ public sealed partial class MainWindow : Window
     private ReadOnlyMonitorSession? monitorSession;
     private IReadOnlyList<DebugSymbol> debugSymbols = [];
     private bool debugLittleEndian, polling, bindingDebug;
-    private readonly TreeView instanceTree = new() { Height = 170 };
-    private readonly TrendView trendView = new() { Height = 170 };
+    private readonly TreeView instanceTree = new();
+    private readonly TrendView trendView = new();
     private readonly DispatcherTimer monitorTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     private long monitorSequence;
     private string? trendPath;
@@ -110,10 +110,11 @@ public sealed partial class MainWindow : Window
         commands.Children.Add(ActionButton("打开", OpenAsync));
         commands.Children.Add(ActionButton("保存", SaveAsync));
         commands.Children.Add(ActionButton("另存为", SaveAsAsync));
-        buildButton = ActionButton("检查 / 编译", CompileAsync); commands.Children.Add(buildButton);
-        packageButton = ActionButton("生成候选包", GeneratePackageAsync); commands.Children.Add(packageButton);
+        buildButton = ActionButton("编译", CompileAsync); Register(buildButton,"CompileButton"); commands.Children.Add(buildButton);
+        packageButton = ActionButton("生成候选包", GeneratePackageAsync);
         commands.Children.Add(ActionButton("取消编译", () => { buildCancellation?.Cancel(); return Task.CompletedTask; }));
-        downloadButton = ActionButton("下载 / 应用程序", StageAndCompileAsync); downloadButton.IsEnabled = false; Register(downloadButton, "DownloadButton"); commands.Children.Add(downloadButton);
+        downloadButton = ActionButton("下载程序", DownloadSelectedAsync); Register(downloadButton, "DownloadButton"); commands.Children.Add(downloadButton);
+        uploadButton = ActionButton("上传程序", UploadSelectedAsync); Register(uploadButton,"UploadButton"); commands.Children.Add(uploadButton);
         activateButton = ActionButton("应用已编译程序", ActivateAsync); activateButton.IsEnabled = false; commands.Children.Add(activateButton);
         startButton = ActionButton("▶ 运行", () => DeploymentActionAsync("start")); startButton.IsEnabled = false;
         ToolTip.SetTip(startButton, "运行设备上已激活的程序；需先确认设备处于停止状态。"); Register(startButton, "RunButton"); commands.Children.Add(startButton);
@@ -133,6 +134,7 @@ public sealed partial class MainWindow : Window
         center.Children.Add(new Border { Background = Brush.Parse("#101F30"), CornerRadius = new CornerRadius(6), Child = left });
         var splitter = new GridSplitter { ResizeDirection = GridResizeDirection.Columns, HorizontalAlignment = HorizontalAlignment.Stretch }; Grid.SetColumn(splitter, 1); center.Children.Add(splitter);
         var tabs = new TabControl { ItemsSource = new[] { new TabItem { Header = "ST 编程", Content = EditorPane() }, new TabItem { Header = "周期任务", Content = TasksPane() }, new TabItem { Header = "硬件组态", Content = HardwarePane() }, new TabItem { Header = "连接与工具", Content = SettingsPane() }, new TabItem { Header = "下载与激活", Content = DeploymentPane() }, new TabItem { Header = "在线监视", Content = OnlinePane() }, new TabItem { Header = "网络组态", Content = NetworkConfigurationPane() } } }; Register(tabs, "WorkbenchTabs"); Grid.SetColumn(tabs, 2); center.Children.Add(tabs);
+        tabs.SelectionChanged += (_,e) => { if(ReferenceEquals(e.Source,tabs)&&tabs.SelectedIndex is 0 or 1 or 2 or 6)SetTransferScope(tabs.SelectedIndex is 2 or 6); };
         var librarySplitter = new GridSplitter { ResizeDirection = GridResizeDirection.Columns, HorizontalAlignment = HorizontalAlignment.Stretch }; Grid.SetColumn(librarySplitter, 3); center.Children.Add(librarySplitter);
         var library = InstructionLibraryPane(); Grid.SetColumn(library, 4); center.Children.Add(library); SetupInstructionDrop();
         var footer = new TabControl { Margin = new Thickness(14, 6, 14, 12), ItemsSource = new[] { new TabItem { Header = "问题 / 定位", Content = diagnostics }, new TabItem { Header = "编译与运行日志", Content = log } } };
@@ -141,9 +143,11 @@ public sealed partial class MainWindow : Window
         var rowSplitter = new GridSplitter { ResizeDirection = GridResizeDirection.Rows, HorizontalAlignment = HorizontalAlignment.Stretch }; Grid.SetRow(rowSplitter, 3); root.Children.Add(rowSplitter);
         Grid.SetRow(footer, 4); root.Children.Add(footer); Content = root;
         tree.SelectionChanged += (_, _) => { if (tree.SelectedItem is TreeViewItem { Tag: Guid id }) SelectItem(id); else if (tree.SelectedItem is TreeViewItem { Tag: PathResourceReference path }) SelectPath(path.Id, path.Version); else if (tree.SelectedItem is TreeViewItem { Tag: "path-resources" }) ShowPathWorkspace(); else if (tree.SelectedItem is TreeViewItem { Tag: "io-mappings" }) ShowIoMappingTable(); else if (tree.SelectedItem is TreeViewItem { Tag: WorkbenchPageReference page }) NavigateTo(page.TabIndex); else if (tree.SelectedItem is TreeViewItem { Tag: ProjectResourceReference resource }) SelectItem(resource.ItemId); else if(tree.SelectedItem is TreeViewItem{Tag:EtherCatStation station}) { selectedStationId=station.Id;RefreshConfigurationViews();NavigateTo(2); } };
+        tree.SelectionChanged += (_,_)=>SelectTransferScope(tree.SelectedItem);
         editor.TextChanged += (_, _) => { if (!loading && selected is not null) { sources[selected.Id] = new(selected.Id, selected.SourcePath, editor.Text); MarkDirty(); RefreshResourceMembers(selected); } };
         editor.TextArea.Caret.PositionChanged += (_, _) => UpdateHint();
         editor.KeyDown += EditorKeyDown;
+        InitializeEditorOnlineWrites();
         KeyDown += (_, e) => { if (e.KeyModifiers == KeyModifiers.Control && e.Key == Key.S) { e.Handled = true; _ = Run(SaveAsync); } else if (e.Key == Key.F7) { e.Handled = true; _ = Run(CompileAsync); } };
         diagnostics.DoubleTapped += (_, _) => { if (diagnostics.SelectedIndex >= 0 && diagnostics.SelectedIndex < currentDiagnostics.Count) GoTo(currentDiagnostics[diagnostics.SelectedIndex]); };
         // Target identity must change synchronously, before a new connection can
@@ -152,7 +156,7 @@ public sealed partial class MainWindow : Window
         sshUser.PropertyChanged += (_, e) => { if(e.Property==TextBox.TextProperty)ResetDeviceIdentity(); };
         endpoint.PropertyChanged += (_, e) => { if(e.Property==TextBox.TextProperty)ResetDeviceIdentity(); };
         Closing += OnClosing;
-        Closed += (_, _) => { connectionGeneration++; buildCancellation?.Cancel(); monitorTimer.Stop(); if (debugClient is not null) _ = debugClient.DisposeAsync(); runtime?.Dispose(); privateTunnel?.Dispose(); privateTunnel = null; password.Text = ""; debugSessionToken = null; };
+        Closed += (_, _) => { ResetEngineeringConnection(); connectionGeneration++; buildCancellation?.Cancel(); monitorTimer.Stop(); if (debugClient is not null) _ = debugClient.DisposeAsync(); runtime?.Dispose(); privateTunnel?.Dispose(); privateTunnel = null; password.Text = ""; debugSessionToken = null; };
         monitorTimer.Tick += async (_, _) => await Run(PollVariablesAsync);
         instanceTree.SelectionChanged += (_, _) => { if (instanceTree.SelectedItem is TreeViewItem { Tag: string path }) { trendPath = path; RefreshTrend(); } };
         endpoint.Text = settings.Endpoint; username.Text = settings.Username; compilerPath.Text = settings.CompilerPath; compilerVersion.Text = settings.CompilerVersion; certificateFingerprint.Text = settings.CertificateFingerprint;
@@ -185,7 +189,7 @@ public sealed partial class MainWindow : Window
     {
         var panel = new StackPanel { Spacing = 8 };
         panel.Children.Add(new TextBlock { Text = "周期任务", FontSize = 22, FontWeight = FontWeight.Bold });
-        panel.Children.Add(Label("当前编译闭环仅启用一个周期任务。任务配置随工程保存；多任务运行需通过目标 Runtime 调度验证。"));
+        panel.Children.Add(Label("普通周期任务默认使用 SCHED_OTHER；实时任务需在任务树中明确配置。可从左侧任务属性启用、绑定程序及设置优先级和 CPU。此处编辑首个启用任务。"));
         panel.Children.Add(Label("任务名")); panel.Children.Add(taskName); panel.Children.Add(Label("周期（ms）")); panel.Children.Add(taskPeriod);
         panel.Children.Add(Label("绑定程序")); panel.Children.Add(taskProgram);
         panel.Children.Add(ActionButton("应用任务配置", () =>
@@ -194,9 +198,9 @@ public sealed partial class MainWindow : Window
             if (!Regex.IsMatch(taskName.Text ?? "", @"^[A-Za-z_][A-Za-z0-9_]*$")) throw new InvalidDataException("任务名必须是 ST 标识符");
             if (busy) return Task.CompletedTask;
             var program = project.Items.SingleOrDefault(i => i.Kind == ItemKind.Program && i.Name == (taskProgram.SelectedItem as string)) ?? throw new InvalidDataException("请选择绑定程序");
-            var task = project.Tasks.Single(t => t.Enabled);
+            var task = project.Tasks.First(t => t.Enabled);
             if (project.Tasks.Any(t => !ReferenceEquals(t, task) && t.Name.Equals(taskName.Text, StringComparison.OrdinalIgnoreCase))) throw new InvalidDataException("任务名称重复");
-            task.Name = taskName.Text!; task.ProgramId = program.Id; task.IntervalMilliseconds = ms; MarkDirty(); RefreshTree(); return Task.CompletedTask;
+            ApplyTaskConfiguration(task, new PlcTask { Name = taskName.Text!, ProgramId = program.Id, IntervalMilliseconds = ms, Enabled = task.Enabled, Scheduling = task.Scheduling, Priority = task.Priority, Cpu = task.Cpu }); return Task.CompletedTask;
         }));
         panel.Children.Add(Label("ST 编译生成本地 C++ 产物，Runtime 包生成完成前不宣称任务已在设备运行。")); panel.Children.Add(MotionCyclePane()); return ScrollPanel(panel);
     }
@@ -205,42 +209,59 @@ public sealed partial class MainWindow : Window
     {
         var panel = new StackPanel { Spacing = 6, MaxWidth = 880, HorizontalAlignment = HorizontalAlignment.Left };
         panel.Children.Add(new TextBlock { Text = "连接与工具", FontSize = 22, FontWeight = FontWeight.Bold });
-        panel.Children.Add(Label("设备 SSH 地址 / Linux 用户名"));
+        panel.Children.Add(Label("设备地址 / 设备用户（首次配对使用）"));
         panel.Children.Add(new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8, Children = { sshHost, sshUser } });
-        privateConnectButton = ActionButton("SSH 连接 Runtime（免密码）", ConnectPrivateRuntimeAsync);
-        Register(privateConnectButton, "PrivateConnectButton"); panel.Children.Add(privateConnectButton);
-        panel.Children.Add(Label("已配置设备：192.168.1.31，用户 a。此按钮自动建立隧道并登录，无需填写下面的 Runtime 密码。"));
-        panel.Children.Add(Label("Runtime HTTPS 地址")); panel.Children.Add(endpoint); panel.Children.Add(Label("Runtime 用户名（与 SSH 账号可不同）")); panel.Children.Add(username); panel.Children.Add(password);
-        connectButton = ActionButton("账号密码连接 Runtime（直接 HTTPS）", ConnectAsync); panel.Children.Add(connectButton);
+        privateConnectButton = ActionButton("兼容模式：SSH 连接 Runtime", ConnectPrivateRuntimeAsync);
+        Register(privateConnectButton, "PrivateConnectButton");
+        panel.Children.Add(ActionButton("连接工程服务（免 SSH）",ConnectEngineeringAsync));
+        panel.Children.Add(ActionButton("首次配对工程服务",PairEngineeringAsync));
+        panel.Children.Add(Label("首次配对后，在线与工程传输使用常驻 HTTPS 服务（18445），不再反复建立 SSH。配对凭据保存在 Windows 凭据管理器。"));
+        connectButton = ActionButton("账号密码连接 Runtime（直接 HTTPS）", ConnectAsync);
+        panel.Children.Add(new Expander { Header="旧版 Runtime 连接",Content=new StackPanel {Spacing=6,Children={privateConnectButton,Label("Runtime HTTPS 地址"),endpoint,Label("Runtime 用户名"),username,password,connectButton}} });
         panel.Children.Add(Label("独立 ST 编译器路径")); panel.Children.Add(compilerPath); panel.Children.Add(ActionButton("选择编译器", PickCompilerAsync));
         panel.Children.Add(Label("锁定编译器版本输出")); panel.Children.Add(compilerVersion);
         panel.Children.Add(ActionButton("保存配置", () => { var next = new WorkbenchSettings(endpoint.Text ?? "", username.Text ?? "", compilerPath.Text ?? "", compilerVersion.Text ?? "", certificateFingerprint.Text ?? ""); next.Save(); settings = next; ResetDeviceIdentity(); runtimeDetails.Text = "连接配置已变更，设备状态不可用；请重新连接。"; AppendLog("连接和编译配置已保存；密码不保存。", false); return Task.CompletedTask; }));
         panel.Children.Add(Label("设备证书 SHA256（可选，需通过已验证 SSH 核对）")); panel.Children.Add(certificateFingerprint);
-        panel.Children.Add(Label("证书固定只允许该设备自签证书，仍验证主机名。SSH 连接使用独立本机端口；HTTPS 地址只用于直接账号密码连接。")); return ScrollPanel(panel);
+        panel.Children.Add(Label("证书固定只允许该设备自签证书，仍验证主机名。SSH 连接使用独立本机端口；HTTPS 地址只用于直接账号密码连接。"));
+        refreshButton = ActionButton("读取设备状态 / 日志", RefreshRuntimeAsync); refreshButton.IsEnabled = false;
+        var details = new Expander { Header = "设备诊断", HorizontalAlignment = HorizontalAlignment.Stretch,
+            Content = new StackPanel { Spacing = 8, Children = { refreshButton, runtimeDetails } } };
+        Register(details, "RuntimeDiagnostics"); panel.Children.Add(details);
+        return ScrollPanel(panel);
     }
     private Control OnlinePane()
     {
-        var panel = new StackPanel { Spacing = 10 };
-        panel.Children.Add(new TextBlock { Text = "在线状态", FontSize = 22, FontWeight = FontWeight.Bold });
-        refreshButton = ActionButton("读取设备状态 / 日志", RefreshRuntimeAsync); refreshButton.IsEnabled = false; panel.Children.Add(refreshButton); panel.Children.Add(runtimeDetails);
-        panel.Children.Add(Label("变量、实例与趋势")); panel.Children.Add(monitorExplanation);
-        panel.Children.Add(ActionButton("绑定已激活程序并开始只读监视", BindDebugAsync));
-        panel.Children.Add(ActionButton("断开变量监视", DisconnectDebugAsync));
-        var samples = new Grid { ColumnDefinitions = new ColumnDefinitions("*,*"), Height = 170 }; samples.Children.Add(instanceTree); Grid.SetColumn(trendView, 1); samples.Children.Add(trendView); panel.Children.Add(samples);
-        panel.Children.Add(Label("重新打开工程后需生成对应候选包并绑定。变量与程序版本必须一致；选择树中的数值变量查看趋势。监视为只读，不改变变量或启停设备。")); return ScrollPanel(panel);
+        var layout = new DockPanel { Margin = new Thickness(18) };
+        var panel = new StackPanel { Spacing = 8, Margin = new Thickness(0, 0, 0, 10) };
+        panel.Children.Add(new WrapPanel { Children = { ActionButton("开始监视", BindDebugAsync), ActionButton("断开监视", DisconnectDebugAsync) } });
+        panel.Children.Add(monitorExplanation);
+        DockPanel.SetDock(panel, Dock.Top); layout.Children.Add(panel);
+        var write = new Expander { Header = "修改变量（BOOL）", HorizontalAlignment = HorizontalAlignment.Stretch,
+            Content = new ScrollViewer { MaxHeight = 180, HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled, Content = OnlineWritePane() } };
+        Register(write, "OnlineWriteExpander"); DockPanel.SetDock(write, Dock.Bottom); layout.Children.Add(write);
+        var workspace = new Grid { RowDefinitions = new RowDefinitions("Auto,*"), ClipToBounds = true };
+        var headings = new Grid { ColumnDefinitions = new ColumnDefinitions("*,6,*") };
+        headings.Children.Add(Label("变量与实例"));
+        var trendHeading = Label("趋势"); Grid.SetColumn(trendHeading, 2); headings.Children.Add(trendHeading); workspace.Children.Add(headings);
+        var samples = new Grid { ColumnDefinitions = new ColumnDefinitions("*,6,*") }; Grid.SetRow(samples, 1);
+        samples.Children.Add(instanceTree);
+        var splitter = new GridSplitter { ResizeDirection = GridResizeDirection.Columns, HorizontalAlignment = HorizontalAlignment.Stretch };
+        Grid.SetColumn(splitter, 1); samples.Children.Add(splitter);
+        Grid.SetColumn(trendView, 2); samples.Children.Add(trendView); workspace.Children.Add(samples);
+        layout.Children.Add(workspace); return layout;
     }
     private Control DeploymentPane()
     {
         var panel = new StackPanel { Spacing = 8 };
         panel.Children.Add(new TextBlock { Text = "下载与应用程序", FontSize = 22, FontWeight = FontWeight.Bold });
-        panel.Children.Add(Label("SSH 目标在“连接与工具”页设置，使用已配置密钥及严格主机身份验证。"));
+        panel.Children.Add(Label("目标在“连接与工具”页设置。配对后使用常驻工程服务；只有明确选择旧版兼容连接才使用 SSH。"));
         panel.Children.Add(ActionButton("查询真实状态", () => DeploymentActionAsync("status")));
         panel.Children.Add(ActionButton("首次登记空设备基线", () => DeploymentActionAsync("adopt-empty-baseline")));
         panel.Children.Add(ActionButton("登记已有停止程序基线", () => DeploymentActionAsync("adopt-baseline")));
         panel.Children.Add(deploymentDetails);
-        panel.Children.Add(Label("点击顶部“下载 / 应用程序”，编译通过后会提示重启核心。确认后自动应用，并恢复原运行/停止状态：原来运行的继续运行，原来停止的保持停止。按钮灰色时先点击“刷新设备状态”。"));
+        panel.Children.Add(Label("左侧选择程序时，顶部为“上传程序／下载程序”；选择硬件时为“上传硬件／下载硬件”。上传是从 PLC 读回工程站，下载是写入 PLC。"));
         panel.Children.Add(ActionButton("恢复中断的激活事务", () => DeploymentActionAsync("recover")));
-        panel.Children.Add(Label("上传与 Linux 编译期间原程序不变。编译成功且具备应用条件后，确认重启提示才会停止原程序、重启 Runtime 核心并应用新程序。原程序运行时，在新程序身份及停止状态确认后恢复运行。取消后可点击“应用已编译程序”继续。通信结果不明时先查询真实状态，不自动重试。"));
+        panel.Children.Add(Label("编译会检查 ST 并生成候选包，下载程序会自动构建。程序下载要求设备组态已一致，不会修改硬件；不一致时请先单独下载硬件。程序切换前提示 Runtime 重启，完成后保持原运行／停止状态。硬件下载不依赖 ST 编译，要求轴停稳撤使能，完成后 PLC 保持停止。结果不明时先查询状态，不自动重试。"));
         return ScrollPanel(panel);
     }
     private bool CandidateMatchesProject()
@@ -249,14 +270,12 @@ public sealed partial class MainWindow : Window
         var current = ProjectValidator.Capture(project, GetSources());
         return current.SourceHash == candidateSourceHash && current.HardwareHash == candidateHardwareHash;
     }
-    private void ResetDeviceIdentity() { motionRealtimeStatus.Text = "设备目标已改变，实时状态未核验。"; connectionGeneration++; runtime?.Dispose(); runtime = null; privateTunnel?.Dispose(); privateTunnel = null; privateRuntimeEndpoint = null; debugSessionToken = null; refreshButton.IsEnabled = false; monitorTimer.Stop(); monitorSession?.MarkUnavailable(DateTimeOffset.UtcNow); var priorDebug = debugClient; debugClient = null; if (priorDebug is not null) _ = priorDebug.DisposeAsync(); RefreshInstanceTree(); RefreshTrend(); remoteKnown = false; activeBuildHash = null; compiledBuildHash = null; activateButton.IsEnabled = false; startButton.IsEnabled = stopButton.IsEnabled = false; deviceRunStatus.Text = "设备状态未确认"; deploymentDetails.Text = "目标已改变，请重新查询状态和编译候选。"; RefreshNetworkTopology(); }
-    private async Task<DeploymentResponse> SendDeploymentAsync(string action, string? packageBase64 = null, string? packageHash = null)
+    private void ResetDeviceIdentity() { ResetEngineeringConnection(); motionRealtimeStatus.Text = "设备目标已改变，实时状态未核验。"; connectionGeneration++; runtime?.Dispose(); runtime = null; privateTunnel?.Dispose(); privateTunnel = null; privateRuntimeEndpoint = null; debugSessionToken = null; refreshButton.IsEnabled = false; monitorTimer.Stop(); monitorSession?.MarkUnavailable(DateTimeOffset.UtcNow); var priorDebug = debugClient; debugClient = null; if (priorDebug is not null) _ = priorDebug.DisposeAsync(); RefreshInstanceTree(); RefreshTrend(); remoteKnown = false; activeBuildHash = null; compiledBuildHash = null; activateButton.IsEnabled = false; startButton.IsEnabled = stopButton.IsEnabled = false; deviceRunStatus.Text = "设备状态未确认"; deploymentDetails.Text = "目标已改变，请重新查询状态和编译候选。"; RefreshNetworkTopology(); }
+    private async Task<DeploymentResponse> SendDeploymentAsync(string action, string? packageBase64 = null, string? packageHash = null, string? configurationIdentity = null)
     {
-        var request = new DeploymentRequest(action, Guid.NewGuid().ToString("N"), action is "stage" or "compile" or "activate" ? candidatePackage?.BuildHash : null, activeBuildHash, packageBase64, packageHash);
+        var request = new DeploymentRequest(action, Guid.NewGuid().ToString("N"), action is "stage" or "compile" or "activate" or "configuration-plan" or "configuration-apply" ? candidatePackage?.BuildHash : null, activeBuildHash, packageBase64, packageHash, ConfigurationIdentity: configurationIdentity);
         var target = operationTarget ?? new(sshHost.Text ?? "", sshUser.Text ?? "");
-        var response = deploymentTransport is null
-            ? await new RemoteDeploymentClient(knownHostsPath: Path.Combine(WorkbenchSettings.WorkspaceRoot, "artifacts", "ssh-known-hosts")).ExecuteAsync(target, request)
-            : await deploymentTransport(target, request);
+        var response = await SendTransferRequestAsync(target,request);
         if (target.Host != sshHost.Text || target.User != sshUser.Text) throw new InvalidOperationException("操作期间目标已改变，结果属于原设备；请查询当前目标");
         deploymentDetails.Text = JsonSerializer.Serialize(response, new JsonSerializerOptions { WriteIndented = true });
         ApplyDeploymentResponse(response, action);
@@ -268,7 +287,7 @@ public sealed partial class MainWindow : Window
         if (!response.Success) { remoteKnown = false; startButton.IsEnabled = stopButton.IsEnabled = false; deviceRunStatus.Text = "设备状态未确认"; activateButton.IsEnabled = false; throw new InvalidOperationException(response.Message.Length > 0 ? response.Message : "设备操作结果未确认，请查询真实状态"); }
         if (response.Active is { ValueKind: JsonValueKind.Object } active) { activeBuildHash = active.TryGetProperty("build_hash", out var hash) && hash.ValueKind == JsonValueKind.String ? hash.GetString() : null; remoteKnown = response.State is not ("unknown" or "unavailable" or "failed-or-unknown"); }
         else if (action == "status") { activeBuildHash = null; remoteKnown = response.Active is { ValueKind: JsonValueKind.Object }; }
-        startButton.IsEnabled = remoteKnown && activeBuildHash is not null && response.State == "stopped";
+        startButton.IsEnabled = remoteKnown && activeBuildHash is not null && response.State == "stopped" && response.HardwareMatchesActive != false;
         stopButton.IsEnabled = remoteKnown && activeBuildHash is not null && response.State == "running";
         deviceRunStatus.Text = response.State switch { "stopped" => "设备：已停止", "running" => "设备：运行中", "activated-not-running" => "已激活，待确认停止状态", _ => "设备状态需刷新" };
         if (remoteKnown && candidatePackage is not null && activeBuildHash == candidatePackage.BuildHash) buildStatus.Text = response.State == "running" ? "当前候选已激活 · 真实运行中" : response.State == "stopped" ? "当前候选已激活 · 已停止" : "当前候选为设备活动版本";
@@ -284,20 +303,42 @@ public sealed partial class MainWindow : Window
         catch { remoteKnown = false; startButton.IsEnabled = stopButton.IsEnabled = false; deviceRunStatus.Text = "设备状态未确认，请刷新"; throw; }
         finally { deploymentBusy = false; operationTarget = null; RefreshCompiledProgramAction(); }
     }
-    private Task StageAndCompileAsync() => DownloadAndApplyAsync(upload: true);
+    private async Task StageAndCompileAsync()
+    {
+        if(busy||deploymentBusy)return;
+        var targetHost=sshHost.Text;var targetUser=sshUser.Text;var connection=connectionGeneration;
+        if(!CandidateMatchesProject())await GeneratePackageAsync();
+        if(targetHost!=sshHost.Text||targetUser!=sshUser.Text||connection!=connectionGeneration)throw new InvalidOperationException("编译期间设备连接已改变，请重新下载。");
+        if(!CandidateMatchesProject())return;
+        await DownloadAndApplyAsync(upload:true);
+    }
     private void ApplyCompiledCandidate(DeploymentResponse result)
     {
         if (result.State != "compiled" || candidatePackage is null) throw new InvalidOperationException("Linux 编译结果未确认");
         compiledBuildHash = candidatePackage.BuildHash;
-        var axisRequired = AxisControlBinding.UsesAxisControl(GetSources());
-        var offlineAxisProperties = project.Hardware.Axes.Any(a => a.Mechanics is not null);
+        compiledReadiness = result;
+        var axisRequired = AxisControlBinding.UsesAxisControl(GetSources()) || result.AxisReady == false;
+        var offlineAxisProperties = HasOfflineAxisMechanics;
+        var hardwareMismatch = result.AxisReady == false && result.AxisMessage.Contains("ethercatTopologyFingerprint", StringComparison.Ordinal);
+        var axisMessage = hardwareMismatch
+            ? "设备加载的总线组态与候选不一致，请先选择左侧硬件并下载硬件。"
+            : result.AxisMessage;
         motionDeploymentReady = !offlineAxisProperties && (project.Paths.Count == 0 || result.MotionReady == true) && (project.MotionCycle?.Enabled != true || result.MotionCycleReady == true) && (!axisRequired || result.AxisReady == true) && (!CommunicationBinding.IsUsed(GetSources()) || result.CommunicationReady == true);
-        activateButton.IsEnabled = CandidateMatchesProject() && motionDeploymentReady;
-        if (!motionDeploymentReady && !(CommunicationBinding.IsUsed(GetSources()) && result.CommunicationReady != true)) AppendLog("运动候选暂不能激活：" + (offlineAxisProperties ? "轴机械与回零参数尚未应用，控制核心缺少参数应用/确认接口。" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? result.MotionCycleMessage : axisRequired && result.AxisReady != true ? result.AxisMessage : result.MotionMessage), true);
-        buildStatus.Text = motionDeploymentReady ? "Linux 编译通过 · 未激活" : offlineAxisProperties ? "Linux 编译通过 · 轴机械与回零参数尚未应用，不可激活" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? "Linux 编译通过 · 轴控周期执行端未就绪，不可激活" : axisRequired && result.AxisReady != true ? "Linux 编译通过 · 基础轴控后端未就绪，不可激活" : "Linux 编译通过 · 连续运动后端未就绪，不可激活";
+        configurationPreparationReady = !offlineAxisProperties && project.Hardware.Runtime is not null && EtherCatRuntimeCompiler.Compile(project).ReadyForRuntime &&
+            (project.Paths.Count == 0 || result.MotionReady == true) && (project.MotionCycle?.Enabled != true || result.MotionCycleReady == true) &&
+            (!CommunicationBinding.IsUsed(GetSources()) || result.CommunicationReady == true);
+        activateButton.IsEnabled = CandidateMatchesProject() && (motionDeploymentReady || configurationPreparationReady);
+        if (!motionDeploymentReady && !configurationPreparationReady && !(CommunicationBinding.IsUsed(GetSources()) && result.CommunicationReady != true)) AppendLog("运动候选暂不能激活：" + (offlineAxisProperties ? "轴机械与回零参数尚未应用，控制核心缺少参数应用/确认接口。" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? result.MotionCycleMessage : axisRequired && result.AxisReady != true ? axisMessage : result.MotionMessage), true);
+        buildStatus.Text = motionDeploymentReady ? "Linux 编译通过 · 未激活" : offlineAxisProperties ? "Linux 编译通过 · 轴机械与回零参数尚未应用，不可激活" : hardwareMismatch ? "Linux 编译通过 · 总线组态尚未匹配，不可激活" : project.MotionCycle?.Enabled == true && result.MotionCycleReady != true ? "Linux 编译通过 · 轴控周期执行端未就绪，不可激活" : axisRequired && result.AxisReady != true ? "Linux 编译通过 · 基础轴控后端未就绪，不可激活" : "Linux 编译通过 · 连续运动后端未就绪，不可激活";
         if (CommunicationBinding.IsUsed(GetSources()) && result.CommunicationReady != true) { AppendLog("通信候选暂不能激活：" + result.CommunicationMessage, true); buildStatus.Text = "Linux 编译通过 · 通信工作进程未就绪，不可激活"; }
+        if (configurationPreparationReady && !motionDeploymentReady)
+        {
+            buildStatus.Text = "Linux 编译通过 · 将核对总线组态／轴服务，组态不一致时需先下载硬件";
+            AppendLog("程序下载仅核对所需组态，不会修改硬件；组态不一致时请单独下载硬件。", false);
+        }
     }
     private Task ActivateAsync() => DownloadAndApplyAsync(upload: false);
+    private bool HasOfflineAxisMechanics => project.Hardware.Runtime is null && project.Hardware.Axes.Any(a => a.Mechanics is not null);
     private IReadOnlyList<SourceDocument> GetSources() => project.Items.Select(i => sources[i.Id]).ToArray();
     private void SetNewProject()
     {
@@ -314,11 +355,12 @@ public sealed partial class MainWindow : Window
         groups.Add(HardwareGroupNode());
         groups.Add(NetworkGroupNode()); tree.ItemsSource = groups;
         taskProgram.ItemsSource = project.Items.Where(i => i.Kind == ItemKind.Program).Select(i => i.Name).ToArray();
-        taskProgram.SelectedItem = project.Items.FirstOrDefault(i => i.Id == project.Tasks.Single(t => t.Enabled).ProgramId)?.Name;
+        taskProgram.SelectedItem = project.Items.FirstOrDefault(i => i.Id == project.Tasks.First(t => t.Enabled).ProgramId)?.Name;
         RefreshInstructionLibrary();
     }
     private void SelectItem(Guid id)
     {
+        SetTransferScope(false);
         ShowEditorWorkspace();
         if (selected?.Id == id && sources.TryGetValue(id, out var current) && editor.Text == current.Text)
         {
@@ -350,8 +392,8 @@ public sealed partial class MainWindow : Window
         project.Hardware.Devices.AddRange(devices); MarkDirty(); RefreshHardware(); RefreshTree();
         AppendLog($"已导入 {devices.Count} 个 ESI 设备描述。实际从站地址与 IO 映射需明确配置。", false);
     }
-    private void MarkDirty() { editGeneration++; dirty = true; monitorTimer.Stop(); monitorSession?.MarkUnavailable(DateTimeOffset.UtcNow); if (debugClient is not null) { var priorDebug = debugClient; debugClient = null; _ = priorDebug.DisposeAsync(); monitorExplanation.Text = "工程已变更，监视身份过期；请重新编译并绑定。"; RefreshInstanceTree(); RefreshTrend(); } RefreshInlineMonitor(); UpdateStatus(); downloadButton.IsEnabled = false; activateButton.IsEnabled = false; buildStatus.Text = "源码或配置已变更 · 需重新编译"; }
-    private void ResetBuild() { motionRealtimeStatus.Text = "设备实时状态未核验。"; candidatePackage = null; candidateSourceHash = null; compiledBuildHash = null; downloadButton.IsEnabled = false; activateButton.IsEnabled = false; currentDiagnostics = []; diagnosticsSourceHash = null; diagnostics.ItemsSource = Array.Empty<string>(); buildStatus.Text = "尚未编译"; RefreshInlineMonitor(); }
+    private void MarkDirty() { editGeneration++; dirty = true; monitorTimer.Stop(); monitorSession?.MarkUnavailable(DateTimeOffset.UtcNow); if (debugClient is not null) { var priorDebug = debugClient; debugClient = null; _ = priorDebug.DisposeAsync(); monitorExplanation.Text = "工程已变更，监视身份过期；请核对程序并重新绑定。"; RefreshInstanceTree(); RefreshTrend(); } RefreshInlineMonitor(); UpdateStatus(); downloadButton.IsEnabled = !busy&&!deploymentBusy; activateButton.IsEnabled = false; buildStatus.Text = "源码或配置已变更 · 下载时自动编译"; }
+    private void ResetBuild() { motionRealtimeStatus.Text = "设备实时状态未核验。"; candidatePackage = null; candidateSourceHash = null; compiledBuildHash = null; downloadButton.IsEnabled = !busy&&!deploymentBusy; activateButton.IsEnabled = false; currentDiagnostics = []; diagnosticsSourceHash = null; diagnostics.ItemsSource = Array.Empty<string>(); buildStatus.Text = "尚未编译 · 下载时自动编译"; RefreshInlineMonitor(); }
     private void UpdateStatus() { projectStatus.Text = $"{project.Name}  ·  {(dirty ? "未保存" : "已保存")}  ·  {projectPath ?? "新工程"}"; Title = $"{(dirty ? "* " : "")}{project.Name} · ST Workbench"; }
     private void AppendLog(string message, bool error)
     {
@@ -366,10 +408,17 @@ public sealed partial class MainWindow : Window
     }
     private async Task<bool> ConfirmAsync(string title, string message, string accept)
     {
-        var window = new Window { Title = title, Width = 460, Height = 200, WindowStartupLocation = WindowStartupLocation.CenterOwner, CanResize = false };
-        var yes = new Button { Content = accept }; var no = new Button { Content = "取消" };
+        var area = Screens.ScreenFromWindow(this)?.WorkingArea;
+        var width = Math.Min(640, Math.Max(360, (area?.Width / RenderScaling ?? Bounds.Width) - 48));
+        var height = Math.Min(480, Math.Max(220, (area?.Height / RenderScaling ?? Bounds.Height) - 80));
+        var window = new Window { Title = title, Width = width, Height = height, MinWidth = 360, MinHeight = 220, WindowStartupLocation = WindowStartupLocation.CenterOwner, CanResize = true };
+        var yes = new Button { Content = accept, MinHeight = 36 }; var no = new Button { Content = "取消", MinHeight = 36 };
         yes.Click += (_, _) => window.Close(true); no.Click += (_, _) => window.Close(false);
-        window.Content = new StackPanel { Margin = new Thickness(20), Spacing = 20, Children = { new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap }, new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Children = { yes, no } } } };
+        var content = new Grid { Margin = new Thickness(20), RowDefinitions = new RowDefinitions("*,Auto") };
+        content.Children.Add(new ScrollViewer { HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled, VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            Content = new TextBlock { Text = message, TextWrapping = TextWrapping.Wrap } });
+        var actions = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 16, 0, 0), Children = { yes, no } };
+        Grid.SetRow(actions, 1); content.Children.Add(actions); window.Content = content;
         return await window.ShowDialog<bool>(this);
     }
     private bool allowClose;
@@ -394,9 +443,9 @@ public sealed partial class MainWindow : Window
             var loaded = await store.LoadAsync(path);
             if (generation != editGeneration) throw new InvalidOperationException("读取期间工程已修改，已保留修改；请重新打开");
             project = loaded.Project; sources = loaded.Sources.ToDictionary(s => s.ItemId); projectPath = path; dirty = false; editGeneration++;
-            taskName.Text = project.Tasks.Single(t => t.Enabled).Name; taskPeriod.Text = project.Tasks.Single(t => t.Enabled).IntervalMilliseconds.ToString(); RefreshPaths(); RefreshTree(); SelectItem(project.Items[0].Id); RefreshHardware(); RestoreNetworkConfiguration(); ResetBuild(); UpdateStatus();
+            taskName.Text = project.Tasks.First(t => t.Enabled).Name; taskPeriod.Text = project.Tasks.First(t => t.Enabled).IntervalMilliseconds.ToString(); RefreshPaths(); RefreshTree(); SelectItem(project.Items[0].Id); RefreshHardware(); RestoreNetworkConfiguration(); ResetBuild(); UpdateStatus();
         }
-        finally { busy = false; }
+        finally { busy = false; downloadButton.IsEnabled=!deploymentBusy; }
     }
     private async Task SaveAsync() { if (busy) return; if (projectPath is null) { await SaveAsAsync(); return; } await SaveAtAsync(projectPath); }
     private async Task SaveAsAsync()
@@ -417,7 +466,7 @@ public sealed partial class MainWindow : Window
             dirty = current.SourceHash != captured.SourceHash || current.HardwareHash != captured.HardwareHash;
             UpdateStatus(); AppendLog(dirty ? "源版本已保存，保存期间的新修改仍未保存。" : "工程及源版本已保存。", false);
         }
-        finally { busy = false; }
+        finally { busy = false; downloadButton.IsEnabled=!deploymentBusy; }
     }
     private async Task<string?> AskNameAsync(string title, string current)
     {
@@ -461,26 +510,11 @@ public sealed partial class MainWindow : Window
     {
         var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions { Title = "选择独立 ST 编译器", AllowMultiple = false }); if (files.Count > 0) compilerPath.Text = files[0].TryGetLocalPath();
     }
-    private async Task CompileAsync()
-    {
-        if (busy) return; var docs = GetSources(); var errors = ProjectValidator.Validate(project, docs); ShowDiagnostics(errors); if (errors.Count > 0) { buildStatus.Text = "工程检查失败"; return; }
-        var snapshot = ProjectValidator.Capture(project, docs); busy = true; buildButton.IsEnabled = false; buildCancellation = new CancellationTokenSource(); buildStatus.Text = "独立编译器检查中…";
-        try
-        {
-            var compiler = new ExternalCompiler(expectedCompilerVersion: compilerVersion.Text);
-            var result = snapshot.Paths.Count == 0 && !AxisControlBinding.UsesAxisControl(snapshot.Sources)
-                ? await compiler.CompileAsync(snapshot, compilerPath.Text ?? "", Path.Combine(WorkbenchSettings.WorkspaceRoot, "artifacts", "builds"), buildCancellation.Token)
-                : (await BuildPathPackageAsync(snapshot, buildCancellation.Token)).Compilation;
-            ShowDiagnostics(result.Diagnostics, result.SourceHash); AppendLog(result.Log, !result.Success);
-            var stale = ProjectValidator.Capture(project, GetSources()).SourceHash != result.SourceHash || ProjectValidator.Capture(project, GetSources()).HardwareHash != snapshot.HardwareHash;
-            buildStatus.Text = result.Success ? stale ? "编译成功 · 源码已变更" : "ST 编译成功 · 尚未生成设备包 / 未激活" : "ST 编译失败";
-            if (result.Success) AppendLog($"产物：{result.OutputDirectory}\n编译器：{result.CompilerVersion}\n构建身份：{result.SourceHash}", false);
-        }
-        finally { busy = false; buildButton.IsEnabled = true; buildCancellation.Dispose(); buildCancellation = null; }
-    }
+    private Task CompileAsync() => GeneratePackageAsync();
     public async Task GeneratePackageAsync()
     {
         if (busy) return;
+        var errors=ProjectValidator.Validate(project,GetSources());ShowDiagnostics(errors);if(errors.Count>0){buildStatus.Text="工程检查失败";return;}
         var snapshot = ProjectValidator.Capture(project, GetSources());
         var names = project.Items.Where(i => i.Kind == ItemKind.Program).ToDictionary(i => i.Id, i => i.Name);
         var node = Environment.GetEnvironmentVariable("ST_NODE_PATH") ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "nodejs", "node.exe");
@@ -499,7 +533,7 @@ public sealed partial class MainWindow : Window
             buildStatus.Text = result.Success ? stale ? "候选包已生成 · 工程已修改" : "候选包已生成 · Linux 编译未确认 / 未激活" : "程序包生成失败";
             if (result.Success) AppendLog($"候选程序包：{result.PackagePath}\n构建身份：{result.BuildHash}\n调试符号身份：{result.SymbolTableHash}\n仅用于隔离验证；Linux 编译和闭源商用发行审查尚未通过。", false);
         }
-        finally { busy = false; packageButton.IsEnabled = true; buildButton.IsEnabled = true; buildCancellation.Dispose(); buildCancellation = null; }
+        finally { busy = false; downloadButton.IsEnabled = !deploymentBusy; packageButton.IsEnabled = true; buildButton.IsEnabled = true; buildCancellation.Dispose(); buildCancellation = null; }
     }
     private Task<PackageResult> BuildPathPackageAsync(BuildSnapshot snapshot, CancellationToken token)
     {
@@ -539,6 +573,7 @@ public sealed partial class MainWindow : Window
     private async Task ConnectAsync()
     {
         if (connecting) return;
+        ResetEngineeringConnection();
         connecting = true; connectButton.IsEnabled = privateConnectButton.IsEnabled = false; var generation = ++connectionGeneration;
         privateTunnel?.Dispose(); privateTunnel = null; privateRuntimeEndpoint = null;
         runtime?.Dispose(); runtime = null; debugSessionToken = null; await DisconnectDebugAsync(); refreshButton.IsEnabled = false; runtimeDetails.Text = "连接中，设备状态尚不可用。";
@@ -549,6 +584,7 @@ public sealed partial class MainWindow : Window
     public async Task ConnectPrivateRuntimeAsync()
     {
         if (connecting) return;
+        ResetEngineeringConnection();
         connecting = true; connectButton.IsEnabled = privateConnectButton.IsEnabled = false; var generation = ++connectionGeneration;
         var host = sshHost.Text ?? ""; var user = sshUser.Text ?? ""; var pin = certificateFingerprint.Text ?? "";
         var knownHosts = Path.Combine(WorkbenchSettings.WorkspaceRoot, "artifacts", "ssh-known-hosts");
@@ -564,7 +600,7 @@ public sealed partial class MainWindow : Window
             if (generation != connectionGeneration) return;
             var next = new OpenPlcClient(tunnel.Endpoint, certificateFingerprint: pin); next.UseSessionToken(token);
             privateTunnel = tunnel; privateRuntimeEndpoint = tunnel.Endpoint; tunnel = null;
-            runtime = next; debugSessionToken = token; await RefreshRuntimeAsync(); await RefreshDeploymentStatusAsync();
+            runtime = next; debugSessionToken = token; legacySshMode=true; await RefreshRuntimeAsync(); await RefreshDeploymentStatusAsync();
             if (generation == connectionGeneration) AppendLog($"SSH 隧道与 Runtime 登录成功：{host}，已读取设备实际状态，无需输入密码。", false);
         }
         catch
@@ -583,7 +619,7 @@ public sealed partial class MainWindow : Window
         monitorTimer.Stop(); monitorSession?.MarkUnavailable(DateTimeOffset.UtcNow);
         var prior = debugClient; debugClient = null;
         if (prior is not null) await prior.DisposeAsync();
-        monitorExplanation.Text = "变量监视已断开；点击“绑定已激活程序并开始只读监视”重新连接。需要当前工程的候选包与设备活动程序一致。"; RefreshInstanceTree(); RefreshTrend();
+        monitorExplanation.Text = "监视已断开 · 点击“开始监视”重新连接。"; RefreshInstanceTree(); RefreshTrend();
     }
     public async Task BindDebugAsync()
     {
@@ -596,7 +632,8 @@ public sealed partial class MainWindow : Window
     private async Task BindDebugCoreAsync()
     {
         await DisconnectDebugAsync();
-        if (debugSessionToken is null) throw new InvalidOperationException("请先通过 SSH 密钥连接私有 Runtime");
+        if(engineeringClient is not null){await BindEngineeringDebugAsync();return;}
+        if (debugSessionToken is null) throw new InvalidOperationException("请先连接工程服务；旧设备可通过 SSH 连接私有 Runtime");
         if (!CandidateMatchesProject()) throw new InvalidOperationException("需要当前工程的候选包和对应调试符号");
         if (deploymentBusy) throw new InvalidOperationException("等待设备操作结束后再绑定监视");
         deploymentBusy = true; operationTarget = new(sshHost.Text ?? "", sshUser.Text ?? "");
@@ -636,7 +673,7 @@ public sealed partial class MainWindow : Window
     {
         if (polling) { RefreshInstanceTree(); RefreshTrend(); return; }
         if (debugClient is null || monitorSession is null) return;
-        if (!CandidateMatchesProject()) { await DisconnectDebugAsync(); return; }
+        if (!(engineeringClient is not null ? EngineeringOnlineIdentityReady() : CandidateMatchesProject())) { await DisconnectDebugAsync(); return; }
         polling = true; var client = debugClient; var session = monitorSession;
         try
         {
@@ -650,7 +687,7 @@ public sealed partial class MainWindow : Window
                 var symbol = debugSymbols[index]; var value = DebugValueDecoder.Decode(symbol.Type, result.Values[index].Bytes.Span, debugLittleEndian);
                 session.Observe(session.Identity, new(symbol.Path, symbol.Type, value, sequence, null, now, value is null ? SampleQuality.UnsupportedType : SampleQuality.Good));
             }
-            monitorExplanation.Text = $"真实只读采样 · 设备 tick {result.Tick} · 收到时间 {now.ToLocalTime():HH:mm:ss.fff}\n身份：{candidatePackage!.BuildHash}\n时间类型当前显示设备原始计数；尚不支持的类型显示不可用。";
+            monitorExplanation.Text = $"监视已连接 · 更新于 {now.ToLocalTime():HH:mm:ss} · {debugSymbols.Count} 个变量";
             RefreshInstanceTree(); RefreshTrend();
         }
         catch (Exception error)
@@ -667,8 +704,17 @@ public sealed partial class MainWindow : Window
     private string? activeProgramMd5;
     private void RefreshInstanceTree()
     {
+        RefreshOnlineWrite();
         RefreshInlineMonitor();
         var roots = new List<TreeViewItem>();
+        var selectedPath = (instanceTree.SelectedItem as TreeViewItem)?.Tag as string;
+        var expanded = new Dictionary<string, bool>();
+        void Remember(IEnumerable<TreeViewItem> nodes)
+        {
+            foreach (var item in nodes) { if (item.Tag is string key) expanded[key] = item.IsExpanded; if (item.ItemsSource is IEnumerable<TreeViewItem> children) Remember(children); }
+        }
+        if (instanceTree.ItemsSource is IEnumerable<TreeViewItem> existing) Remember(existing);
+        TreeViewItem? selection = null;
         foreach (var symbol in debugSymbols)
         {
             var parts = symbol.Path.Split('.'); var children = roots;
@@ -676,12 +722,19 @@ public sealed partial class MainWindow : Window
             {
                 var path = string.Join('.', parts.Take(i + 1));
                 var node = children.FirstOrDefault(n => (string?)n.Tag == path);
-                if (node is null) { node = new TreeViewItem { Header = parts[i], Tag = path, IsExpanded = true, ItemsSource = new List<TreeViewItem>() }; children.Add(node); }
-                if (i == parts.Length - 1) { var sample = monitorSession?.GetSample(symbol.Path, DateTimeOffset.UtcNow); node.Header = $"{parts[i]} : {symbol.Type} = {sample?.Value ?? "—"}  [{sample?.Quality.ToString() ?? "Unavailable"}]"; }
+                if (node is null) { node = new TreeViewItem { Header = parts[i], Tag = path, IsExpanded = expanded.GetValueOrDefault(path, true), ItemsSource = new List<TreeViewItem>() }; children.Add(node); }
+                if (path == selectedPath) selection = node;
+                if (i == parts.Length - 1)
+                {
+                    var sample = monitorSession?.GetSample(symbol.Path, DateTimeOffset.UtcNow);
+                    var state = sample?.Quality switch { SampleQuality.Good => sample.Value ?? "不可用", SampleQuality.Expired => "已过期", SampleQuality.UnsupportedType => "暂不支持", _ => "不可用" };
+                    node.Header = $"{parts[i]} : {symbol.Type} = {state}";
+                }
                 children = (List<TreeViewItem>)node.ItemsSource!;
             }
         }
         instanceTree.ItemsSource = roots;
+        if (selection is not null) instanceTree.SelectedItem = selection;
     }
     private void RefreshInlineMonitor()
     {
@@ -704,7 +757,7 @@ public sealed partial class MainWindow : Window
             }
             var context = monitorInstance.SelectedItem as StMonitorContext;
             var now = DateTimeOffset.UtcNow;
-            var usable = debugClient is not null && monitorSession is not null && CandidateMatchesProject();
+            var usable = debugClient is not null && monitorSession is not null && (engineeringClient is not null ? EngineeringOnlineIdentityReady() : CandidateMatchesProject());
             inlineMonitor.Values = doc is null || context is null ? [] : language.MonitorReferences(doc, context, paths).Select(r =>
             {
                 var sample = usable ? monitorSession!.GetSample(r.Path, now) : null;
@@ -721,7 +774,7 @@ public sealed partial class MainWindow : Window
     }
     private void RefreshTrend()
     {
-        trendView.Caption = trendPath is null ? "选择一个数值变量查看趋势" : $"{trendPath} · 最近 256 个采样 · 缺失时断线";
+        trendView.Caption = trendPath ?? "选择数值变量查看趋势";
         trendView.Points = trendPath is null ? [] : monitorSession?.GetTrend(trendPath) ?? []; trendView.InvalidateVisual();
     }
     private async Task RefreshRuntimeAsync()

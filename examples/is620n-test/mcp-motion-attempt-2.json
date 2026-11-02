@@ -1,0 +1,688 @@
+[
+  {
+    "utc": "2026-10-19T02:58:01.6463698+00:00",
+    "tool": "project_open",
+    "arguments": {
+      "projectPath": "examples/is620n-test/IS620N.stproj"
+    },
+    "isError": false,
+    "response": {
+      "SessionId": "2ca9c8e69a164a8b93dc8daac2dce9c3",
+      "ProjectPath": "examples/is620n-test/IS620N.stproj",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "HasUnsavedChanges": false,
+      "Project": {
+        "Network": {
+          "ManagementHost": "192.168.1.31",
+          "SshUser": "a",
+          "RuntimeEndpoint": "",
+          "EtherCatInterface": "enp3s0"
+        },
+        "SchemaVersion": 1,
+        "Id": "f8d1f254-c49b-41c9-8e78-daa4f5f4e078",
+        "Name": "IS620N \u7A7A\u8F7D\u5355\u6B21\u5F80\u8FD4\u6D4B\u8BD5\uFF08\u5F85\u5B9E\u673A\u9002\u914D\uFF09",
+        "Items": [
+          {
+            "Id": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "Name": "Main",
+            "Kind": "Program",
+            "SourcePath": "sources/Main.st"
+          }
+        ],
+        "Tasks": [
+          {
+            "Name": "Cyclic",
+            "ProgramId": "91104fdc-745d-49de-88ac-0e2d24052797",
+            "IntervalMilliseconds": 10,
+            "Enabled": true
+          }
+        ],
+        "Hardware": {
+          "Stations": [
+            {
+              "Id": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "Name": "IS620NDrive",
+              "DeviceId": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "AliasAddress": 0,
+              "EnabledEntries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24760,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeFunction",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24830,
+                  "SubIndex": 1,
+                  "BitLength": 32,
+                  "Name": "DigitalOutputs",
+                  "Type": "UDINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24695,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ActualTorque",
+                  "Type": "INT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24820,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "FollowingError",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24761,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeStatus",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24762,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe1PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24764,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe2PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24829,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "DigitalInputs",
+                  "Type": "UDINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Devices": [
+            {
+              "Id": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+              "Name": "IS620N_ECAT_v2.6.2 (online PDO)",
+              "VendorId": 1048576,
+              "ProductCode": 786696,
+              "Revision": 65537,
+              "Entries": [
+                {
+                  "Index": 24640,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Controlword",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24698,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TargetPosition",
+                  "Type": "DINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24760,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeFunction",
+                  "Type": "UINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24830,
+                  "SubIndex": 1,
+                  "BitLength": 32,
+                  "Name": "DigitalOutputs",
+                  "Type": "UDINT",
+                  "IsInput": false
+                },
+                {
+                  "Index": 24639,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ErrorCode",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24641,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "Statusword",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24676,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "ActualPosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24695,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "ActualTorque",
+                  "Type": "INT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24820,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "FollowingError",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24761,
+                  "SubIndex": 0,
+                  "BitLength": 16,
+                  "Name": "TouchProbeStatus",
+                  "Type": "UINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24762,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe1PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24764,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "TouchProbe2PositivePosition",
+                  "Type": "DINT",
+                  "IsInput": true
+                },
+                {
+                  "Index": 24829,
+                  "SubIndex": 0,
+                  "BitLength": 32,
+                  "Name": "DigitalInputs",
+                  "Type": "UDINT",
+                  "IsInput": true
+                }
+              ]
+            }
+          ],
+          "Io": [],
+          "Axes": [
+            {
+              "Name": "IS620N",
+              "ControllerAxis": "Axis1",
+              "Unit": "rev",
+              "MinPosition": -1,
+              "MaxPosition": 1,
+              "StationId": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+              "MaximumVelocity": 0.01
+            }
+          ]
+        },
+        "Paths": []
+      },
+      "Sources": [
+        {
+          "ItemId": "91104fdc-745d-49de-88ac-0e2d24052797",
+          "RelativePath": "sources/Main.st",
+          "Text": "PROGRAM Main\nVAR\n    (* One rising edge requests one unloaded-motor round trip.\n       These stay FALSE until the actual controller uses verified rev units.\n       Current-position homing needs the commissioned method-35 controller profile.\n       No alarm reset or switch-search homing is performed. *)\n    RunOnce : BOOL := FALSE;\n    ParametersConfirmed : BOOL := FALSE;\n    EstablishTemporaryZero : BOOL := TRUE;\n    CancelTest : BOOL := FALSE;\n    Acknowledge : BOOL := FALSE;\n    DistanceRev : LREAL := 0.01;\n    VelocityRevPerSecond : LREAL := 0.01;\n    PositionToleranceRev : LREAL := 0.0001;\n    State : UINT := 0;\n    Active : BOOL;\n    Passed : BOOL;\n    Failed : BOOL;\n    OutcomeUnknown : BOOL;\n    DiagnosticCode : UDINT;\n    ReadyForTest : BOOL;\n    NeedsReference : BOOL;\n    ActualPositionRev : LREAL;\n    ActualVelocityRevPerSecond : LREAL;\n    StartPositionRev : LREAL;\n    OutwardPositionRev : LREAL;\n    CompletedRoundTrips : UINT;\n    PreviousRun : BOOL;\n    StartEdge : BOOL;\n    PowerDemand : BOOL;\n    Returned : BOOL;\n    ReadStatus : MC_ReadAxisStatus;\n    ReadPosition : MC_ReadActualPosition;\n    ReadVelocity : MC_ReadActualVelocity;\n    Power : MC_Power;\n    Home : MC_Home;\n    MoveOut : MC_MoveAbsolute;\n    MoveBack : MC_MoveAbsolute;\n    StopAxis : MC_Stop;\n    TotalTimer : TON;\n    DwellTimer : TON;\n    StopTimer : TON;\n    DisableTimer : TON;\nEND_VAR\n\nReadStatus(Axis := AXIS_IS620N, Enable := TRUE);\nReadPosition(Axis := AXIS_IS620N, Enable := TRUE);\nReadVelocity(Axis := AXIS_IS620N, Enable := TRUE);\nActualPositionRev := ReadPosition.Position;\nActualVelocityRevPerSecond := ReadVelocity.Velocity;\nNeedsReference := ReadStatus.Valid AND NOT ReadStatus.Homed;\nReadyForTest := ParametersConfirmed AND ReadStatus.Valid AND ReadPosition.Valid\n    AND ReadVelocity.Valid AND (ReadStatus.Homed OR EstablishTemporaryZero) AND NOT ReadStatus.ErrorStop\n    AND (ReadStatus.Disabled OR ReadStatus.Standstill)\n    AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) AND NOT CancelTest;\nStartEdge := RunOnce AND NOT PreviousRun;\nPreviousRun := RunOnce;\n\nIF Acknowledge AND NOT RunOnce AND NOT Active THEN\n    State := 0; Passed := FALSE; Failed := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\nEND_IF;\n\nIF StartEdge AND (State = 0) THEN\n    Passed := FALSE; Failed := FALSE; Returned := FALSE;\n    OutcomeUnknown := FALSE; DiagnosticCode := 0;\n    IF CancelTest THEN DiagnosticCode := 7110;\n    ELSIF NOT ParametersConfirmed THEN DiagnosticCode := 7101;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid THEN DiagnosticCode := 7103;\n    ELSIF NOT ReadStatus.Homed AND NOT EstablishTemporaryZero THEN DiagnosticCode := 7102;\n    ELSIF ReadStatus.ErrorStop THEN DiagnosticCode := 7104;\n    ELSIF NOT (ReadStatus.Disabled OR ReadStatus.Standstill)\n        OR NOT (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN DiagnosticCode := 7106;\n    ELSIF NOT (DistanceRev \u003E 0.0) OR NOT (DistanceRev \u003C= 0.01)\n        OR NOT (VelocityRevPerSecond \u003E 0.0) OR NOT (VelocityRevPerSecond \u003C= 0.01)\n        OR NOT (PositionToleranceRev \u003E 0.0) OR NOT (PositionToleranceRev \u003C= DistanceRev / 4.0)\n        OR NOT (ABS(ActualPositionRev) \u002B DistanceRev \u003C= 1.0) THEN DiagnosticCode := 7105;\n    ELSE\n        StartPositionRev := ActualPositionRev;\n        OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n        Active := TRUE; State := 10;\n    END_IF;\n    IF DiagnosticCode \u003C\u003E 0 THEN Failed := TRUE; State := 900; END_IF;\nEND_IF;\n\nTotalTimer(IN := Active, PT := T#10s);\nDwellTimer(IN := (State = 40) OR (State = 60), PT := T#250ms);\nStopTimer(IN := State = 80, PT := T#2s);\nDisableTimer(IN := State = 90, PT := T#2s);\n\nIF Active AND (State \u003C 80) THEN\n    IF CancelTest THEN DiagnosticCode := 7110; Failed := TRUE; State := 80;\n    ELSIF TotalTimer.Q THEN DiagnosticCode := 7111; Failed := TRUE; State := 80;\n    ELSIF NOT ReadStatus.Valid OR NOT ReadPosition.Valid OR NOT ReadVelocity.Valid\n        OR ReadStatus.ErrorStop THEN DiagnosticCode := 7112; Failed := TRUE; State := 80;\n    ELSIF (State \u003E= 30) AND (ABS(ActualPositionRev - StartPositionRev) \u003E DistanceRev * 1.5) THEN\n        DiagnosticCode := 7113; Failed := TRUE; State := 80;\n    END_IF;\nEND_IF;\n\n(* Only reads execute before a verified start. There is no cold-start disable command. *)\nIF Active THEN\n    PowerDemand := State \u003C 90;\n    StopAxis(Axis := AXIS_IS620N, Execute := State = 80);\n    Power(Axis := AXIS_IS620N, Enable := PowerDemand);\n    Home(Axis := AXIS_IS620N, Execute := State = 20);\n    MoveOut(Axis := AXIS_IS620N, Execute := State = 30,\n        Position := OutwardPositionRev, Velocity := VelocityRevPerSecond);\n    MoveBack(Axis := AXIS_IS620N, Execute := State = 50,\n        Position := StartPositionRev, Velocity := VelocityRevPerSecond);\n\n    IF (State \u003C 80) AND (Power.Error OR Home.Error OR MoveOut.Error OR MoveBack.Error\n        OR ((State = 20) AND Home.CommandAborted)\n        OR ((State = 30) AND MoveOut.CommandAborted)\n        OR ((State = 50) AND MoveBack.CommandAborted)) THEN\n        DiagnosticCode := 7114; Failed := TRUE; State := 80;\n    END_IF;\n\n    CASE State OF\n    10:\n        IF Power.Status AND NOT Power.Busy AND ReadStatus.Standstill THEN\n            IF EstablishTemporaryZero THEN State := 20; ELSE State := 30; END_IF;\n        END_IF;\n    20:\n        IF Home.Done AND ReadStatus.Valid AND ReadStatus.Homed AND ReadStatus.Standstill THEN\n            StartPositionRev := ActualPositionRev;\n            OutwardPositionRev := StartPositionRev \u002B DistanceRev;\n            State := 30;\n        END_IF;\n    30:\n        IF MoveOut.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - OutwardPositionRev) \u003C= PositionToleranceRev) THEN State := 40; END_IF;\n    40:\n        IF DwellTimer.Q THEN State := 50; END_IF;\n    50:\n        IF MoveBack.Done AND ReadPosition.Valid\n            AND (ABS(ActualPositionRev - StartPositionRev) \u003C= PositionToleranceRev) THEN\n            Returned := TRUE; State := 60;\n        END_IF;\n    60:\n        IF DwellTimer.Q THEN State := 80; END_IF;\n    80:\n        IF StopAxis.Done AND ReadVelocity.Valid AND (ABS(ActualVelocityRevPerSecond) \u003C= 0.001) THEN State := 90;\n        ELSIF StopAxis.Error OR StopTimer.Q THEN\n            DiagnosticCode := 7115; Failed := TRUE; OutcomeUnknown := TRUE; State := 90;\n        END_IF;\n    90:\n        IF ReadStatus.Valid AND ReadStatus.Disabled AND NOT Power.Busy THEN\n            Active := FALSE;\n            IF Returned AND NOT Failed AND NOT OutcomeUnknown THEN\n                Passed := TRUE; CompletedRoundTrips := CompletedRoundTrips \u002B 1; State := 100;\n            ELSE Failed := TRUE; State := 900;\n            END_IF;\n        ELSIF Power.Error OR DisableTimer.Q THEN\n            DiagnosticCode := 7116; Failed := TRUE; OutcomeUnknown := TRUE;\n            Active := FALSE; State := 999;\n        END_IF;\n    END_CASE;\nEND_IF;\nEND_PROGRAM\n"
+        }
+      ],
+      "Notice": "MCP edits a saved-project draft. Save then reload in the desktop; resolve unsaved desktop edits first."
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:01.9940464+00:00",
+    "tool": "motion_capabilities",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "18a1a67373bd41b1987617e3a24bc835",
+      "success": true,
+      "state": "Ready",
+      "capabilities": {
+        "SchemaVersion": 1,
+        "InterfaceVersion": "workbench-axis-v1",
+        "ManifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+        "Backend": "EcMotion",
+        "PID": 11692,
+        "ControllerReady": true,
+        "PhysicalBasicAxis": true,
+        "SimulatorBasicAxis": false,
+        "Continuous": false,
+        "MotionCycleApplied": false
+      },
+      "leaseHeld": false,
+      "maximumControlMilliseconds": 30000,
+      "minimumJogMilliseconds": 250,
+      "maximumJogMilliseconds": 30000,
+      "PhysicalTimedJog": false,
+      "SimulatorTimedJog": false
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:01.9989634+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "c1a03cbb233d4227a244185eeea42d44",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 190877,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": -2.956390380859375e-05,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": false,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Disabled"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.04052+00:00",
+    "tool": "motion_acquire",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "sessionId": "2ca9c8e69a164a8b93dc8daac2dce9c3",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "durationMilliseconds": 1000
+    },
+    "isError": false,
+    "response": {
+      "requestId": "955a9445dc924b67a04322c87eb608e8",
+      "success": true,
+      "state": "Acquired",
+      "remainingMilliseconds": 30000
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.0702539+00:00",
+    "tool": "motion_prepare",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "sessionId": "2ca9c8e69a164a8b93dc8daac2dce9c3",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "axis": "IS620N",
+      "kind": "Enable",
+      "position": 0,
+      "velocity": 0
+    },
+    "isError": false,
+    "response": {
+      "PlanId": "2a10068551824be885e7ca3bf7081b87",
+      "DeviceId": "is620n-test",
+      "SessionId": "2ca9c8e69a164a8b93dc8daac2dce9c3",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "ManifestHash": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "Axis": "IS620N",
+      "Unit": "rev",
+      "Kind": "Enable",
+      "Position": 0,
+      "Velocity": 0,
+      "DurationMilliseconds": 1000,
+      "ExpiresAt": "2026-10-19T02:58:22.0595186\u002B00:00"
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.0957185+00:00",
+    "tool": "motion_execute",
+    "arguments": {
+      "planId": "2a10068551824be885e7ca3bf7081b87"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "2e1205c8ab434caeb48a41dcb681270e",
+      "success": true,
+      "state": "Accepted",
+      "operation": {
+        "operationId": "2a10068551824be885e7ca3bf7081b87",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Enable",
+        "state": "Accepted",
+        "motionId": 0,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 190972,
+        "submittedCycle": 190972
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.16574+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "2a10068551824be885e7ca3bf7081b87"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "81286df7d910453ab0de8768f6d1105c",
+      "success": true,
+      "state": "Completed",
+      "operation": {
+        "operationId": "2a10068551824be885e7ca3bf7081b87",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Enable",
+        "state": "Completed",
+        "motionId": 0,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 191000,
+        "submittedCycle": 190972,
+        "sample": {
+          "actualPosition": -2.6702880859375e-05,
+          "actualVelocity": 0.0149993896484375,
+          "fault": null,
+          "homed": false,
+          "motionAborted": false,
+          "motionBusy": false,
+          "motionDone": false,
+          "motionId": 0,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.1973562+00:00",
+    "tool": "motion_prepare",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "sessionId": "2ca9c8e69a164a8b93dc8daac2dce9c3",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "axis": "IS620N",
+      "kind": "Home",
+      "position": 0,
+      "velocity": 0
+    },
+    "isError": false,
+    "response": {
+      "PlanId": "8703c3aec2bd484b835b81adebfaa6d1",
+      "DeviceId": "is620n-test",
+      "SessionId": "2ca9c8e69a164a8b93dc8daac2dce9c3",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "ManifestHash": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "Axis": "IS620N",
+      "Unit": "rev",
+      "Kind": "Home",
+      "Position": 0,
+      "Velocity": 0,
+      "DurationMilliseconds": 1000,
+      "ExpiresAt": "2026-10-19T02:58:22.1968272\u002B00:00"
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.2119775+00:00",
+    "tool": "motion_execute",
+    "arguments": {
+      "planId": "8703c3aec2bd484b835b81adebfaa6d1"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "17ac8328612245bf87f8202a9ca034a7",
+      "success": true,
+      "state": "Accepted",
+      "operation": {
+        "operationId": "8703c3aec2bd484b835b81adebfaa6d1",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Home",
+        "state": "Accepted",
+        "motionId": 2,
+        "appliedCycle": 191090,
+        "backend": "EcMotion",
+        "sampleCycle": 191088,
+        "submittedCycle": 191088
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.2736363+00:00",
+    "tool": "motion_operation",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "operationId": "8703c3aec2bd484b835b81adebfaa6d1"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "97a6af8602bf494eae248fa1b16726e2",
+      "success": true,
+      "state": "Completed",
+      "operation": {
+        "operationId": "8703c3aec2bd484b835b81adebfaa6d1",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Home",
+        "state": "Completed",
+        "motionId": 2,
+        "appliedCycle": 191090,
+        "backend": "EcMotion",
+        "sampleCycle": 191116,
+        "submittedCycle": 191088,
+        "sample": {
+          "actualPosition": 9.5367431640625e-07,
+          "actualVelocity": 0.0,
+          "fault": null,
+          "homed": true,
+          "motionAborted": false,
+          "motionBusy": false,
+          "motionDone": false,
+          "motionId": 0,
+          "motionTarget": 0.0,
+          "name": "Axis1",
+          "state": "Standstill"
+        }
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.2778119+00:00",
+    "tool": "motion_status",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "985ba096ee8d4623b0cd601a0910c863",
+      "success": true,
+      "state": "Ready",
+      "sampleCycle": 191156,
+      "manifestSha256": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "backend": "EcMotion",
+      "axes": [
+        {
+          "axis": "IS620N",
+          "unit": "rev",
+          "sample": {
+            "actualPosition": 9.5367431640625e-07,
+            "actualVelocity": 0.0,
+            "fault": null,
+            "homed": true,
+            "motionAborted": false,
+            "motionBusy": false,
+            "motionDone": false,
+            "motionId": 0,
+            "motionTarget": 0.0,
+            "name": "Axis1",
+            "state": "Standstill"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.2919189+00:00",
+    "tool": "motion_prepare",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "sessionId": "2ca9c8e69a164a8b93dc8daac2dce9c3",
+      "expectedRevision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "axis": "IS620N",
+      "kind": "MoveAbsolute",
+      "position": 0.010000953674316406,
+      "velocity": 0.01
+    },
+    "isError": false,
+    "response": {
+      "PlanId": "ee86128b67354f1db0df98b3cf5bd7a7",
+      "DeviceId": "is620n-test",
+      "SessionId": "2ca9c8e69a164a8b93dc8daac2dce9c3",
+      "Revision": "3b7e8af34683f9b63bc73d46a866c48c8a429582daf4c29dd3856848045829b8",
+      "ManifestHash": "e4c1b530fe5631089dc4fc404cd954f577c3fef389742afc638edc3a54f751e0",
+      "Axis": "IS620N",
+      "Unit": "rev",
+      "Kind": "MoveAbsolute",
+      "Position": 0.010000953674316406,
+      "Velocity": 0.01,
+      "DurationMilliseconds": 1000,
+      "ExpiresAt": "2026-10-19T02:58:22.2914713\u002B00:00"
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.3067226+00:00",
+    "tool": "motion_execute",
+    "arguments": {
+      "planId": "ee86128b67354f1db0df98b3cf5bd7a7"
+    },
+    "isError": true,
+    "response": {
+      "success": false,
+      "error": "InvalidOperationException",
+      "message": "Motion requires enabled, homed, stationary axis"
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.3125086+00:00",
+    "tool": "motion_stop",
+    "arguments": {
+      "deviceId": "is620n-test",
+      "axis": "IS620N"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "b624f59b36694810ad2a37cd945332d0",
+      "success": true,
+      "state": "Accepted",
+      "operation": {
+        "operationId": "03e6bd6b508c4d61bd7afed29a25a4ff",
+        "axis": "IS620N",
+        "axisIndex": 0,
+        "kind": "Stop",
+        "state": "Accepted",
+        "motionId": 0,
+        "appliedCycle": 0,
+        "backend": "EcMotion",
+        "sampleCycle": 191189,
+        "submittedCycle": 191189
+      }
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.3202784+00:00",
+    "tool": "motion_release",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "requestId": "192e83ed5ec14779a3c01fb356076426",
+      "success": true,
+      "state": "Released"
+    }
+  },
+  {
+    "utc": "2026-10-19T02:58:02.3600733+00:00",
+    "tool": "motion_close",
+    "arguments": {
+      "deviceId": "is620n-test"
+    },
+    "isError": false,
+    "response": {
+      "success": true
+    }
+  }
+]

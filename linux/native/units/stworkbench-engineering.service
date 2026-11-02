@@ -1,0 +1,19 @@
+[Unit]
+Description=ST Workbench native engineering HTTPS gateway
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/a/.local/share/st-workbench/runtime-v4.3.0/engineering
+ExecStart=/home/a/.local/share/st-workbench/runtime-v4.3.0/native/bin/st-engineering-gateway
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=no
+PrivateUsers=no
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

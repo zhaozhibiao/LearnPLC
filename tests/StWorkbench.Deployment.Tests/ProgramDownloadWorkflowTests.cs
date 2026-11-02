@@ -148,6 +148,7 @@ internal static class ProgramDownloadWorkflowTests
             await Refuses(() => ProgramDownloadWorkflow.ApplyCompiledAsync(New, host));
             Equal("status,confirm,status,invalidate,stop,activate,status", host.Trace);
         });
+        failures += await ConfigurationDownloadWorkflowTests.RunAsync();
         return failures;
     }
 

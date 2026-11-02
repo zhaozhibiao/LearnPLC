@@ -2,11 +2,11 @@
   "SchemaVersion": 1,
   "Project": {
     "SchemaVersion": 1,
-    "Id": "9c22f68d-6834-4563-830b-d20971f9a4f1",
+    "Id": "8f7f0f99-7d78-4c0d-9034-1ceffcf1185a",
     "Name": "Continuous virtual example",
     "Items": [
       {
-        "Id": "86cb2a0b-ac8c-4f3e-8d7e-8bc88dad8236",
+        "Id": "c21b2d96-ce57-4e52-9941-6e1da61e2685",
         "Name": "Main",
         "Kind": 0,
         "SourcePath": "sources/Main.st"
@@ -15,9 +15,12 @@
     "Tasks": [
       {
         "Name": "Cyclic",
-        "ProgramId": "86cb2a0b-ac8c-4f3e-8d7e-8bc88dad8236",
+        "ProgramId": "c21b2d96-ce57-4e52-9941-6e1da61e2685",
         "IntervalMilliseconds": 10,
-        "Enabled": true
+        "Enabled": true,
+        "Scheduling": 0,
+        "Priority": 10,
+        "Cpu": null
       }
     ],
     "Hardware": {
@@ -95,6 +98,6 @@
     ]
   },
   "SourceFiles": {
-    "86cb2a0b-ac8c-4f3e-8d7e-8bc88dad8236": ".stversions/c746138afac4558e7a629782049400c67e73578a19f1e66c720b29b2cd6a0983/001256fb862421b22604e8fe8cc51163cf85e05626883f72a753d16299908511/sources/Main.st"
+    "c21b2d96-ce57-4e52-9941-6e1da61e2685": ".stversions/1a3d17bf87247ac0af890d080384c850a31e90c0efd2a4017f667d64f792fa45/001256fb862421b22604e8fe8cc51163cf85e05626883f72a753d16299908511/sources/Main.st"
   }
 }

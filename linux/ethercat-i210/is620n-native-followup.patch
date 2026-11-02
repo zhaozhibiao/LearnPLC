@@ -1,0 +1,307 @@
+--- a/src/EcMotion.Igh/CMakeLists.txt
++++ b/src/EcMotion.Igh/CMakeLists.txt
+@@ -101,6 +101,13 @@
+     add_test(NAME motion-setpoint COMMAND ecmotion-motion-selftest)
+ endif()
+ 
++add_executable(ecmotion-slave-identity-selftest src/slave_identity_selftest.cpp)
++target_include_directories(ecmotion-slave-identity-selftest PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
++target_compile_options(ecmotion-slave-identity-selftest PRIVATE -Wall -Wextra -Wpedantic -Werror)
++if(BUILD_TESTING)
++    add_test(NAME slave-identity-startup-retry COMMAND ecmotion-slave-identity-selftest)
++endif()
++
+ add_executable(ecmotion-group-selftest src/group_interpolator_selftest.cpp)
+ target_link_libraries(ecmotion-group-selftest PRIVATE ecmotion-io-cycle)
+ target_compile_options(ecmotion-group-selftest PRIVATE -Wall -Wextra -Wpedantic -Werror)
+--- a/src/EcMotion.Igh/generated/is620n_ethercat_config.hpp
++++ b/src/EcMotion.Igh/generated/is620n_ethercat_config.hpp
+@@ -20,7 +20,7 @@
+ inline constexpr std::array<Entry, 9> entries{{
+     {0x6040, 0, 16, "Axis1Drive.Controlword.0x6040:0"},
+     {0x607A, 0, 32, "Axis1Drive.Target_position.0x607A:0"},
+-    {0x60FF, 0, 32, "Axis1Drive.Target_velocity.0x60FF:0"},
++    {0x60B1, 0, 32, "Axis1Drive.Velocity_offset.0x60B1:0"},
+     {0x6060, 0, 8, "Axis1Drive.Modes_of_operation.0x6060:0"},
+     {0x603F, 0, 16, "Axis1Drive.Error_code.0x603F:0"},
+     {0x6041, 0, 16, "Axis1Drive.Statusword.0x6041:0"},
+--- a/src/EcMotion.Igh/include/axis_feedback.hpp
++++ b/src/EcMotion.Igh/include/axis_feedback.hpp
+@@ -29,7 +29,7 @@
+     std::string position_unit;
+     std::string controlword_key;
+     std::string target_position_key;
+-    std::string target_velocity_key;
++    std::string velocity_offset_key;
+     std::string mode_of_operation_key;
+     std::string statusword_key;
+     std::string position_actual_key;
+@@ -74,7 +74,7 @@
+     AxisFeedbackConfiguration configuration_;
+     PdoHandle controlword_;
+     PdoHandle target_position_;
+-    PdoHandle target_velocity_;
++    PdoHandle velocity_offset_;
+     PdoHandle mode_of_operation_;
+     PdoHandle statusword_;
+     PdoHandle position_actual_;
+--- /dev/null
++++ b/src/EcMotion.Igh/include/slave_identity.hpp
+@@ -0,0 +1,40 @@
++#pragma once
++
++#include <cstddef>
++#include <cstdint>
++#include <optional>
++
++namespace ecmotion {
++
++struct SlaveIdentity {
++    unsigned int position{};
++    std::uint32_t vendor{};
++    std::uint32_t product{};
++    std::uint32_t revision{};
++    friend bool operator==(const SlaveIdentity&, const SlaveIdentity&) = default;
++};
++
++enum class SlaveIdentityStatus { Found, Unavailable, Mismatch };
++
++struct SlaveIdentityResult {
++    SlaveIdentityStatus status{};
++    std::size_t attempts{};
++    std::optional<SlaveIdentity> actual;
++};
++
++template <typename Lookup, typename Delay>
++SlaveIdentityResult wait_for_slave_identity(
++    const SlaveIdentity& expected, Lookup&& lookup, Delay&& delay,
++    std::size_t maximum_attempts) {
++    for (std::size_t attempt = 1; attempt <= maximum_attempts; ++attempt) {
++        const auto actual = lookup();
++        if (actual) {
++            return { *actual == expected ? SlaveIdentityStatus::Found : SlaveIdentityStatus::Mismatch,
++                attempt, actual };
++        }
++        if (attempt < maximum_attempts) delay();
++    }
++    return {SlaveIdentityStatus::Unavailable, maximum_attempts, std::nullopt};
++}
++
++} // namespace ecmotion
+--- a/src/EcMotion.Igh/src/axis_feedback.cpp
++++ b/src/EcMotion.Igh/src/axis_feedback.cpp
+@@ -126,6 +126,9 @@
+                     throw std::invalid_argument("Homing raw parameters or timeout are invalid.");
+             }
+         }
++        const auto velocity_setpoint_key = entries.contains("velocityOffset")
++            ? entries.at("velocityOffset").get<std::string>()
++            : entries.at("targetVelocity").get<std::string>();
+         return {
+             axis_name,
+             axis.at("slavePosition").get<int>(),
+@@ -133,7 +136,7 @@
+             axis.at("positionUnit").get<std::string>(),
+             entries.at("controlword").get<std::string>(),
+             entries.at("targetPosition").get<std::string>(),
+-            entries.at("targetVelocity").get<std::string>(),
++            velocity_setpoint_key,
+             entries.at("modeOfOperation").get<std::string>(),
+             entries.at("statusword").get<std::string>(),
+             entries.at("positionActual").get<std::string>(),
+@@ -184,7 +187,7 @@
+     : configuration_(std::move(configuration)),
+       controlword_(layout.resolve(configuration_.controlword_key)),
+       target_position_(layout.resolve(configuration_.target_position_key)),
+-      target_velocity_(layout.resolve(configuration_.target_velocity_key)),
++      velocity_offset_(layout.resolve(configuration_.velocity_offset_key)),
+       mode_of_operation_(layout.resolve(configuration_.mode_of_operation_key)),
+       statusword_(layout.resolve(configuration_.statusword_key)),
+       position_actual_(layout.resolve(configuration_.position_actual_key)),
+@@ -198,7 +201,7 @@
+         throw std::invalid_argument("Current-position homing requires explicit method-35 permission.");
+     require_output(layout, controlword_, 16U, configuration_.name);
+     require_output(layout, target_position_, 32U, configuration_.name);
+-    require_output(layout, target_velocity_, 32U, configuration_.name);
++    require_output(layout, velocity_offset_, 32U, configuration_.name);
+     require_output(layout, mode_of_operation_, 8U, configuration_.name);
+     require_input(layout, statusword_, 16U, configuration_.name);
+     require_input(layout, position_actual_, 32U, configuration_.name);
+@@ -504,14 +507,14 @@
+ 
+     const auto raw_target_position = static_cast<std::int64_t>(std::llround(
+         setpoint.position * configuration_.counts_per_engineering_unit * configuration_.direction));
+-    const auto raw_target_velocity = static_cast<std::int64_t>(std::llround(
++    const auto raw_velocity_offset = static_cast<std::int64_t>(std::llround(
+         setpoint.velocity * configuration_.counts_per_engineering_unit * configuration_.direction));
+     image.write_from_controller(target_position_, static_cast<std::uint32_t>(
+         std::clamp(raw_target_position,
+             static_cast<std::int64_t>(std::numeric_limits<std::int32_t>::min()),
+             static_cast<std::int64_t>(std::numeric_limits<std::int32_t>::max()))));
+-    image.write_from_controller(target_velocity_, static_cast<std::uint32_t>(
+-        std::clamp(raw_target_velocity,
++    image.write_from_controller(velocity_offset_, static_cast<std::uint32_t>(
++        std::clamp(raw_velocity_offset,
+             static_cast<std::int64_t>(std::numeric_limits<std::int32_t>::min()),
+             static_cast<std::int64_t>(std::numeric_limits<std::int32_t>::max()))));
+     image.write_from_controller(mode_of_operation_, static_cast<std::uint8_t>(
+--- a/src/EcMotion.Igh/src/ethercat_runtime_cli_selftest.py
++++ b/src/EcMotion.Igh/src/ethercat_runtime_cli_selftest.py
+@@ -45,7 +45,7 @@
+     run(True,False)
+     axis_machine=json.loads(pathlib.Path(axis_fixture).read_text())
+     keys=axis_machine['axes'][0]['pdoEntries']
+-    definitions=[('controlword',24640,16),('targetPosition',24698,32),('targetVelocity',24831,32),('modeOfOperation',24672,8),('statusword',24641,16),('positionActual',24676,32),('velocityActual',24684,32),('modeDisplay',24673,8),('errorCode',24639,16)]
++    definitions=[('controlword',24640,16),('targetPosition',24698,32),('velocityOffset',0x60B1,32),('modeOfOperation',24672,8),('statusword',24641,16),('positionActual',24676,32),('velocityActual',24684,32),('modeDisplay',24673,8),('errorCode',24639,16)]
+     entries=[dict(index=index,subindex=0,bitLength=bits,key=keys[name]) for name,index,bits in definitions]
+     topology['slaves'][0]['pdos'][0]['entries']=entries[:4]
+     topology['slaves'][0]['pdos'][1]['entries']=entries[4:]
+--- a/src/EcMotion.Igh/src/ethercat_runtime_config.cpp
++++ b/src/EcMotion.Igh/src/ethercat_runtime_config.cpp
+@@ -74,7 +74,7 @@
+   slave.pdo_count=c.pdos.size()-slave.pdo_begin;if(slave.pdo_count==0) bad("slave has no PDOs");
+   for(const auto& sd:array(s,"startupSdos",256)) {
+    StartupSdo v{};v.index=static_cast<std::uint16_t>(number(sd,"index",65535));v.subindex=static_cast<std::uint8_t>(number(sd,"subindex",255));v.complete_access=sd.value("completeAccess",false);
+-   if(v.index==0x6040||v.index==0x607A||v.index==0x60FF||v.index==0x6071) bad("startup SDO may not write motion control/target objects");
++   if(v.index==0x6040||v.index==0x607A||v.index==0x60FF||v.index==0x60B1||v.index==0x6071) bad("startup SDO may not write motion control/target objects");
+    if(v.index==0 || (v.complete_access&&v.subindex!=0)) bad("invalid startup SDO index/completeAccess subindex");
+    if(sd.contains("transition")&&text(sd,"transition")!="PS") bad("only PS startup SDO transition is supported");
+    const auto& bytes=array(sd,"data",1024);if(bytes.empty()) bad("empty startup SDO");total_sdo_bytes+=bytes.size();if(total_sdo_bytes>65536) bad("aggregate startup SDO bytes exceeds 65536");
+--- a/src/EcMotion.Igh/src/ethercat_runtime_config_selftest.cpp
++++ b/src/EcMotion.Igh/src/ethercat_runtime_config_selftest.cpp
+@@ -29,6 +29,8 @@
+  j=fixture(); j["slaves"][0]["startupSdos"]={{{"index",8192},{"subindex",0},{"data",{1,2,3}}}}; c=Configuration::parse(j.dump()); require(c.slaves[0].startup_sdos[0].data.size()==3,"SDO bytes lost");
+  j=fixture(); auto slave=j["slaves"][0]; j["slaves"]=json::array(); for(int i=0;i<65;++i) {slave["position"]=i;j["slaves"].push_back(slave);} reject(j);
+  j=fixture(); j["slaves"][0]["startupSdos"]={{{"index",24640},{"subindex",0},{"data",{1,0}}}}; reject(j);
++ j=fixture(); j["slaves"][0]["startupSdos"]={{{"index",0x60B1},{"subindex",0},{"data",{1,0,0,0}}}}; reject(j);
++ j=fixture(); j["slaves"][0]["startupSdos"]={{{"index",0x60FF},{"subindex",0},{"data",{1,0,0,0}}}}; reject(j);
+  j=fixture(); j["machineSha256"]="bad"; reject(j);
+  j=fixture(); j["machineSha256"]=std::string(64,'a');j["ioMapSha256"]=std::string(64,'b');c=Configuration::parse(j.dump()); require(c.machine_sha256==std::string(64,'a'),"machine hash lost");
+  j=fixture(); j["slaves"][0]["syncManagers"]={{{"index",4},{"direction","Rx"},{"watchdog","Default"}},{{"index",5},{"direction","Tx"},{"watchdog","Disable"}}};j["slaves"][0]["pdos"][0]["syncManager"]=4;j["slaves"][0]["pdos"][1]["syncManager"]=5;c=Configuration::parse(j.dump());require(c.slaves[0].sync_managers[0].index==4,"explicit sync manager lost");
+--- a/src/EcMotion.Igh/src/io_map_config_selftest.cpp
++++ b/src/EcMotion.Igh/src/io_map_config_selftest.cpp
+@@ -552,7 +552,7 @@
+         }
+         if (image.read_unsigned(layout.resolve(axis_configuration.controlword_key)) != 0x0006U
+             || image.read_signed(layout.resolve(axis_configuration.target_position_key)) != 8'388'608
+-            || image.read_signed(layout.resolve(axis_configuration.target_velocity_key)) != 0) {
++            || image.read_signed(layout.resolve(axis_configuration.velocity_offset_key)) != 0) {
+             throw std::runtime_error("CiA 402 safe hold outputs were not generated");
+         }
+         ecmotion::RealtimeCommand blocked_enable{
+@@ -638,12 +638,14 @@
+             || moving_snapshot.axes[0].motion_id != move.sequence) {
+             throw std::runtime_error("generic absolute trajectory was not written to CiA 402 PDO");
+         }
++        if (image.read_signed(layout.resolve(axis_configuration.velocity_offset_key)) <= 0)
++            throw std::runtime_error("CSP trajectory velocity was not written as velocity feedforward");
+         bool reached = false;
+         for (int cycle_index = 0; cycle_index < 2000; ++cycle_index) {
+             const auto previous_target = image.read_unsigned(
+                 layout.resolve(axis_configuration.target_position_key));
+             const auto previous_velocity = image.read_unsigned(
+-                layout.resolve(axis_configuration.target_velocity_key));
++                layout.resolve(axis_configuration.velocity_offset_key));
+             image.write_from_device(layout.resolve(axis_configuration.position_actual_key), previous_target);
+             image.write_from_device(layout.resolve(axis_configuration.velocity_actual_key), previous_velocity);
+             const auto feedback = commissioned_cycle.process(image);
+--- a/src/EcMotion.Igh/src/main.cpp
++++ b/src/EcMotion.Igh/src/main.cpp
+@@ -3,6 +3,7 @@
+ #include "axis_feedback.hpp"
+ #include "ethercat_runtime_config.hpp"
+ #include "sha256.hpp"
++#include "slave_identity.hpp"
+ #include <fstream>
+ #include <iterator>
+ #ifdef ECMOTION_IS620N_PROFILE
+@@ -134,7 +135,7 @@
+             [&](const cfg::Slave& slave) { return slave.position == axis.slave_position; });
+         if (found == active_config.slaves.end()) fail("axis slavePosition is absent from generated topology");
+         const std::array<std::string, 9> keys{axis.controlword_key, axis.target_position_key,
+-            axis.target_velocity_key, axis.mode_of_operation_key, axis.statusword_key,
++            axis.velocity_offset_key, axis.mode_of_operation_key, axis.statusword_key,
+             axis.position_actual_key, axis.velocity_actual_key, axis.mode_display_key,
+             axis.error_code_key};
+         for (std::size_t key_index=0;key_index<keys.size();++key_index) {
+@@ -292,16 +293,23 @@
+ }
+ 
+ void verify_identity(ec_master_t* master, const cfg::Slave& expected) {
+-    ec_slave_info_t actual{};
+-    if (ecrt_master_get_slave(master, expected.position, &actual) != 0) {
+-        fail("configured slave is absent from the online scan");
+-    }
+-    if (actual.vendor_id != expected.vendor || actual.product_code != expected.product
+-        || actual.revision_number != expected.revision) {
++    const ecmotion::SlaveIdentity identity{expected.position, expected.vendor,
++        expected.product, expected.revision};
++    const auto result = ecmotion::wait_for_slave_identity(identity, [&]() -> std::optional<ecmotion::SlaveIdentity> {
++        ec_slave_info_t actual{};
++        if (ecrt_master_get_slave(master, expected.position, &actual) != 0) return std::nullopt;
++        return ecmotion::SlaveIdentity{expected.position, actual.vendor_id,
++            actual.product_code, actual.revision_number};
++    }, [] { std::this_thread::sleep_for(std::chrono::milliseconds(20)); }, 250);
++    if (result.status == ecmotion::SlaveIdentityStatus::Unavailable) {
++        fail("configured slave was not discovered within 5 seconds; check EtherCAT link and scan");
++    }
++    if (result.status == ecmotion::SlaveIdentityStatus::Mismatch) {
++        const auto& actual = *result.actual;
+         std::fprintf(stderr,
+             "ecmotion-rt: identity mismatch at position %u: "
+             "actual=%08X/%08X/%08X expected=%08X/%08X/%08X\n",
+-            expected.position, actual.vendor_id, actual.product_code, actual.revision_number,
++            expected.position, actual.vendor, actual.product, actual.revision,
+             expected.vendor, expected.product, expected.revision);
+         std::exit(EXIT_FAILURE);
+     }
+--- /dev/null
++++ b/src/EcMotion.Igh/src/slave_identity_selftest.cpp
+@@ -0,0 +1,47 @@
++#include "slave_identity.hpp"
++
++#include <stdexcept>
++#include <optional>
++#include <vector>
++
++namespace {
++void require(bool condition, const char* message) {
++    if (!condition) throw std::runtime_error(message);
++}
++}
++
++int main() {
++    using ecmotion::SlaveIdentity;
++    using ecmotion::SlaveIdentityStatus;
++    const SlaveIdentity expected{0, 0x00100000U, 0x000C0108U, 0x00010001U};
++    std::vector<std::optional<SlaveIdentity>> discovered{std::nullopt, std::nullopt, expected};
++    int delays = 0;
++    const auto ready = ecmotion::wait_for_slave_identity(
++        expected,
++        [&]() -> std::optional<SlaveIdentity> {
++            if (discovered.empty()) return std::nullopt;
++            const auto value = discovered.front();
++            discovered.erase(discovered.begin());
++            return value;
++        },
++        [&] { ++delays; }, 5);
++    require(ready.status == SlaveIdentityStatus::Found && delays == 2,
++        "startup must wait for a temporarily unavailable EtherCAT slave");
++
++    const auto absent = ecmotion::wait_for_slave_identity(
++        expected,
++        []() -> std::optional<SlaveIdentity> { return std::nullopt; },
++        [] {}, 3);
++    require(absent.status == SlaveIdentityStatus::Unavailable && absent.attempts == 3,
++        "startup must fail clearly when a slave stays absent");
++
++    const auto mismatch = ecmotion::wait_for_slave_identity(
++        expected,
++        []() -> std::optional<SlaveIdentity> {
++            return SlaveIdentity{0, 0x00100000U, 0x000C0108U, 0x00010002U};
++        },
++        [] { throw std::runtime_error("identity mismatch must not retry"); }, 5);
++    require(mismatch.status == SlaveIdentityStatus::Mismatch && mismatch.attempts == 1,
++        "a present but different drive must fail immediately");
++    return 0;
++}

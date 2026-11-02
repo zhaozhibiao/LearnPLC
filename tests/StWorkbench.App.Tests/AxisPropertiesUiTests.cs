@@ -15,6 +15,8 @@ public static class AxisPropertiesUiTests
         try
         {
             T Control<T>(string name) where T : Control => window.FindControl<T>(name) ?? throw new Exception("FAIL: missing axis property control " + name);
+            Control<TextBox>("StationDcSync0ShiftNanoseconds").Text = "670000";
+            Control<CheckBox>("EtherCatCycleTimingEnabled").IsChecked = true;
             Control<CheckBox>("ConfigureAxisMechanics").IsChecked = true;
             Control<ComboBox>("AxisKind").SelectedIndex = 1;
             if (Control<TextBox>("AxisUnit").Text != "deg") throw new Exception("FAIL: rotary axis must default to angle units");
@@ -31,6 +33,21 @@ public static class AxisPropertiesUiTests
             Control<ListBox>("AxisConfigurations").SelectedIndex = 0; Dispatcher.UIThread.RunJobs();
             if (Control<TextBox>("AxisMotorRevolutions").Text != "10") throw new Exception("FAIL: axis selection lost ratio");
             if (!Control<TextBlock>("AxisConversionPreview").Text!.Contains("3640.888")) throw new Exception("FAIL: counts/angle preview incorrect");
+            Control<TextBox>("RuntimeVelocityFeedforwardGain").Text = "0.75";
+            Control<TextBox>("RuntimeVelocityFeedbackRawPerUnitPerSecond").Text = "123";
+            Control<CheckBox>("RuntimeDemandDeliveryEnforced").IsChecked = false;
+            var migration = (EtherCatAxisRuntimeSettings)typeof(MainWindow).GetMethod("ApplyMotionMigrationProperties", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, [new EtherCatAxisRuntimeSettings()])!;
+            if (migration.VelocityFeedforwardGain != 0.75 || migration.VelocityFeedbackRawPerUnitPerSecond != 123 || migration.DemandDeliveryEnforced != false) throw new Exception("FAIL: migration UI values lost");
+            typeof(MainWindow).GetMethod("LoadMotionMigrationProperties", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(window, [migration]);
+            if (Control<TextBox>("RuntimeVelocityFeedforwardGain").Text != "0.75" || Control<CheckBox>("RuntimeDemandDeliveryEnforced").IsChecked != false) throw new Exception("FAIL: migration UI reload lost");
+            project.Hardware.Axes[0] = project.Hardware.Axes[0] with { Runtime = migration };
+            Control<CheckBox>("GenericEtherCatEnabled").IsChecked = true;
+            Control<CheckBox>("EtherCatCycleTimingEnabled").IsChecked = true;
+            Control<TextBox>("EtherCatBoundaryGuardNs").Text = "150000";
+            window.ApplyEtherCatRuntimeSettings();
+            if (project.Hardware.Runtime?.CycleTiming is not { Enabled: true, BoundaryGuardNs: 150000 }) throw new Exception("FAIL: timing UI values not applied");
+            Control<CheckBox>("GenericEtherCatEnabled").IsChecked = false;
+            window.ApplyEtherCatRuntimeSettings();
             var old = project.Hardware.Axes[0];
             Control<TextBox>("AxisMotorRevolutions").Text = "0";
             try { window.SaveAxisProperties(true); throw new Exception("FAIL: invalid ratio accepted"); } catch (InvalidDataException) { }
@@ -43,6 +60,8 @@ public static class AxisPropertiesUiTests
             Pump(window.SaveAtAsync(file)); Pump(window.LoadAtAsync(file));
             Control<ListBox>("AxisConfigurations").SelectedIndex = 0; Dispatcher.UIThread.RunJobs();
             if (Control<TextBox>("AxisMotorRevolutions").Text != "10" || Control<ComboBox>("AxisKind").SelectedIndex != 1) throw new Exception("FAIL: rotary configuration did not survive save/reopen");
+            var reloaded = (StProject)typeof(MainWindow).GetField("project", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(window)!;
+            if (reloaded.Hardware.Axes[0].Runtime is not { VelocityFeedforwardGain: .75, VelocityFeedbackRawPerUnitPerSecond: 123, DemandDeliveryEnforced: false }) throw new Exception("FAIL: migration settings did not survive desktop save/reopen");
             Control<ComboBox>("AxisRotaryMode").SelectedIndex = 2;
             Control<TextBox>("AxisModuloPeriod").Text = "0";
             try { window.SaveAxisProperties(true); throw new Exception("FAIL: zero rotary period accepted"); } catch (InvalidDataException) { }

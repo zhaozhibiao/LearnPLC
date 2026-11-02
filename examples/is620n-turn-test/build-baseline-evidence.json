@@ -1,0 +1,13 @@
+{
+  "ProjectPath": "D:\\OPenplc\\examples/is620n-turn-test/TurnTest.stproj",
+  "OutputDirectory": "D:\\OPenplc\\.st-mcp-builds\\f165187b34dc4a12931af12c8f30988e\\0410aad40b9a48158e2c34ebb9284853\\output",
+  "PackagePath": "D:\\OPenplc\\.st-mcp-builds\\f165187b34dc4a12931af12c8f30988e\\program.zip",
+  "BuildHash": "E4C3D6AA9CCF66F7BA2E77C88647FDC578BE9E5247D7754DC266CE49E398E20E",
+  "AuthoredThroughMcp": true,
+  "SavedThroughMcp": true,
+  "CompiledThroughMcp": true,
+  "Downloaded": false,
+  "Activated": false,
+  "PhysicalMotionTested": false,
+  "Phase": "baseline"
+}

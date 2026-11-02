@@ -1,0 +1,28 @@
+{
+  "evidenceKind": "Actual tool execution output captured verbatim",
+  "command": "python3 /home/a/st-workbench-i210/is620n-sequence/verify_live.py /home/a/st-workbench-i210/is620n-sequence --execute-once",
+  "exitCode": 0,
+  "backend": "EcMotion physical IS620N",
+  "mcpBuildHash": "47647746E342A7FF03DB9543333A77F59CDE5CF6141EAF638E693433646FF9FA",
+  "controllerBinarySha256": "cc478b290e18940bbe3f34f0c1f4577dee612bc4d5644797dabaef253a5ea36e",
+  "controllerConfigurationSha256": "d94ed507186b795d9493099d083f4ab556f0ecfeaeaf7de014565b906aeec4aa",
+  "existingOpenPlcProgramReplaced": false,
+  "stdout": [
+    "Compiled actual ST/axis bridge; execute requested: True",
+    "ST state=10 position_rev=0.00172806 velocity_rev_s=0 diagnostic=0",
+    "ST state=20 position_rev=0.00173378 velocity_rev_s=0 diagnostic=0",
+    "ST state=30 position_rev=9.53674e-07 velocity_rev_s=0 diagnostic=0",
+    "ST state=40 position_rev=0.0100756 velocity_rev_s=0 diagnostic=0",
+    "ST state=50 position_rev=0.0100307 velocity_rev_s=-0.0149994 diagnostic=0",
+    "ST state=60 position_rev=-7.62939e-05 velocity_rev_s=0.0149994 diagnostic=0",
+    "ST state=80 position_rev=-4.3869e-05 velocity_rev_s=0 diagnostic=0",
+    "ST state=90 position_rev=-3.52859e-05 velocity_rev_s=0 diagnostic=0",
+    "ST state=100 position_rev=0.000792503 velocity_rev_s=0.106667 diagnostic=0",
+    "ST_PHYSICAL_ROUNDTRIP_PASS count=1 disabled=true"
+  ],
+  "cleanupMessage": "axis worker: Private bridge disconnected",
+  "cleanupExplanation": "Expected bridge EOF after explicit shutdown; worker Stop/release ran. Subsequent independent MCP read confirmed no lease, Disabled and no fault; hardware-final-state.json confirmed raw statusword 0x8250, velocity zero, alarm zero.",
+  "currentMcpBuildHashAfterPdoMetadataSync": "5CB4FA5793460A1B3646544B31032B0FDFE6EE403A16E59934BB517D153655E1",
+  "testedGeneratedCppSha256": "7649b2d675f7949bc3619a4b0b46c64853c208d6cd3ed5bf3226ee46e7dbe928",
+  "compiledCodeUnchangedAfterPdoMetadataSync": true
+}

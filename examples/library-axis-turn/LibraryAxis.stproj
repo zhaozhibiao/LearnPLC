@@ -1,0 +1,427 @@
+{
+  "SchemaVersion": 1,
+  "Project": {
+    "Network": {
+      "ManagementHost": "192.168.1.31",
+      "SshUser": "a",
+      "RuntimeEndpoint": "",
+      "EtherCatInterface": "enp3s0"
+    },
+    "SchemaVersion": 1,
+    "Id": "436a430d-0c86-46da-b0c6-29f924b437e0",
+    "Name": "\u53F3\u4FA7\u6307\u4EE4\u5E93 \u00B7 \u5DE5\u7A0B\u8F74 X \u5F80\u8FD4\u793A\u4F8B",
+    "Items": [
+      {
+        "Id": "0270b39e-3958-4bc7-863f-6c457cb37229",
+        "Name": "Main",
+        "Kind": 0,
+        "SourcePath": "sources/Main.st"
+      }
+    ],
+    "Tasks": [
+      {
+        "Name": "Cyclic",
+        "ProgramId": "0270b39e-3958-4bc7-863f-6c457cb37229",
+        "IntervalMilliseconds": 10,
+        "Enabled": true
+      }
+    ],
+    "Hardware": {
+      "Runtime": {
+        "CycleTimeNanoseconds": 1000000
+      },
+      "Stations": [
+        {
+          "Id": "5ed04c68-e38f-49d2-ad0d-214eadaceb47",
+          "Name": "IS620NDrive",
+          "DeviceId": "a5fa0850-89c5-4fdc-89db-e12147fc9f71",
+          "AliasAddress": 0,
+          "EnabledEntries": [
+            {
+              "Index": 24640,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "Controlword",
+              "Type": "UINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24698,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "Target position",
+              "Type": "DINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24831,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "Target velocity",
+              "Type": "DINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24672,
+              "SubIndex": 0,
+              "BitLength": 8,
+              "Name": "Mode",
+              "Type": "SINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24639,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "Error code",
+              "Type": "UINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24641,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "Statusword",
+              "Type": "UINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24676,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "Actual position",
+              "Type": "DINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24684,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "Actual velocity",
+              "Type": "DINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24673,
+              "SubIndex": 0,
+              "BitLength": 8,
+              "Name": "Mode display",
+              "Type": "SINT",
+              "IsInput": true
+            }
+          ],
+          "Runtime": {
+            "SelectedPdoIndices": [
+              5632,
+              6656
+            ],
+            "DcModeName": "DC1ms",
+            "ProfileId": "is620n-csp"
+          }
+        }
+      ],
+      "Devices": [
+        {
+          "Id": "a5fa0850-89c5-4fdc-89db-e12147fc9f71",
+          "Name": "IS620N commissioned profile",
+          "VendorId": 1048576,
+          "ProductCode": 786696,
+          "Revision": 65537,
+          "Entries": [
+            {
+              "Index": 24640,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "Controlword",
+              "Type": "UINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24698,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "Target position",
+              "Type": "DINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24831,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "Target velocity",
+              "Type": "DINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24672,
+              "SubIndex": 0,
+              "BitLength": 8,
+              "Name": "Mode",
+              "Type": "SINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24639,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "Error code",
+              "Type": "UINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24641,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "Statusword",
+              "Type": "UINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24676,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "Actual position",
+              "Type": "DINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24684,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "Actual velocity",
+              "Type": "DINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24673,
+              "SubIndex": 0,
+              "BitLength": 8,
+              "Name": "Mode display",
+              "Type": "SINT",
+              "IsInput": true
+            }
+          ],
+          "Description": {
+            "SourceSha256": "da9822bb880af269f1d386fad0a83b6d8e0085e85a509d285b4cb8fe4afffff6",
+            "PdoGroups": [
+              {
+                "Index": 5632,
+                "Name": "Commissioned Rx",
+                "IsInput": false,
+                "SyncManager": 2,
+                "Fixed": false,
+                "Mandatory": false,
+                "Excludes": [],
+                "DefaultSelected": true,
+                "Entries": [
+                  {
+                    "Index": 24640,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Controlword",
+                    "Type": "UINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24698,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target position",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24831,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Target velocity",
+                    "Type": "DINT",
+                    "IsInput": false
+                  },
+                  {
+                    "Index": 24672,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode",
+                    "Type": "SINT",
+                    "IsInput": false
+                  }
+                ]
+              },
+              {
+                "Index": 6656,
+                "Name": "Commissioned Tx",
+                "IsInput": true,
+                "SyncManager": 3,
+                "Fixed": false,
+                "Mandatory": false,
+                "Excludes": [],
+                "DefaultSelected": true,
+                "Entries": [
+                  {
+                    "Index": 24639,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Error code",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24641,
+                    "SubIndex": 0,
+                    "BitLength": 16,
+                    "Name": "Statusword",
+                    "Type": "UINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24676,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual position",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24684,
+                    "SubIndex": 0,
+                    "BitLength": 32,
+                    "Name": "Actual velocity",
+                    "Type": "DINT",
+                    "IsInput": true
+                  },
+                  {
+                    "Index": 24673,
+                    "SubIndex": 0,
+                    "BitLength": 8,
+                    "Name": "Mode display",
+                    "Type": "SINT",
+                    "IsInput": true
+                  }
+                ]
+              }
+            ],
+            "SyncManagers": [
+              {
+                "Index": 0,
+                "Name": "MBoxOut",
+                "StartAddress": null,
+                "DefaultSize": null,
+                "ControlByte": null,
+                "Enable": null,
+                "Watchdog": null
+              },
+              {
+                "Index": 1,
+                "Name": "MBoxIn",
+                "StartAddress": null,
+                "DefaultSize": null,
+                "ControlByte": null,
+                "Enable": null,
+                "Watchdog": null
+              },
+              {
+                "Index": 2,
+                "Name": "Outputs",
+                "StartAddress": null,
+                "DefaultSize": null,
+                "ControlByte": null,
+                "Enable": true,
+                "Watchdog": true
+              },
+              {
+                "Index": 3,
+                "Name": "Inputs",
+                "StartAddress": null,
+                "DefaultSize": null,
+                "ControlByte": null,
+                "Enable": true,
+                "Watchdog": false
+              }
+            ],
+            "DcModes": [
+              {
+                "Name": "DC1ms",
+                "AssignActivate": 768,
+                "Sync0": {
+                  "Value": 0,
+                  "Factor": 1,
+                  "Shift": 0
+                },
+                "Sync1": {
+                  "Value": 0,
+                  "Factor": null,
+                  "Shift": null
+                }
+              }
+            ],
+            "StartupCommands": [],
+            "UnsupportedFeatures": [],
+            "IsDescriptionSupported": true
+          }
+        }
+      ],
+      "Io": [],
+      "Axes": [
+        {
+          "Name": "X",
+          "ControllerAxis": "Axis1",
+          "Unit": "rev",
+          "MinPosition": -2,
+          "MaxPosition": 2,
+          "Runtime": {
+            "ProfileId": "is620n-csp",
+            "MotorModel": "ISMH1-10B30CB-U230Z",
+            "MechanicsConfirmed": true,
+            "SafetyConfirmed": true,
+            "VelocityUnits": "CountsPerSecond",
+            "MaximumActualVelocity": 1.5,
+            "MaximumFollowingError": 0.005,
+            "FollowingErrorTimeoutMilliseconds": 20,
+            "Homing": {
+              "Required": true,
+              "Method": 35,
+              "AllowCurrentPositionZero": true,
+              "SearchSpeedRaw": 1048,
+              "LatchSpeedRaw": 1048,
+              "AccelerationRaw": 10485,
+              "OffsetRaw": 0,
+              "TimeoutMilliseconds": 5000
+            },
+            "MotionCompletion": {
+              "PositionTolerance": 0.0001,
+              "VelocityTolerance": 0.0005,
+              "DwellMilliseconds": 100,
+              "PositionStabilityCompletion": true
+            }
+          },
+          "Mechanics": {
+            "Kind": "Rotary",
+            "FeedbackUnit": "EncoderCounts",
+            "FeedbackCountsPerMotorRevolution": 1048576,
+            "MotorRevolutions": 1,
+            "LoadRevolutions": 1,
+            "TravelPerLoadRevolution": 1,
+            "ReverseDirection": false,
+            "RotaryMode": "Limited",
+            "ModuloStart": 0,
+            "ModuloPeriod": 360,
+            "HomeMode": "ControllerConfigured",
+            "HomeDirection": "Negative",
+            "HomeOffset": 0,
+            "HomeSearchVelocity": 1,
+            "HomeLatchVelocity": 0.2
+          },
+          "StationId": "5ed04c68-e38f-49d2-ad0d-214eadaceb47",
+          "MaximumVelocity": 1,
+          "MaximumAcceleration": 1,
+          "MaximumDeceleration": 1
+        }
+      ]
+    },
+    "Paths": []
+  },
+  "SourceFiles": {
+    "0270b39e-3958-4bc7-863f-6c457cb37229": ".stversions/886df19bd0c2b8fc267d7b85be57d9fa0d6f19a72129e153067039dbdaca62d3/5758723a990b0bf81c591108d06e18fdfa49d74febcfd83f625a61b58d6c3373/sources/Main.st"
+  }
+}

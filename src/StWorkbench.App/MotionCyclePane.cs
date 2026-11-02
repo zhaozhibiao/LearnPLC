@@ -12,7 +12,7 @@ public sealed partial class MainWindow
 {
     private readonly CheckBox motionCycleEnabled = new() { Content = "配置独立轴控周期（不自动启动运动）" };
     private readonly TextBox motionCyclePeriod = new() { Text = "1000", Width = 140 };
-    private readonly TextBox motionCyclePriority = new() { Text = "40", Width = 140 };
+    private readonly TextBox motionCyclePriority = new() { Text = "80", Width = 140 };
     private readonly TextBox motionCycleCpu = new() { Text = "", PlaceholderText = "留空：不绑定", Width = 140 };
     private readonly TextBox motionCycleWatchdog = new() { Text = "3", Width = 140 };
     private readonly ListBox motionCycleAxes = new() { SelectionMode = SelectionMode.Multiple, Height = 110 };

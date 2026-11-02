@@ -1,6 +1,8 @@
 #include <ecrt.h>
 
 #include "axis_feedback.hpp"
+#include "motion_runtime_version.hpp"
+#include "cpu_latency_request.hpp"
 #include "cyclic_trace.hpp"
 #include "delivery_monitor.hpp"
 #include "ethercat_runtime_config.hpp"
@@ -369,6 +371,11 @@ void verify_identity(ec_master_t* master, const cfg::Slave& expected) {
 } // namespace
 
 int main(int argc, char** argv) {
+    if (argc == 2 && std::strcmp(argv[1], "--runtime-capabilities") == 0) {
+        const auto value = nlohmann::json{{"runtimeCapabilities", nlohmann::json::array({ecmotion::motion_migration_capability,ecmotion::axis_trace_capability,"workbench_axis_move_profile_v2","workbench_axis_velocity_profile_v2"})}}.dump();
+        std::puts(value.c_str());
+        return 0;
+    }
     active_config=legacy_configuration();
     int cpu = 2;
     std::string io_map_path = "/etc/ecmotion/io-map.json";
@@ -376,7 +383,7 @@ int main(int argc, char** argv) {
     std::string socket_path = "/run/ecmotion/controller.sock";
     std::string ethercat_config_path;
     std::string axis_trace_path;
-    std::string axis_trace_prefix="Axis1Drive";
+    std::optional<std::string> axis_trace_prefix;
     std::size_t axis_trace_capacity=60000;
     bool validate_only=false;
     bool machine_explicit=false, io_explicit=false;
@@ -436,6 +443,13 @@ int main(int argc, char** argv) {
                             != group.source_entries.end())
                             fail("Ordinary IO map references an axis-owned slave.");
 
+    const auto make_axis_trace = [&](const ecmotion::PdoLayout& layout,std::size_t capacity) {
+        if(axis_configurations.size()!=1) throw std::invalid_argument("axis trace currently requires exactly one configured axis");
+        if(axis_trace_prefix) return std::make_unique<ecmotion::CyclicAxisTrace>(layout,*axis_trace_prefix,capacity);
+        return std::make_unique<ecmotion::CyclicAxisTrace>(layout,
+            ecmotion::CyclicAxisTraceBindings::from_axis(axis_configurations.front()),capacity);
+    };
+
     // Bind against a synthetic byte-aligned layout before taking ownership of the bus.
     // IgH supplies the real offsets later; key, width and direction validation is identical.
     try {
@@ -453,6 +467,12 @@ int main(int argc, char** argv) {
             const auto adapter=ecmotion::make_axis_adapter(preflight_layout,axis);
             static_cast<void>(adapter);
         }
+        if(!axis_trace_path.empty()) {
+            // Validate the selected trace ABI offline and before any bus ownership.
+            // A single preallocated frame is enough to validate every binding.
+            const auto trace=make_axis_trace(preflight_layout,1);
+            static_cast<void>(trace);
+        }
         const auto bound=io_configuration.bind(preflight_layout);
         if(bound.logical_channel_count==0U && axis_configurations.empty()) fail("IO map contains no logical channels and no axes are configured");
     } catch(const std::exception& error) {fail(error.what());}
@@ -460,6 +480,10 @@ int main(int argc, char** argv) {
         std::printf("EtherCAT bundle valid: %s\n",active_config.topology_fingerprint.c_str());return EXIT_SUCCESS;
     }
 
+    std::optional<ecmotion::CpuLatencyRequest> latency_request;
+    try {
+        if (cycle_timing_config) latency_request.emplace();
+    } catch (const std::exception& error) {fail(error.what());}
     MasterHandle master{ecrt_request_master(0)};
     if (!master) fail("cannot request IgH master 0");
     ec_domain_t* domain = ecrt_master_create_domain(master.get());
@@ -589,8 +613,7 @@ int main(int argc, char** argv) {
     ecmotion::PdoLayout pdo_layout(std::move(descriptors), ecrt_domain_size(domain));
     std::unique_ptr<ecmotion::CyclicAxisTrace> axis_trace;
     if(!axis_trace_path.empty()) {
-        if(axis_configurations.size()!=1) fail("axis trace currently requires exactly one configured axis");
-        try {axis_trace=std::make_unique<ecmotion::CyclicAxisTrace>(pdo_layout,axis_trace_prefix,axis_trace_capacity);}
+        try {axis_trace=make_axis_trace(pdo_layout,axis_trace_capacity);}
         catch(const std::exception& error) {fail(error.what());}
     }
     const auto bound_io = io_configuration.bind(pdo_layout);

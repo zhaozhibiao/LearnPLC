@@ -44,7 +44,7 @@ public sealed partial class MainWindow
         } };
         return node;
     }
-    private void NavigateTo(int index) { if (this.FindControl<TabControl>("WorkbenchTabs") is { } tabs) tabs.SelectedIndex = index; }
+    private void NavigateTo(int index) { if(index is 0 or 1 or 2 or 6)SetTransferScope(index is 2 or 6);if (this.FindControl<TabControl>("WorkbenchTabs") is { } tabs) tabs.SelectedIndex = index; }
     private ContextMenu NavigationMenu(string title, int index) => new() { ItemsSource = new[] { MenuAction(title, () => { NavigateTo(index); return Task.CompletedTask; }) } };
     private async Task DuplicateResourceAsync(Guid id)
     {
@@ -74,7 +74,7 @@ public sealed partial class MainWindow
         await dialog.ShowDialog(this);
     }
     private ContextMenu TaskGroupMenu() => new() { ItemsSource = new[] { MenuAction("添加任务…", AddTaskAsync), MenuAction("任务配置 / 属性", () => { NavigateTo(1); return Task.CompletedTask; }) } };
-    private TreeViewItem TaskNode(PlcTask task) => PageNode($"{task.Name} · {task.IntervalMilliseconds} ms" + (task.Enabled ? "" : " · 未启用"), 1,
+    private TreeViewItem TaskNode(PlcTask task) => PageNode($"{task.Name} · {task.IntervalMilliseconds} ms · {(task.Scheduling == PlcTaskScheduling.Realtime ? "实时" : "普通")}" + (task.Enabled ? "" : " · 未启用"), 1,
         new ContextMenu { ItemsSource = new object[]
         {
             MenuAction("添加任务…", AddTaskAsync), MenuAction("重命名…", () => EditTaskAsync(task)),
@@ -88,27 +88,48 @@ public sealed partial class MainWindow
         var name = await AskNameAsync("添加未启用任务", "NewTask"); if (name is null || busy) return;
         if (!ReferenceEquals(targetProject, project)) throw new InvalidOperationException("工程已切换，请重新添加任务。");
         if (!System.Text.RegularExpressions.Regex.IsMatch(name, @"^[A-Za-z_][A-Za-z0-9_]*$") || project.Tasks.Any(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase))) throw new InvalidDataException("任务名必须是有效且不重名的 ST 标识符。");
-        project.Tasks.Add(new PlcTask { Name = name, ProgramId = project.Tasks.Single(t => t.Enabled).ProgramId, Enabled = false }); MarkDirty(); RefreshTree();
+        project.Tasks.Add(new PlcTask { Name = name, ProgramId = project.Tasks.First(t => t.Enabled).ProgramId, Enabled = false }); MarkDirty(); RefreshTree();
+    }
+    private void ApplyTaskConfiguration(PlcTask task, PlcTask candidate)
+    {
+        if (busy || !project.Tasks.Contains(task)) throw new InvalidDataException("工程状态已改变，请重新打开任务属性。");
+        var validationProject = new StProject { Id = project.Id, Name = project.Name, SchemaVersion = project.SchemaVersion, Items = project.Items, Hardware = project.Hardware, Paths = project.Paths, MotionCycle = project.MotionCycle, Communication = project.Communication, Network = project.Network,
+            Tasks = project.Tasks.Select(t => ReferenceEquals(t, task) ? candidate : t).ToList() };
+        var errors = ProjectValidator.Validate(validationProject, sources.Values.ToArray());
+        if (errors.Count > 0) throw new InvalidDataException(string.Join("\n", errors.Select(e => e.Message)));
+        task.Name = candidate.Name; task.ProgramId = candidate.ProgramId; task.IntervalMilliseconds = candidate.IntervalMilliseconds; task.Enabled = candidate.Enabled;
+        task.Scheduling = candidate.Scheduling; task.Priority = candidate.Priority; task.Cpu = candidate.Cpu;
+        var first = project.Tasks.First(t => t.Enabled); taskName.Text = first.Name; taskPeriod.Text = first.IntervalMilliseconds.ToString();
+        MarkDirty(); RefreshTree();
     }
     private async Task EditTaskAsync(PlcTask task)
     {
         if (busy || !project.Tasks.Contains(task)) return;
-        var dialog = new Window { Title = "任务属性", Width = 450, Height = 420, WindowStartupLocation = WindowStartupLocation.CenterOwner };
+        var dialog = new Window { Title = "任务属性", Width = 500, Height = 700, WindowStartupLocation = WindowStartupLocation.CenterOwner };
         var name = new TextBox { Text = task.Name }; var period = new TextBox { Text = task.IntervalMilliseconds.ToString() };
         var programs = project.Items.Where(i => i.Kind == ItemKind.Program).ToArray();
         var program = new ComboBox { ItemsSource = programs.Select(i => i.Name).ToArray(), SelectedIndex = Array.FindIndex(programs, i => i.Id == task.ProgramId) };
-        var message = new TextBlock { TextWrapping = Avalonia.Media.TextWrapping.Wrap, Text = task.Enabled ? "当前活动周期任务" : "未启用任务；当前 Runtime 仅支持一个启用任务。" };
+        var enabled = new CheckBox { Content = "启用周期任务", IsChecked = task.Enabled };
+        var scheduling = new ComboBox { ItemsSource = new[] { "普通周期（SCHED_OTHER）", "实时周期（SCHED_FIFO）" }, SelectedIndex = (int)task.Scheduling };
+        var priority = new TextBox { Text = task.Priority.ToString() };
+        var cpu = new TextBox { Text = task.Cpu?.ToString() ?? "", PlaceholderText = "留空表示不绑定" };
+        var message = new TextBlock { TextWrapping = Avalonia.Media.TextWrapping.Wrap, Text = "IEC 优先级 0 最高、31 最低；实时任务低于轴控实时线程。多个任务必须绑定不同程序；任务间共享数据需由程序协调。" };
         var save = new Button { Content = "应用属性" };
         save.Click += (_, _) =>
         {
             if (busy || !project.Tasks.Contains(task)) { message.Text = "工程状态已改变，请重新打开属性。"; return; }
             var candidateName = name.Text ?? "";
             if (!System.Text.RegularExpressions.Regex.IsMatch(candidateName, @"^[A-Za-z_][A-Za-z0-9_]*$") || project.Tasks.Any(t => !ReferenceEquals(t, task) && t.Name.Equals(candidateName, StringComparison.OrdinalIgnoreCase)) || !int.TryParse(period.Text, out var ms) || ms is < 1 or > 60000 || program.SelectedIndex < 0 || !project.Items.Contains(programs[program.SelectedIndex])) { message.Text = "请填写不重名的任务名、1–60000 ms 周期并选择程序。"; return; }
-            task.Name = candidateName; task.IntervalMilliseconds = ms; task.ProgramId = programs[program.SelectedIndex].Id;
-            if (task.Enabled) { taskName.Text = candidateName; taskPeriod.Text = ms.ToString(); }
-            MarkDirty(); RefreshTree(); dialog.Close();
+            if (!int.TryParse(priority.Text, out var iecPriority) || iecPriority is < 0 or > 31 || scheduling.SelectedIndex is < 0 or > 1 || (!string.IsNullOrWhiteSpace(cpu.Text) && (!int.TryParse(cpu.Text, out var cpuNumber) || cpuNumber is < 0 or > 1023))) { message.Text = "优先级必须为 0–31，CPU 必须为 0–1023 或留空。"; return; }
+            try
+            {
+                ApplyTaskConfiguration(task, new PlcTask { Name = candidateName, IntervalMilliseconds = ms, ProgramId = programs[program.SelectedIndex].Id, Enabled = enabled.IsChecked == true, Scheduling = (PlcTaskScheduling)scheduling.SelectedIndex, Priority = iecPriority, Cpu = string.IsNullOrWhiteSpace(cpu.Text) ? null : int.Parse(cpu.Text!) });
+                dialog.Close();
+            }
+            catch (InvalidDataException e) { message.Text = e.Message; }
         };
-        dialog.Content = new StackPanel { Margin = new Thickness(18), Spacing = 7, Children = { Label("任务名称"), name, Label("周期（ms）"), period, program, message, save } };
+        dialog.Content = new StackPanel { Margin = new Thickness(18), Spacing = 7, Children = { Label("任务名称"), name, Label("周期（ms）"), period, Label("绑定程序"), program, enabled, Label("调度方式"), scheduling, Label("IEC 优先级（0–31）"), priority, Label("绑定 CPU"), cpu, message, save } };
         await dialog.ShowDialog(this);
     }
 }
+

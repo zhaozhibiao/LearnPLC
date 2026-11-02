@@ -1,0 +1,2630 @@
+{
+  "STWorkbench.slnx": {
+    "mtime": 1792069477.1868148,
+    "seen": 1792565988.2731333,
+    "ast_hash": "c6339f510db32a3fedd1a3442f57e4f7",
+    "semantic_hash": "c6339f510db32a3fedd1a3442f57e4f7"
+  },
+  "docs/mcp-dependency-licenses.json": {
+    "mtime": 1792070415.608368,
+    "seen": 1792565988.2731333,
+    "ast_hash": "90251f68aa2eb7eb08c3211754e8cf93",
+    "semantic_hash": "90251f68aa2eb7eb08c3211754e8cf93"
+  },
+  "docs/runtime-dependency-licenses.json": {
+    "mtime": 1791881349.1449144,
+    "seen": 1792565988.2731333,
+    "ast_hash": "c04c647ce98480f2f6e453bd72051040",
+    "semantic_hash": "c04c647ce98480f2f6e453bd72051040"
+  },
+  "docs/workstation-dependency-licenses.json": {
+    "mtime": 1791881374.442083,
+    "seen": 1792565988.2731333,
+    "ast_hash": "a541dd2583ed896340c0414003e2fba7",
+    "semantic_hash": "a541dd2583ed896340c0414003e2fba7"
+  },
+  "examples/generic-ethercat/build-evidence.json": {
+    "mtime": 1792469720.4039197,
+    "seen": 1792565988.2731333,
+    "ast_hash": "45902ef6f70cbba48bf56fdbad5ef5c9",
+    "semantic_hash": "45902ef6f70cbba48bf56fdbad5ef5c9"
+  },
+  "examples/generic-ethercat/candidate-verification.json": {
+    "mtime": 1792470681.598003,
+    "seen": 1792565988.2731333,
+    "ast_hash": "c46ce7727740ee2145a85922c72742e6",
+    "semantic_hash": "c46ce7727740ee2145a85922c72742e6"
+  },
+  "examples/generic-ethercat/live-verification.json": {
+    "mtime": 1792470668.3189156,
+    "seen": 1792565988.2731333,
+    "ast_hash": "3cafcc0bf390c2dd2d0f638dcc3c3271",
+    "semantic_hash": "3cafcc0bf390c2dd2d0f638dcc3c3271"
+  },
+  "examples/generic-ethercat/prepare-example/Program.cs": {
+    "mtime": 1792469712.78029,
+    "seen": 1792565988.2731333,
+    "ast_hash": "7db584e49cc9bbe3053182985de6f94e",
+    "semantic_hash": "7db584e49cc9bbe3053182985de6f94e"
+  },
+  "examples/generic-ethercat/prepare-example/prepare.csproj": {
+    "mtime": 1792469711.673604,
+    "seen": 1792565988.2731333,
+    "ast_hash": "c1dc82289c7958c2f536a699e0a86d90",
+    "semantic_hash": "c1dc82289c7958c2f536a699e0a86d90"
+  },
+  "examples/generic-ethercat/resident-broker-verification.json": {
+    "mtime": 1792476446.6654909,
+    "seen": 1792565988.2731333,
+    "ast_hash": "31c1aeafa314d0bbe441b5f526c77ae7",
+    "semantic_hash": "31c1aeafa314d0bbe441b5f526c77ae7"
+  },
+  "examples/is620n-test/axis-manifest.json": {
+    "mtime": 1792378296.017033,
+    "seen": 1792565988.2731333,
+    "ast_hash": "d2b761a39d7f799ab0c99de2d850a42d",
+    "semantic_hash": "d2b761a39d7f799ab0c99de2d850a42d"
+  },
+  "examples/is620n-test/hardware-final-revision-state.json": {
+    "mtime": 1792380687.364477,
+    "seen": 1792565988.2731333,
+    "ast_hash": "7fc727c27e02d1b97dcdb2bf62b52fc2",
+    "semantic_hash": "7fc727c27e02d1b97dcdb2bf62b52fc2"
+  },
+  "examples/is620n-test/hardware-final-state.json": {
+    "mtime": 1792380108.1970181,
+    "seen": 1792565988.2731333,
+    "ast_hash": "1341ddd23e433fbcebdffaeadb64cdc0",
+    "semantic_hash": "1341ddd23e433fbcebdffaeadb64cdc0"
+  },
+  "examples/is620n-test/hardware-stability-before-enable.json": {
+    "mtime": 1792378668.9286768,
+    "seen": 1792565988.2731333,
+    "ast_hash": "aae5fc740db7ef55ecca7a5b1af8b911",
+    "semantic_hash": "aae5fc740db7ef55ecca7a5b1af8b911"
+  },
+  "examples/is620n-test/hardware-stability.json": {
+    "mtime": 1792378668.9286768,
+    "seen": 1792565988.2731333,
+    "ast_hash": "aae5fc740db7ef55ecca7a5b1af8b911",
+    "semantic_hash": "aae5fc740db7ef55ecca7a5b1af8b911"
+  },
+  "examples/is620n-test/mcp-client/Client.csproj": {
+    "mtime": 1792377739.2511902,
+    "seen": 1792565988.2731333,
+    "ast_hash": "a983aad5ccccf98951730705a473d242",
+    "semantic_hash": "a983aad5ccccf98951730705a473d242"
+  },
+  "examples/is620n-test/mcp-client/Program.cs": {
+    "mtime": 1792380293.816906,
+    "seen": 1792565988.2731333,
+    "ast_hash": "5411a70304c3ea4d265128f4315d8d63",
+    "semantic_hash": "5411a70304c3ea4d265128f4315d8d63"
+  },
+  "examples/is620n-test/mcp-evidence.json": {
+    "mtime": 1792380304.6596959,
+    "seen": 1792565988.2731333,
+    "ast_hash": "deda774e2f0d840cbd193c9b30b0ef30",
+    "semantic_hash": "deda774e2f0d840cbd193c9b30b0ef30"
+  },
+  "examples/is620n-test/mcp-final-state.json": {
+    "mtime": 1792380089.9619336,
+    "seen": 1792565988.2731333,
+    "ast_hash": "0fa19aad48c6833f7ec9388114f816db",
+    "semantic_hash": "0fa19aad48c6833f7ec9388114f816db"
+  },
+  "examples/is620n-test/mcp-motion-attempt-2.json": {
+    "mtime": 1792378682.3600905,
+    "seen": 1792565988.2731333,
+    "ast_hash": "5e742ab0b6e5756027d79741d40aefb6",
+    "semantic_hash": "5e742ab0b6e5756027d79741d40aefb6"
+  },
+  "examples/is620n-test/mcp-motion-attempt-3-overspeed.json": {
+    "mtime": 1792378802.945423,
+    "seen": 1792565988.2731333,
+    "ast_hash": "bca40399b1fca1c7b4b33d8f388544a3",
+    "semantic_hash": "bca40399b1fca1c7b4b33d8f388544a3"
+  },
+  "examples/is620n-test/mcp-motion-attempt-4-completion-timeout.json": {
+    "mtime": 1792379058.5166783,
+    "seen": 1792565988.2731333,
+    "ast_hash": "56cdeb5758d3d9cc169dc5ec8e244a4c",
+    "semantic_hash": "56cdeb5758d3d9cc169dc5ec8e244a4c"
+  },
+  "examples/is620n-test/mcp-motion-attempt-5-disabled-detent.json": {
+    "mtime": 1792379473.2733254,
+    "seen": 1792565988.2731333,
+    "ast_hash": "cdc7becc342f7fe7d4dafdda711f6376",
+    "semantic_hash": "cdc7becc342f7fe7d4dafdda711f6376"
+  },
+  "examples/is620n-test/mcp-motion-client/Client.csproj": {
+    "mtime": 1792378364.4123602,
+    "seen": 1792565988.2731333,
+    "ast_hash": "64c3514a5014c6e4e48572f0f091f424",
+    "semantic_hash": "64c3514a5014c6e4e48572f0f091f424"
+  },
+  "examples/is620n-test/mcp-motion-client/Program.cs": {
+    "mtime": 1792379591.5541098,
+    "seen": 1792565988.2731333,
+    "ast_hash": "44e51258b6afba205177cc2c1d3b21e1",
+    "semantic_hash": "44e51258b6afba205177cc2c1d3b21e1"
+  },
+  "examples/is620n-test/mcp-motion-evidence.json": {
+    "mtime": 1792380089.9619336,
+    "seen": 1792565988.274131,
+    "ast_hash": "0fa19aad48c6833f7ec9388114f816db",
+    "semantic_hash": "0fa19aad48c6833f7ec9388114f816db"
+  },
+  "examples/is620n-test/mcp-motion-preflight-1.json": {
+    "mtime": 1792378546.0233293,
+    "seen": 1792565988.274131,
+    "ast_hash": "4313744c475e628a1d1ac24e371def65",
+    "semantic_hash": "4313744c475e628a1d1ac24e371def65"
+  },
+  "examples/is620n-test/mcp-motion-success.json": {
+    "mtime": 1792379935.867743,
+    "seen": 1792565988.274131,
+    "ast_hash": "c778b98f32b5c4a8ed1a23a256ab9439",
+    "semantic_hash": "c778b98f32b5c4a8ed1a23a256ab9439"
+  },
+  "examples/is620n-test/mcp-tested-build-evidence.json": {
+    "mtime": 1792378034.7688656,
+    "seen": 1792565988.274131,
+    "ast_hash": "a6ee5d980ec2027abffc37b99672256b",
+    "semantic_hash": "a6ee5d980ec2027abffc37b99672256b"
+  },
+  "examples/is620n-test/probe_stability.py": {
+    "mtime": 1792378955.2498138,
+    "seen": 1792565988.274131,
+    "ast_hash": "f1b0a15fc7245ebeefcb29e1b16f993e",
+    "semantic_hash": "f1b0a15fc7245ebeefcb29e1b16f993e"
+  },
+  "examples/is620n-test/quick-stop-regression-evidence.json": {
+    "mtime": 1792380716.5640948,
+    "seen": 1792565988.274131,
+    "ast_hash": "e4f452f8d60e25bc43b253e0adaf7faf",
+    "semantic_hash": "e4f452f8d60e25bc43b253e0adaf7faf"
+  },
+  "examples/is620n-test/runtime-axis-lifecycle-live.json": {
+    "mtime": 1792403631.0900316,
+    "seen": 1792565988.274131,
+    "ast_hash": "5d8a304c7f07ea0f94414559cf0f7200",
+    "semantic_hash": "5d8a304c7f07ea0f94414559cf0f7200"
+  },
+  "examples/is620n-test/runtime-axis-ready.json": {
+    "mtime": 1792395604.4936097,
+    "seen": 1792565988.274131,
+    "ast_hash": "26e972d37cb2441fca31c02e3f100312",
+    "semantic_hash": "26e972d37cb2441fca31c02e3f100312"
+  },
+  "examples/is620n-test/runtime-axis-session-fix.json": {
+    "mtime": 1792399118.3159342,
+    "seen": 1792565988.274131,
+    "ast_hash": "57a1aa7942dbf49141b865caa3e723d0",
+    "semantic_hash": "57a1aa7942dbf49141b865caa3e723d0"
+  },
+  "examples/is620n-test/st-motion-evidence.json": {
+    "mtime": 1792380331.2282083,
+    "seen": 1792565988.274131,
+    "ast_hash": "f5794f7dc2d7ecc12e99f6a283990e6e",
+    "semantic_hash": "f5794f7dc2d7ecc12e99f6a283990e6e"
+  },
+  "examples/is620n-test/test_live.cpp": {
+    "mtime": 1792379866.7763286,
+    "seen": 1792565988.274131,
+    "ast_hash": "c5e9ad0e7e3c8d88333c2cd35f546a34",
+    "semantic_hash": "c5e9ad0e7e3c8d88333c2cd35f546a34"
+  },
+  "examples/is620n-test/test_sequence.cpp": {
+    "mtime": 1792377999.8158607,
+    "seen": 1792565988.274131,
+    "ast_hash": "85049dc721a7059330d0a2a981db43db",
+    "semantic_hash": "85049dc721a7059330d0a2a981db43db"
+  },
+  "examples/is620n-test/verify_live.py": {
+    "mtime": 1792379867.7686315,
+    "seen": 1792565988.274131,
+    "ast_hash": "a7ecc1193255cf72a08fa3bcb577b706",
+    "semantic_hash": "a7ecc1193255cf72a08fa3bcb577b706"
+  },
+  "examples/is620n-test/verify_runtime_lifecycle.py": {
+    "mtime": 1792399447.6727722,
+    "seen": 1792565988.274131,
+    "ast_hash": "69c8684e65afa590621049ab9e6dd0be",
+    "semantic_hash": "69c8684e65afa590621049ab9e6dd0be"
+  },
+  "examples/is620n-test/verify_sequence.py": {
+    "mtime": 1792378000.7816284,
+    "seen": 1792565988.274131,
+    "ast_hash": "57b4f427786914afd4f253ae2dd73d75",
+    "semantic_hash": "57b4f427786914afd4f253ae2dd73d75"
+  },
+  "examples/is620n-turn-test/build-baseline-evidence.json": {
+    "mtime": 1792478679.8805175,
+    "seen": 1792565988.274131,
+    "ast_hash": "16ecea4bd74c2852f7880b74f62fd3bf",
+    "semantic_hash": "16ecea4bd74c2852f7880b74f62fd3bf"
+  },
+  "examples/is620n-turn-test/build-final-evidence.json": {
+    "mtime": 1792478813.5217934,
+    "seen": 1792565988.274131,
+    "ast_hash": "a4182c61895cbeb5b909c114b7709d6b",
+    "semantic_hash": "a4182c61895cbeb5b909c114b7709d6b"
+  },
+  "examples/is620n-turn-test/mcp-baseline-evidence.json": {
+    "mtime": 1792478679.7335167,
+    "seen": 1792565988.274131,
+    "ast_hash": "86e13d603427c53755734bc4ba2eb26e",
+    "semantic_hash": "86e13d603427c53755734bc4ba2eb26e"
+  },
+  "examples/is620n-turn-test/mcp-client/Client.csproj": {
+    "mtime": 1792377739.2511902,
+    "seen": 1792565988.274131,
+    "ast_hash": "a983aad5ccccf98951730705a473d242",
+    "semantic_hash": "a983aad5ccccf98951730705a473d242"
+  },
+  "examples/is620n-turn-test/mcp-client/Program.cs": {
+    "mtime": 1792478671.9515557,
+    "seen": 1792565988.274131,
+    "ast_hash": "7060f06dc86c29673616dbed2bd0dbcd",
+    "semantic_hash": "7060f06dc86c29673616dbed2bd0dbcd"
+  },
+  "examples/is620n-turn-test/mcp-final-evidence.json": {
+    "mtime": 1792478813.5147939,
+    "seen": 1792565988.274131,
+    "ast_hash": "b6c435504385e6e4c0d9fe125fc3fb06",
+    "semantic_hash": "b6c435504385e6e4c0d9fe125fc3fb06"
+  },
+  "examples/is620n-turn-test/test_sequence.cpp": {
+    "mtime": 1792478762.6871805,
+    "seen": 1792565988.274131,
+    "ast_hash": "1cdf41218d3efbf03b29780ae1a0c9c8",
+    "semantic_hash": "1cdf41218d3efbf03b29780ae1a0c9c8"
+  },
+  "examples/is620n-turn-test/verification.json": {
+    "mtime": 1792478951.9118464,
+    "seen": 1792565988.274131,
+    "ast_hash": "5985a068ccdb84f88623d9b82a09fb71",
+    "semantic_hash": "5985a068ccdb84f88623d9b82a09fb71"
+  },
+  "examples/library-axis-turn/build-final-evidence.json": {
+    "mtime": 1792556561.3864534,
+    "seen": 1792565988.274131,
+    "ast_hash": "b897307d524e3c3716cbc2b4f4721699",
+    "semantic_hash": "b897307d524e3c3716cbc2b4f4721699"
+  },
+  "examples/library-axis-turn/library-insertion-evidence.json": {
+    "mtime": 1792556558.754303,
+    "seen": 1792565988.274131,
+    "ast_hash": "7b39c8e4c44f8f4d079b8da1bfc7e216",
+    "semantic_hash": "7b39c8e4c44f8f4d079b8da1bfc7e216"
+  },
+  "examples/library-axis-turn/mcp-client/Client.csproj": {
+    "mtime": 1792377739.2511902,
+    "seen": 1792565988.274131,
+    "ast_hash": "a983aad5ccccf98951730705a473d242",
+    "semantic_hash": "a983aad5ccccf98951730705a473d242"
+  },
+  "examples/library-axis-turn/mcp-client/Program.cs": {
+    "mtime": 1792556783.7548308,
+    "seen": 1792565988.274131,
+    "ast_hash": "82c0c4f565e6efe9b2db185a83a3813f",
+    "semantic_hash": "82c0c4f565e6efe9b2db185a83a3813f"
+  },
+  "examples/library-axis-turn/mcp-final-evidence.json": {
+    "mtime": 1792556561.094453,
+    "seen": 1792565988.274131,
+    "ast_hash": "c72063e6fede020c8a3d5420adaa874b",
+    "semantic_hash": "c72063e6fede020c8a3d5420adaa874b"
+  },
+  "examples/library-axis-turn/test_sequence.cpp": {
+    "mtime": 1792489384.2129016,
+    "seen": 1792565988.274131,
+    "ast_hash": "8177af539b3691f8bd96d918fe3ed529",
+    "semantic_hash": "8177af539b3691f8bd96d918fe3ed529"
+  },
+  "examples/library-axis-turn/verification.json": {
+    "mtime": 1792556696.3878822,
+    "seen": 1792565988.274131,
+    "ast_hash": "9df5235429812612c4c410c1081c9018",
+    "semantic_hash": "9df5235429812612c4c410c1081c9018"
+  },
+  "examples/library-axis-turn/verify_sequence.py": {
+    "mtime": 1792489485.0385022,
+    "seen": 1792565988.274131,
+    "ast_hash": "3f38ee58de9e7973553e7869dc466ecb",
+    "semantic_hash": "3f38ee58de9e7973553e7869dc466ecb"
+  },
+  "examples/mcp/client-config.example.json": {
+    "mtime": 1792069481.4771864,
+    "seen": 1792565988.274131,
+    "ast_hash": "29c0a68c1aa1f516481552ddd8c585ee",
+    "semantic_hash": "29c0a68c1aa1f516481552ddd8c585ee"
+  },
+  "examples/mcp/server-config.example.json": {
+    "mtime": 1792069480.4464722,
+    "seen": 1792565988.274131,
+    "ast_hash": "e703486394108e407658f5730f92de98",
+    "semantic_hash": "e703486394108e407658f5730f92de98"
+  },
+  "examples/standard-axis-turn/build-final-evidence.json": {
+    "mtime": 1792489441.6663325,
+    "seen": 1792565988.274131,
+    "ast_hash": "cb40116cceb6a2874f963fed0c127ef5",
+    "semantic_hash": "cb40116cceb6a2874f963fed0c127ef5"
+  },
+  "examples/standard-axis-turn/mcp-client/Client.csproj": {
+    "mtime": 1792377739.2511902,
+    "seen": 1792565988.274131,
+    "ast_hash": "a983aad5ccccf98951730705a473d242",
+    "semantic_hash": "a983aad5ccccf98951730705a473d242"
+  },
+  "examples/standard-axis-turn/mcp-client/Program.cs": {
+    "mtime": 1792489594.1948545,
+    "seen": 1792565988.274131,
+    "ast_hash": "c1aed80b5464cda8a3fc864edddf16cf",
+    "semantic_hash": "c1aed80b5464cda8a3fc864edddf16cf"
+  },
+  "examples/standard-axis-turn/mcp-final-evidence.json": {
+    "mtime": 1792489441.6543324,
+    "seen": 1792565988.274131,
+    "ast_hash": "1260390dbeefdbf74b17d3435ade9a2c",
+    "semantic_hash": "1260390dbeefdbf74b17d3435ade9a2c"
+  },
+  "examples/standard-axis-turn/test_sequence.cpp": {
+    "mtime": 1792489384.2129016,
+    "seen": 1792565988.274131,
+    "ast_hash": "8177af539b3691f8bd96d918fe3ed529",
+    "semantic_hash": "8177af539b3691f8bd96d918fe3ed529"
+  },
+  "examples/standard-axis-turn/verification.json": {
+    "mtime": 1792489568.849625,
+    "seen": 1792565988.274131,
+    "ast_hash": "6219c63b0799f0ff0cf40256e2e54397",
+    "semantic_hash": "6219c63b0799f0ff0cf40256e2e54397"
+  },
+  "examples/standard-axis-turn/verify_sequence.py": {
+    "mtime": 1792489485.0385022,
+    "seen": 1792565988.274131,
+    "ast_hash": "3f38ee58de9e7973553e7869dc466ecb",
+    "semantic_hash": "3f38ee58de9e7973553e7869dc466ecb"
+  },
+  "linux/axis/axis_worker.py": {
+    "mtime": 1792490715.8252523,
+    "seen": 1792565988.274131,
+    "ast_hash": "d5adfabf5e01d8327efb0344b765bb4f",
+    "semantic_hash": "d5adfabf5e01d8327efb0344b765bb4f"
+  },
+  "linux/axis/integration_candidate.py": {
+    "mtime": 1791972984.9301178,
+    "seen": 1792565988.274131,
+    "ast_hash": "a2953a0620b683b5926f40978d33bde6",
+    "semantic_hash": "a2953a0620b683b5926f40978d33bde6"
+  },
+  "linux/axis/integration_simulator.py": {
+    "mtime": 1791972983.0778546,
+    "seen": 1792565988.274131,
+    "ast_hash": "373edddaf7cd181f795cee7505d9937d",
+    "semantic_hash": "373edddaf7cd181f795cee7505d9937d"
+  },
+  "linux/axis/test_axis_worker.py": {
+    "mtime": 1792488877.668919,
+    "seen": 1792565988.274131,
+    "ast_hash": "ae72a239e95be6c5d7f3658466c96f5b",
+    "semantic_hash": "ae72a239e95be6c5d7f3658466c96f5b"
+  },
+  "linux/axis/test_capability_heartbeat.py": {
+    "mtime": 1792488835.2169337,
+    "seen": 1792565988.274131,
+    "ast_hash": "7067180bb37502d45dd06fd5c85472f0",
+    "semantic_hash": "7067180bb37502d45dd06fd5c85472f0"
+  },
+  "linux/axis/test_fault_management.py": {
+    "mtime": 1792490890.5967164,
+    "seen": 1792565988.274131,
+    "ast_hash": "bd50ab25a4b642b95b8293fd3b9ff8d0",
+    "semantic_hash": "bd50ab25a4b642b95b8293fd3b9ff8d0"
+  },
+  "linux/axis/test_worker_sessions.py": {
+    "mtime": 1792398636.5211751,
+    "seen": 1792565988.274131,
+    "ast_hash": "dab3f7ce8b8b332298740ecdff79a645",
+    "semantic_hash": "dab3f7ce8b8b332298740ecdff79a645"
+  },
+  "linux/communication/communication_worker.py": {
+    "mtime": 1792111709.204817,
+    "seen": 1792565988.274131,
+    "ast_hash": "14fc08f6ed43870365d3e8b01eb299c1",
+    "semantic_hash": "14fc08f6ed43870365d3e8b01eb299c1"
+  },
+  "linux/communication/install-client.py": {
+    "mtime": 1792111400.211581,
+    "seen": 1792565988.274131,
+    "ast_hash": "a09387ddfd4d2bb80c3b7f270c9da184",
+    "semantic_hash": "a09387ddfd4d2bb80c3b7f270c9da184"
+  },
+  "linux/communication/service_lifecycle.py": {
+    "mtime": 1792111399.2785225,
+    "seen": 1792565988.274131,
+    "ast_hash": "57bb032c834083aeb0e809c01009a6dd",
+    "semantic_hash": "57bb032c834083aeb0e809c01009a6dd"
+  },
+  "linux/communication/test_service_lifecycle.py": {
+    "mtime": 1792111402.093646,
+    "seen": 1792565988.274131,
+    "ast_hash": "7f30981efc3a50fa621a17fb393edcef",
+    "semantic_hash": "7f30981efc3a50fa621a17fb393edcef"
+  },
+  "linux/communication/test_worker.py": {
+    "mtime": 1792111672.1835232,
+    "seen": 1792565988.274131,
+    "ast_hash": "28cc52221972558cc49df51850a6c69e",
+    "semantic_hash": "28cc52221972558cc49df51850a6c69e"
+  },
+  "linux/communication/verify_candidate.py": {
+    "mtime": 1792111401.164336,
+    "seen": 1792565988.274131,
+    "ast_hash": "6020a57b015f3270e65fcc22e11348d9",
+    "semantic_hash": "6020a57b015f3270e65fcc22e11348d9"
+  },
+  "linux/communication/verify_e2e.py": {
+    "mtime": 1792110745.5147212,
+    "seen": 1792565988.274131,
+    "ast_hash": "2fe834c1248fb443f8f61d02bbd65edb",
+    "semantic_hash": "2fe834c1248fb443f8f61d02bbd65edb"
+  },
+  "linux/debug-write/live-verification.json": {
+    "mtime": 1792485928.6956458,
+    "seen": 1792565988.274131,
+    "ast_hash": "9d63e02c8723667ba8e37d41be564185",
+    "semantic_hash": "9d63e02c8723667ba8e37d41be564185"
+  },
+  "linux/debug-write/package.py": {
+    "mtime": 1792485372.3819742,
+    "seen": 1792565988.274131,
+    "ast_hash": "dd6e8ce960e6faf27ef3f3df4652a041",
+    "semantic_hash": "dd6e8ce960e6faf27ef3f3df4652a041"
+  },
+  "linux/debug-write/provenance.json": {
+    "mtime": 1792485374.4665272,
+    "seen": 1792565988.274131,
+    "ast_hash": "78977b2df5c771ef8fcfb6b5ef239428",
+    "semantic_hash": "78977b2df5c771ef8fcfb6b5ef239428"
+  },
+  "linux/debug-write/src/debug_handler.c": {
+    "mtime": 1792485371.4996202,
+    "seen": 1792565988.274131,
+    "ast_hash": "be2708a7ae80c53dce153f32b0ac9466",
+    "semantic_hash": "be2708a7ae80c53dce153f32b0ac9466"
+  },
+  "linux/debug-write/src/debug_handler.h": {
+    "mtime": 1792485315.1001718,
+    "seen": 1792565988.274131,
+    "ast_hash": "3dae1ee11c47bdd4d30b5b5a0dd9eeaa",
+    "semantic_hash": "3dae1ee11c47bdd4d30b5b5a0dd9eeaa"
+  },
+  "linux/debug-write/src/image_tables.cpp": {
+    "mtime": 1792485317.4158905,
+    "seen": 1792565988.274131,
+    "ast_hash": "13f52128c118f785544b4cf47e6fae5f",
+    "semantic_hash": "13f52128c118f785544b4cf47e6fae5f"
+  },
+  "linux/debug-write/src/plc_state_manager.cpp": {
+    "mtime": 1792485318.5231898,
+    "seen": 1792565988.274131,
+    "ast_hash": "ebc477bbc3456bacc7adc239c33f425c",
+    "semantic_hash": "ebc477bbc3456bacc7adc239c33f425c"
+  },
+  "linux/debug-write/tests/handler_test.c": {
+    "mtime": 1792485339.393469,
+    "seen": 1792565988.274131,
+    "ast_hash": "84626adbd500839ddbb480aaf36fa632",
+    "semantic_hash": "84626adbd500839ddbb480aaf36fa632"
+  },
+  "linux/debug-write/tests/run_tests.py": {
+    "mtime": 1792485270.4403155,
+    "seen": 1792565988.274131,
+    "ast_hash": "c592287510c9dee61644132b8329ba3b",
+    "semantic_hash": "c592287510c9dee61644132b8329ba3b"
+  },
+  "linux/deployment/axis_gate.py": {
+    "mtime": 1792469180.4417512,
+    "seen": 1792565988.274131,
+    "ast_hash": "40c71fe24b604a19fd2b345360d3f2ef",
+    "semantic_hash": "40c71fe24b604a19fd2b345360d3f2ef"
+  },
+  "linux/deployment/communication_gate.py": {
+    "mtime": 1792085129.2851615,
+    "seen": 1792565988.274131,
+    "ast_hash": "936ef84f5817659b515f21c32fcd6dd1",
+    "semantic_hash": "936ef84f5817659b515f21c32fcd6dd1"
+  },
+  "linux/deployment/config.example.json": {
+    "mtime": 1791879202.9035597,
+    "seen": 1792565988.274131,
+    "ast_hash": "8d267278256d12b7bb53bc166f702415",
+    "semantic_hash": "8d267278256d12b7bb53bc166f702415"
+  },
+  "linux/deployment/configuration_download.py": {
+    "mtime": 1792562556.961673,
+    "seen": 1792565988.274131,
+    "ast_hash": "0be6cc2de692ac9ff0d7a9e5b71cfc18",
+    "semantic_hash": "0be6cc2de692ac9ff0d7a9e5b71cfc18"
+  },
+  "linux/deployment/coordinator.py": {
+    "mtime": 1792564327.550353,
+    "seen": 1792565988.274131,
+    "ast_hash": "fb6c065ff7d14feb65bc6a59b3965632",
+    "semantic_hash": "fb6c065ff7d14feb65bc6a59b3965632"
+  },
+  "linux/deployment/ethercat_hardware.py": {
+    "mtime": 1792473705.2609222,
+    "seen": 1792565988.274131,
+    "ast_hash": "08f9f2c43e131f9f3d943c118162141d",
+    "semantic_hash": "08f9f2c43e131f9f3d943c118162141d"
+  },
+  "linux/deployment/motion_cycle.py": {
+    "mtime": 1791969240.2829192,
+    "seen": 1792565988.274131,
+    "ast_hash": "913215888ed309ee585f86079c57476d",
+    "semantic_hash": "913215888ed309ee585f86079c57476d"
+  },
+  "linux/deployment/runtime-profile.json": {
+    "mtime": 1791879206.0100656,
+    "seen": 1792565988.274131,
+    "ast_hash": "6c4891574ad71232f7a2fce01c7d7e0a",
+    "semantic_hash": "6c4891574ad71232f7a2fce01c7d7e0a"
+  },
+  "linux/deployment/scoped_transfer.py": {
+    "mtime": 1792564501.5731132,
+    "seen": 1792565988.274131,
+    "ast_hash": "4783af9b235a5cd9928438920a7606d6",
+    "semantic_hash": "4783af9b235a5cd9928438920a7606d6"
+  },
+  "linux/deployment/test_axis_gate.py": {
+    "mtime": 1792038090.9327674,
+    "seen": 1792565988.274131,
+    "ast_hash": "c36172eacc61e6078d8335b85f3e957b",
+    "semantic_hash": "c36172eacc61e6078d8335b85f3e957b"
+  },
+  "linux/deployment/test_communication_gate.py": {
+    "mtime": 1792110743.5471456,
+    "seen": 1792565988.274131,
+    "ast_hash": "0d795c559de6b89947ef8996379137a4",
+    "semantic_hash": "0d795c559de6b89947ef8996379137a4"
+  },
+  "linux/deployment/test_configuration_download.py": {
+    "mtime": 1792562674.264136,
+    "seen": 1792565988.274131,
+    "ast_hash": "d3b86558f2c35a8f0253008d105d9d30",
+    "semantic_hash": "d3b86558f2c35a8f0253008d105d9d30"
+  },
+  "linux/deployment/test_coordinator.py": {
+    "mtime": 1791887047.2420447,
+    "seen": 1792565988.274131,
+    "ast_hash": "fbc6a15742bcf07a47d7a5f954da0c45",
+    "semantic_hash": "fbc6a15742bcf07a47d7a5f954da0c45"
+  },
+  "linux/deployment/test_ethercat_hardware.py": {
+    "mtime": 1792473766.4556649,
+    "seen": 1792565988.274131,
+    "ast_hash": "a99f09da46ffdc1376453a734a17f49f",
+    "semantic_hash": "a99f09da46ffdc1376453a734a17f49f"
+  },
+  "linux/deployment/test_fault_management.py": {
+    "mtime": 1792491072.2867587,
+    "seen": 1792565988.274131,
+    "ast_hash": "40f7b368b1dc279c490072e6ad0acfb0",
+    "semantic_hash": "40f7b368b1dc279c490072e6ad0acfb0"
+  },
+  "linux/deployment/test_hardware_actions.py": {
+    "mtime": 1792469467.351861,
+    "seen": 1792565988.274131,
+    "ast_hash": "102def5fc5a4efbacc444d0f0440f748",
+    "semantic_hash": "102def5fc5a4efbacc444d0f0440f748"
+  },
+  "linux/deployment/test_motion_cycle.py": {
+    "mtime": 1791969227.3351579,
+    "seen": 1792565988.274131,
+    "ast_hash": "0563e0e7272b4c2674e6ce8d5663e968",
+    "semantic_hash": "0563e0e7272b4c2674e6ce8d5663e968"
+  },
+  "linux/deployment/test_motion_gate.py": {
+    "mtime": 1791953173.240948,
+    "seen": 1792565988.274131,
+    "ast_hash": "8f7d2baa291b3b49013d084142052cd5",
+    "semantic_hash": "8f7d2baa291b3b49013d084142052cd5"
+  },
+  "linux/deployment/test_scoped_transfer.py": {
+    "mtime": 1792564502.5936618,
+    "seen": 1792565988.274131,
+    "ast_hash": "2aee5bccd54aecd40e8aa48af72e9f99",
+    "semantic_hash": "2aee5bccd54aecd40e8aa48af72e9f99"
+  },
+  "linux/engineering-service/bootstrap-pip.py": {
+    "mtime": 1792565079.8529482,
+    "seen": 1792565988.274131,
+    "ast_hash": "891c1704399e10167b39a8d642cf09eb",
+    "semantic_hash": "891c1704399e10167b39a8d642cf09eb"
+  },
+  "linux/engineering-service/install-user.sh": {
+    "mtime": 1792565080.862542,
+    "seen": 1792565988.274131,
+    "ast_hash": "248a9623435b323e347c88091bdd467d",
+    "semantic_hash": "248a9623435b323e347c88091bdd467d"
+  },
+  "linux/engineering-service/pair-client.py": {
+    "mtime": 1792563964.7017555,
+    "seen": 1792565988.274131,
+    "ast_hash": "bd13359ae3e59b9e0ecdb6fa7b8a3231",
+    "semantic_hash": "bd13359ae3e59b9e0ecdb6fa7b8a3231"
+  },
+  "linux/engineering-service/service.py": {
+    "mtime": 1792564757.3240268,
+    "seen": 1792565988.274131,
+    "ast_hash": "532a71bc352e96df1020aa56d7d6382f",
+    "semantic_hash": "532a71bc352e96df1020aa56d7d6382f"
+  },
+  "linux/engineering-service/test_bootstrap.py": {
+    "mtime": 1792565024.6165166,
+    "seen": 1792565988.274131,
+    "ast_hash": "432fc675d598f7e8fa178d18626d1071",
+    "semantic_hash": "432fc675d598f7e8fa178d18626d1071"
+  },
+  "linux/engineering-service/test_service.py": {
+    "mtime": 1792564760.6715815,
+    "seen": 1792565988.274131,
+    "ast_hash": "53c7402b250ddd3a20d470929e878481",
+    "semantic_hash": "53c7402b250ddd3a20d470929e878481"
+  },
+  "linux/ethercat-i210/apply-runtime-hardware.py": {
+    "mtime": 1792470544.4477537,
+    "seen": 1792565988.274131,
+    "ast_hash": "9cf057eedf81ccd21c7aff1cbfc939ba",
+    "semantic_hash": "9cf057eedf81ccd21c7aff1cbfc939ba"
+  },
+  "linux/ethercat-i210/axis-fault-management-verification.json": {
+    "mtime": 1792555597.8160393,
+    "seen": 1792565988.274131,
+    "ast_hash": "db7240d89ab41ea7db1f0d3173550329",
+    "semantic_hash": "db7240d89ab41ea7db1f0d3173550329"
+  },
+  "linux/ethercat-i210/configure-i210.sh": {
+    "mtime": 1792376255.347782,
+    "seen": 1792565988.274131,
+    "ast_hash": "aef91f2fb815373e5720263d9725255e",
+    "semantic_hash": "aef91f2fb815373e5720263d9725255e"
+  },
+  "linux/ethercat-i210/configure-is620n-runtime-axis.py": {
+    "mtime": 1792398955.3226068,
+    "seen": 1792565988.274131,
+    "ast_hash": "d3cdeeb8e01f7e3d9ac4a25a7b14d8b2",
+    "semantic_hash": "d3cdeeb8e01f7e3d9ac4a25a7b14d8b2"
+  },
+  "linux/ethercat-i210/hardware-broker.py": {
+    "mtime": 1792473912.977369,
+    "seen": 1792565988.274131,
+    "ast_hash": "303dda6afce7a296827ac5cb891fe7e8",
+    "semantic_hash": "303dda6afce7a296827ac5cb891fe7e8"
+  },
+  "linux/ethercat-i210/install-generic-runtime.sh": {
+    "mtime": 1792491157.977302,
+    "seen": 1792565988.274131,
+    "ast_hash": "65c4a1cff4293483098a2d71e9f91ac9",
+    "semantic_hash": "65c4a1cff4293483098a2d71e9f91ac9"
+  },
+  "linux/ethercat-i210/install-resident-broker.sh": {
+    "mtime": 1792473915.192674,
+    "seen": 1792565988.274131,
+    "ast_hash": "491b9238a43427acbfa39fa47844dddc",
+    "semantic_hash": "491b9238a43427acbfa39fa47844dddc"
+  },
+  "linux/ethercat-i210/is620n-native-source.json": {
+    "mtime": 1792491114.5968876,
+    "seen": 1792565988.274131,
+    "ast_hash": "a7da8874b35e58a8711334a093c1eb1c",
+    "semantic_hash": "a7da8874b35e58a8711334a093c1eb1c"
+  },
+  "linux/ethercat-i210/native-profile/config/is620n-io-map.json": {
+    "mtime": 1792378456.7342496,
+    "seen": 1792565988.274131,
+    "ast_hash": "cf1de953aeacac96f116a97fce28a6ce",
+    "semantic_hash": "cf1de953aeacac96f116a97fce28a6ce"
+  },
+  "linux/ethercat-i210/native-profile/config/is620n-machine.json": {
+    "mtime": 1792379306.2993658,
+    "seen": 1792565988.274131,
+    "ast_hash": "f14ac563563d11aeecfcc876352f1bb2",
+    "semantic_hash": "f14ac563563d11aeecfcc876352f1bb2"
+  },
+  "linux/ethercat-i210/native-profile/config/is620n-manufacturer-evidence.json": {
+    "mtime": 1792378456.7342496,
+    "seen": 1792565988.274131,
+    "ast_hash": "43fc2175597fadb4b055f818e4923067",
+    "semantic_hash": "43fc2175597fadb4b055f818e4923067"
+  },
+  "linux/ethercat-i210/native-profile/is620n_profile_selftest.cpp": {
+    "mtime": 1792378922.6200044,
+    "seen": 1792565988.274131,
+    "ast_hash": "9c8029eecfb0be5dc5bb08af8d2cb9e7",
+    "semantic_hash": "9c8029eecfb0be5dc5bb08af8d2cb9e7"
+  },
+  "linux/ethercat-i210/native-profile/src/EcMotion.Igh/generated/ethercat_config.hpp": {
+    "mtime": 1792378481.7912836,
+    "seen": 1792565988.274131,
+    "ast_hash": "c22c7d21a1c70c755ab664fed8e784bd",
+    "semantic_hash": "c22c7d21a1c70c755ab664fed8e784bd"
+  },
+  "linux/ethercat-i210/native-profile/src/EcMotion.Igh/generated/is620n_ethercat_config.hpp": {
+    "mtime": 1792470394.1520448,
+    "seen": 1792565988.274131,
+    "ast_hash": "7e452af311f3612731eee63bbdc8a66c",
+    "semantic_hash": "7e452af311f3612731eee63bbdc8a66c"
+  },
+  "linux/ethercat-i210/native-profile/src/EcMotion.Igh/include/ethercat_runtime_config.hpp": {
+    "mtime": 1792470394.156043,
+    "seen": 1792565988.274131,
+    "ast_hash": "d5864c0a4da19797d93d0da8b078970a",
+    "semantic_hash": "d5864c0a4da19797d93d0da8b078970a"
+  },
+  "linux/ethercat-i210/native-profile/src/EcMotion.Igh/src/ethercat_runtime_cli_selftest.py": {
+    "mtime": 1792470394.1610448,
+    "seen": 1792565988.274131,
+    "ast_hash": "f629c02485e3f9f3cb5e783af94789a0",
+    "semantic_hash": "f629c02485e3f9f3cb5e783af94789a0"
+  },
+  "linux/ethercat-i210/native-profile/src/EcMotion.Igh/src/ethercat_runtime_config.cpp": {
+    "mtime": 1792470394.1620438,
+    "seen": 1792565988.274131,
+    "ast_hash": "d323492e8a2dadae23c5544bac33d678",
+    "semantic_hash": "d323492e8a2dadae23c5544bac33d678"
+  },
+  "linux/ethercat-i210/native-profile/src/EcMotion.Igh/src/ethercat_runtime_config_fixture.json": {
+    "mtime": 1792470394.1630447,
+    "seen": 1792565988.274131,
+    "ast_hash": "5740e4be2af9b9fd8a0882217d71de67",
+    "semantic_hash": "5740e4be2af9b9fd8a0882217d71de67"
+  },
+  "linux/ethercat-i210/native-profile/src/EcMotion.Igh/src/ethercat_runtime_config_selftest.cpp": {
+    "mtime": 1792470394.174388,
+    "seen": 1792565988.274131,
+    "ast_hash": "620f567f22231f04eb49ff21ef924530",
+    "semantic_hash": "620f567f22231f04eb49ff21ef924530"
+  },
+  "linux/ethercat-i210/native-profile/test_is620n_profile.py": {
+    "mtime": 1792378922.6200044,
+    "seen": 1792565988.274131,
+    "ast_hash": "4a8df49dfed0afb8bac800282d7725b3",
+    "semantic_hash": "4a8df49dfed0afb8bac800282d7725b3"
+  },
+  "linux/ethercat-i210/native-profile/validate_is620n_readiness.py": {
+    "mtime": 1792378456.7322533,
+    "seen": 1792565988.274131,
+    "ast_hash": "27a4aa52bb51ec1c57e0aa7f3fa7efe4",
+    "semantic_hash": "27a4aa52bb51ec1c57e0aa7f3fa7efe4"
+  },
+  "linux/ethercat-i210/probe-is620n-profile.sh": {
+    "mtime": 1792377789.301062,
+    "seen": 1792565988.274131,
+    "ast_hash": "b5294ba18375dfc74fa44ff5d30fd794",
+    "semantic_hash": "b5294ba18375dfc74fa44ff5d30fd794"
+  },
+  "linux/ethercat-i210/probe-is620n.sh": {
+    "mtime": 1792376671.7951381,
+    "seen": 1792565988.274131,
+    "ast_hash": "161515fbc2168dca4c22559ca2dd8341",
+    "semantic_hash": "161515fbc2168dca4c22559ca2dd8341"
+  },
+  "linux/ethercat-i210/start-is620n-commissioning.sh": {
+    "mtime": 1792402315.1701133,
+    "seen": 1792565988.274131,
+    "ast_hash": "942540b4594e8aec7b333f4d620b12f5",
+    "semantic_hash": "942540b4594e8aec7b333f4d620b12f5"
+  },
+  "linux/ethercat-i210/test_apply_runtime_hardware.py": {
+    "mtime": 1792470544.461754,
+    "seen": 1792565988.274131,
+    "ast_hash": "be119021eb0f432c2660cc6636af4e72",
+    "semantic_hash": "be119021eb0f432c2660cc6636af4e72"
+  },
+  "linux/ethercat-i210/test_hardware_broker.py": {
+    "mtime": 1792473904.3706262,
+    "seen": 1792565988.274131,
+    "ast_hash": "51731d7a9181f9a8f9f2469817dee57a",
+    "semantic_hash": "51731d7a9181f9a8f9f2469817dee57a"
+  },
+  "linux/mcp/motion_gateway.py": {
+    "mtime": 1792070494.095522,
+    "seen": 1792565988.274131,
+    "ast_hash": "6e94ac2861974a65d4f41d9db1418679",
+    "semantic_hash": "6e94ac2861974a65d4f41d9db1418679"
+  },
+  "linux/mcp/test_motion_gateway.py": {
+    "mtime": 1792070477.7550216,
+    "seen": 1792565988.274131,
+    "ast_hash": "d073bfe197c6131a74dd45567730a108",
+    "semantic_hash": "d073bfe197c6131a74dd45567730a108"
+  },
+  "linux/mcp/test_simulator.py": {
+    "mtime": 1792068986.4366188,
+    "seen": 1792565988.274131,
+    "ast_hash": "f722282a53c84ac0d63e3cea88566763",
+    "semantic_hash": "f722282a53c84ac0d63e3cea88566763"
+  },
+  "linux/motion/test_virtual_worker.py": {
+    "mtime": 1791952728.023621,
+    "seen": 1792565988.274131,
+    "ast_hash": "1c6bad0137e2ea366c012f589606ffb6",
+    "semantic_hash": "1c6bad0137e2ea366c012f589606ffb6"
+  },
+  "linux/motion/verify_candidate.py": {
+    "mtime": 1791953569.638332,
+    "seen": 1792565988.274131,
+    "ast_hash": "242206c140b9ee967b3ef25935efb1bc",
+    "semantic_hash": "242206c140b9ee967b3ef25935efb1bc"
+  },
+  "linux/motion/verify_isolated.py": {
+    "mtime": 1791952790.3123963,
+    "seen": 1792565988.274131,
+    "ast_hash": "9ce865eb01575e3b60550d33c5eb8c01",
+    "semantic_hash": "9ce865eb01575e3b60550d33c5eb8c01"
+  },
+  "linux/motion/virtual_worker.py": {
+    "mtime": 1791952757.0752246,
+    "seen": 1792565988.274131,
+    "ast_hash": "ec7168d440da6ce939e98abcf27891bf",
+    "semantic_hash": "ec7168d440da6ce939e98abcf27891bf"
+  },
+  "linux/runtime-install/candidate-probe.cpp": {
+    "mtime": 1791878094.911455,
+    "seen": 1792565988.274131,
+    "ast_hash": "8fc648555132ce67f488dbb2bc296ac0",
+    "semantic_hash": "8fc648555132ce67f488dbb2bc296ac0"
+  },
+  "linux/runtime-install/candidate-store.py": {
+    "mtime": 1791877419.190655,
+    "seen": 1792565988.274131,
+    "ast_hash": "0ae65a42cc2f7517916a57badfc4721a",
+    "semantic_hash": "0ae65a42cc2f7517916a57badfc4721a"
+  },
+  "linux/runtime-install/install-user.sh": {
+    "mtime": 1791879188.1254752,
+    "seen": 1792565988.274131,
+    "ast_hash": "5f1f7380506ffbeea745f49f1e2fabf6",
+    "semantic_hash": "5f1f7380506ffbeea745f49f1e2fabf6"
+  },
+  "linux/runtime-install/isolate.py": {
+    "mtime": 1791878533.4764466,
+    "seen": 1792565988.274131,
+    "ast_hash": "f558babadff8c0563394e3b75805cf93",
+    "semantic_hash": "f558babadff8c0563394e3b75805cf93"
+  },
+  "linux/runtime-install/launcher-gate.py": {
+    "mtime": 1791880066.8999317,
+    "seen": 1792565988.274131,
+    "ast_hash": "a66352b6135ac9eacab78b99feaf5e49",
+    "semantic_hash": "a66352b6135ac9eacab78b99feaf5e49"
+  },
+  "linux/runtime-install/license-inventory.py": {
+    "mtime": 1791881342.5517457,
+    "seen": 1792565988.274131,
+    "ast_hash": "d8aa072f92779bc02727641efb4bbe19",
+    "semantic_hash": "d8aa072f92779bc02727641efb4bbe19"
+  },
+  "linux/runtime-install/prepare-counter-candidate.py": {
+    "mtime": 1791878827.8499575,
+    "seen": 1792565988.274131,
+    "ast_hash": "2b43b4f7cebcb2b6a257c9b1232ce686",
+    "semantic_hash": "2b43b4f7cebcb2b6a257c9b1232ce686"
+  },
+  "linux/runtime-install/provision-local.py": {
+    "mtime": 1791878956.8316014,
+    "seen": 1792565988.274131,
+    "ast_hash": "48ecffc572e20a5f9322d66a931d3063",
+    "semantic_hash": "48ecffc572e20a5f9322d66a931d3063"
+  },
+  "linux/runtime-install/run-user.sh": {
+    "mtime": 1791879187.1894205,
+    "seen": 1792565988.274131,
+    "ast_hash": "bf1714f57cb2c2103e93cdf90d1c3f94",
+    "semantic_hash": "bf1714f57cb2c2103e93cdf90d1c3f94"
+  },
+  "linux/runtime-install/runtime-session.py": {
+    "mtime": 1791879700.240124,
+    "seen": 1792565988.274131,
+    "ast_hash": "1c8cce50d8ac7ebab7a395ed6a213c81",
+    "semantic_hash": "1c8cce50d8ac7ebab7a395ed6a213c81"
+  },
+  "linux/runtime-install/test_candidate_store.py": {
+    "mtime": 1791877377.0285726,
+    "seen": 1792565988.274131,
+    "ast_hash": "c55f1cd3b29fe07966de7907752b31d1",
+    "semantic_hash": "c55f1cd3b29fe07966de7907752b31d1"
+  },
+  "linux/runtime-install/test_isolation.py": {
+    "mtime": 1791878514.7780502,
+    "seen": 1792565988.274131,
+    "ast_hash": "d500de3bb8a851f2ec1982de9f734602",
+    "semantic_hash": "d500de3bb8a851f2ec1982de9f734602"
+  },
+  "linux/runtime-install/test_launcher_gate.py": {
+    "mtime": 1791880038.4088824,
+    "seen": 1792565988.274131,
+    "ast_hash": "890078fe8c5bfd2f9a9a87b862d16e9d",
+    "semantic_hash": "890078fe8c5bfd2f9a9a87b862d16e9d"
+  },
+  "linux/runtime-install/test_provision.py": {
+    "mtime": 1791878898.3471985,
+    "seen": 1792565988.274131,
+    "ast_hash": "606b3817882288a1f1d4ac6221c92c95",
+    "semantic_hash": "606b3817882288a1f1d4ac6221c92c95"
+  },
+  "linux/runtime-install/test_session.py": {
+    "mtime": 1791879593.1398964,
+    "seen": 1792565988.274131,
+    "ast_hash": "4f5b25df39b036dafc05fef531360421",
+    "semantic_hash": "4f5b25df39b036dafc05fef531360421"
+  },
+  "scripts/connect-private.ps1": {
+    "mtime": 1791883868.419821,
+    "seen": 1792565988.274131,
+    "ast_hash": "a1f435eb3bfb4b8a23069ecc0daf1d34",
+    "semantic_hash": "a1f435eb3bfb4b8a23069ecc0daf1d34"
+  },
+  "scripts/setup-mcp.ps1": {
+    "mtime": 1792070205.029744,
+    "seen": 1792565988.274131,
+    "ast_hash": "a760e5277494c62248b9f6983ef4dad7",
+    "semantic_hash": "a760e5277494c62248b9f6983ef4dad7"
+  },
+  "scripts/start-mcp.ps1": {
+    "mtime": 1792069483.4777615,
+    "seen": 1792565988.274131,
+    "ast_hash": "73f6c6e11fcc9bce1dd31eeab9efb02c",
+    "semantic_hash": "73f6c6e11fcc9bce1dd31eeab9efb02c"
+  },
+  "scripts/start.ps1": {
+    "mtime": 1791881836.6616945,
+    "seen": 1792565988.274131,
+    "ast_hash": "01b01aa8ed7395edfaad07bba963b427",
+    "semantic_hash": "01b01aa8ed7395edfaad07bba963b427"
+  },
+  "scripts/verify.ps1": {
+    "mtime": 1792111438.4910073,
+    "seen": 1792565988.274131,
+    "ast_hash": "73da8bd2a808706debde96ad4785a587",
+    "semantic_hash": "73da8bd2a808706debde96ad4785a587"
+  },
+  "src/StWorkbench.App/AxisInstructions.cs": {
+    "mtime": 1792556417.344978,
+    "seen": 1792565988.274131,
+    "ast_hash": "3a482ae28310c0c9c6b9ba39a0de6caa",
+    "semantic_hash": "3a482ae28310c0c9c6b9ba39a0de6caa"
+  },
+  "src/StWorkbench.App/AxisPropertiesWorkspace.cs": {
+    "mtime": 1792480243.7012496,
+    "seen": 1792565988.274131,
+    "ast_hash": "cda3abb91a68291ac09210dc6781cb7d",
+    "semantic_hash": "cda3abb91a68291ac09210dc6781cb7d"
+  },
+  "src/StWorkbench.App/CommunicationWorkspace.cs": {
+    "mtime": 1792084718.9786563,
+    "seen": 1792565988.274131,
+    "ast_hash": "77c591af3d8c1ab9c7364a412cd76dad",
+    "semantic_hash": "77c591af3d8c1ab9c7364a412cd76dad"
+  },
+  "src/StWorkbench.App/DownloadWorkspace.cs": {
+    "mtime": 1792564025.71648,
+    "seen": 1792565988.274131,
+    "ast_hash": "6b9af0ae5c45f3827d09a44a914f4d50",
+    "semantic_hash": "6b9af0ae5c45f3827d09a44a914f4d50"
+  },
+  "src/StWorkbench.App/EditorOnlineWriteWorkspace.cs": {
+    "mtime": 1792486619.9531734,
+    "seen": 1792565988.274131,
+    "ast_hash": "dc6260838eeb316193b28dc7bdbc87d4",
+    "semantic_hash": "dc6260838eeb316193b28dc7bdbc87d4"
+  },
+  "src/StWorkbench.App/EngineeringConnection.cs": {
+    "mtime": 1792565042.125346,
+    "seen": 1792565988.274131,
+    "ast_hash": "2bc6dee03591a3c9c7250037a77809e5",
+    "semantic_hash": "2bc6dee03591a3c9c7250037a77809e5"
+  },
+  "src/StWorkbench.App/EngineeringCredentials.cs": {
+    "mtime": 1792564150.0296004,
+    "seen": 1792565988.274131,
+    "ast_hash": "43d27b4c9168c963c49eeb3197b3f235",
+    "semantic_hash": "43d27b4c9168c963c49eeb3197b3f235"
+  },
+  "src/StWorkbench.App/EngineeringNavigation.cs": {
+    "mtime": 1792041867.0047212,
+    "seen": 1792565988.274131,
+    "ast_hash": "0f264c1871d5ae3e38b52e67ca515df1",
+    "semantic_hash": "0f264c1871d5ae3e38b52e67ca515df1"
+  },
+  "src/StWorkbench.App/EngineeringOnline.cs": {
+    "mtime": 1792565043.164555,
+    "seen": 1792565988.274131,
+    "ast_hash": "74cf681a697a2a23f98fe6c501426105",
+    "semantic_hash": "74cf681a697a2a23f98fe6c501426105"
+  },
+  "src/StWorkbench.App/EtherCatRuntimePane.cs": {
+    "mtime": 1792481648.960386,
+    "seen": 1792565988.274131,
+    "ast_hash": "4b4b5d4f2e4f8eae6197956c9bf662d8",
+    "semantic_hash": "4b4b5d4f2e4f8eae6197956c9bf662d8"
+  },
+  "src/StWorkbench.App/HardwareWorkspace.cs": {
+    "mtime": 1792565045.2646396,
+    "seen": 1792565988.274131,
+    "ast_hash": "e992cd9c6824eae5f59231806f5feea9",
+    "semantic_hash": "e992cd9c6824eae5f59231806f5feea9"
+  },
+  "src/StWorkbench.App/InlineMonitorGenerator.cs": {
+    "mtime": 1791913065.8211727,
+    "seen": 1792565988.274131,
+    "ast_hash": "90e5e7c3329a6cfb75ee0ad2a0dbf1a7",
+    "semantic_hash": "90e5e7c3329a6cfb75ee0ad2a0dbf1a7"
+  },
+  "src/StWorkbench.App/InstructionLibrary.cs": {
+    "mtime": 1792030506.8000553,
+    "seen": 1792565988.274131,
+    "ast_hash": "551eea5bd3bf098bde90397e6f82d3f6",
+    "semantic_hash": "551eea5bd3bf098bde90397e6f82d3f6"
+  },
+  "src/StWorkbench.App/IoMappingWorkspace.cs": {
+    "mtime": 1792040592.3630068,
+    "seen": 1792565988.274131,
+    "ast_hash": "59f85f58ac3884538ee9952a3d5d94a8",
+    "semantic_hash": "59f85f58ac3884538ee9952a3d5d94a8"
+  },
+  "src/StWorkbench.App/MainWindow.cs": {
+    "mtime": 1792565044.1955986,
+    "seen": 1792565988.274131,
+    "ast_hash": "5e8d380457e8c222f250187d6a162ea8",
+    "semantic_hash": "5e8d380457e8c222f250187d6a162ea8"
+  },
+  "src/StWorkbench.App/MotionCyclePane.cs": {
+    "mtime": 1791970027.3393495,
+    "seen": 1792565988.274131,
+    "ast_hash": "0526418b52b297913f022eca8470a27b",
+    "semantic_hash": "0526418b52b297913f022eca8470a27b"
+  },
+  "src/StWorkbench.App/NetworkWorkspace.cs": {
+    "mtime": 1792564441.1515448,
+    "seen": 1792565988.274131,
+    "ast_hash": "ebe88f1d98ed375cf099d2f8c56d4ef8",
+    "semantic_hash": "ebe88f1d98ed375cf099d2f8c56d4ef8"
+  },
+  "src/StWorkbench.App/OnlineWriteWorkspace.cs": {
+    "mtime": 1792564752.58914,
+    "seen": 1792565988.274131,
+    "ast_hash": "7d95dced75b90b8ae0f8af9a57e7d385",
+    "semantic_hash": "7d95dced75b90b8ae0f8af9a57e7d385"
+  },
+  "src/StWorkbench.App/PathPreview.cs": {
+    "mtime": 1791952512.0087228,
+    "seen": 1792565988.274131,
+    "ast_hash": "550473e646f3d4739e2de7be9e933149",
+    "semantic_hash": "550473e646f3d4739e2de7be9e933149"
+  },
+  "src/StWorkbench.App/PathWorkspace.cs": {
+    "mtime": 1792038968.5903523,
+    "seen": 1792565988.274131,
+    "ast_hash": "8987600e2347a2ac54f96b86adf6f448",
+    "semantic_hash": "8987600e2347a2ac54f96b86adf6f448"
+  },
+  "src/StWorkbench.App/Program.cs": {
+    "mtime": 1791874940.6275296,
+    "seen": 1792565988.274131,
+    "ast_hash": "5ee2af6e92918969ebffa17370640f06",
+    "semantic_hash": "5ee2af6e92918969ebffa17370640f06"
+  },
+  "src/StWorkbench.App/ProjectResourceDrag.cs": {
+    "mtime": 1791966365.4274814,
+    "seen": 1792565988.274131,
+    "ast_hash": "6ff882a006a12acc415626eb14355c89",
+    "semantic_hash": "6ff882a006a12acc415626eb14355c89"
+  },
+  "src/StWorkbench.App/ResourceMenus.cs": {
+    "mtime": 1792564442.843161,
+    "seen": 1792565988.274131,
+    "ast_hash": "ed492a413d0ef690c521ddaa275e824e",
+    "semantic_hash": "ed492a413d0ef690c521ddaa275e824e"
+  },
+  "src/StWorkbench.App/StHighlighting.cs": {
+    "mtime": 1791877079.4666746,
+    "seen": 1792565988.274131,
+    "ast_hash": "2fa14cc603fb3d4352c63c4408879c20",
+    "semantic_hash": "2fa14cc603fb3d4352c63c4408879c20"
+  },
+  "src/StWorkbench.App/StWorkbench.App.csproj": {
+    "mtime": 1791874939.5218823,
+    "seen": 1792565988.274131,
+    "ast_hash": "c302c9cd67ce0f85eef0b468553b2d04",
+    "semantic_hash": "c302c9cd67ce0f85eef0b468553b2d04"
+  },
+  "src/StWorkbench.App/TransferWorkspace.cs": {
+    "mtime": 1792565041.1351483,
+    "seen": 1792565988.274131,
+    "ast_hash": "811077c2ba8053409ec54f6dd2784a99",
+    "semantic_hash": "811077c2ba8053409ec54f6dd2784a99"
+  },
+  "src/StWorkbench.App/TrendView.cs": {
+    "mtime": 1791879943.1109004,
+    "seen": 1792565988.274131,
+    "ast_hash": "48b8030e647fc6a149bb3f8f754a43ca",
+    "semantic_hash": "48b8030e647fc6a149bb3f8f754a43ca"
+  },
+  "src/StWorkbench.App/WorkbenchApplication.cs": {
+    "mtime": 1791874941.695427,
+    "seen": 1792565988.274131,
+    "ast_hash": "4adc2b466fabd64a934fe9c7738e8d3a",
+    "semantic_hash": "4adc2b466fabd64a934fe9c7738e8d3a"
+  },
+  "src/StWorkbench.App/WorkbenchSettings.cs": {
+    "mtime": 1791879120.0507803,
+    "seen": 1792565988.274131,
+    "ast_hash": "21d95029e3ebc69054b0d0cee0115721",
+    "semantic_hash": "21d95029e3ebc69054b0d0cee0115721"
+  },
+  "src/StWorkbench.Core/AxisControlBinding.cs": {
+    "mtime": 1791978442.5307896,
+    "seen": 1792565988.274131,
+    "ast_hash": "7d2991e923e0fdd85bbe58c400ff8dc1",
+    "semantic_hash": "7d2991e923e0fdd85bbe58c400ff8dc1"
+  },
+  "src/StWorkbench.Core/AxisInstructionCatalog.cs": {
+    "mtime": 1792556417.310977,
+    "seen": 1792565988.274131,
+    "ast_hash": "adfe4822ed35613c78ae59fc77ab23e7",
+    "semantic_hash": "adfe4822ed35613c78ae59fc77ab23e7"
+  },
+  "src/StWorkbench.Core/AxisMechanics.cs": {
+    "mtime": 1792038136.093969,
+    "seen": 1792565988.274131,
+    "ast_hash": "75b6752adc7f7c59d8c2cd3abcba6825",
+    "semantic_hash": "75b6752adc7f7c59d8c2cd3abcba6825"
+  },
+  "src/StWorkbench.Core/BuiltinLibraryCatalog.cs": {
+    "mtime": 1792111069.4830034,
+    "seen": 1792565988.274131,
+    "ast_hash": "7dacb3b0575f2093d99d1802e2ac46f3",
+    "semantic_hash": "7dacb3b0575f2093d99d1802e2ac46f3"
+  },
+  "src/StWorkbench.Core/CommunicationConfiguration.cs": {
+    "mtime": 1792111037.1796148,
+    "seen": 1792565988.274131,
+    "ast_hash": "5d517b3fb00b33e95d91f9bf86438a5e",
+    "semantic_hash": "5d517b3fb00b33e95d91f9bf86438a5e"
+  },
+  "src/StWorkbench.Core/ControlLibraryBinding.cs": {
+    "mtime": 1792110941.70102,
+    "seen": 1792565988.274131,
+    "ast_hash": "f88f32e019622078b8caa18a13effc84",
+    "semantic_hash": "f88f32e019622078b8caa18a13effc84"
+  },
+  "src/StWorkbench.Core/DxfPathImporter.cs": {
+    "mtime": 1791952348.9499469,
+    "seen": 1792565988.274131,
+    "ast_hash": "75082ee9a9e98f28e29e63338b33ef92",
+    "semantic_hash": "75082ee9a9e98f28e29e63338b33ef92"
+  },
+  "src/StWorkbench.Core/EsiImporter.cs": {
+    "mtime": 1792468626.8988762,
+    "seen": 1792565988.274131,
+    "ast_hash": "6a7ad9fd08203093450decaa9ed0c6a4",
+    "semantic_hash": "6a7ad9fd08203093450decaa9ed0c6a4"
+  },
+  "src/StWorkbench.Core/EtherCatDeviceDescription.cs": {
+    "mtime": 1792468626.900876,
+    "seen": 1792565988.274131,
+    "ast_hash": "855bdd121b199adc271fd7967cc7656b",
+    "semantic_hash": "855bdd121b199adc271fd7967cc7656b"
+  },
+  "src/StWorkbench.Core/EtherCatRuntimeConfiguration.cs": {
+    "mtime": 1792469413.5077171,
+    "seen": 1792565988.274131,
+    "ast_hash": "9cf31e667732e8ed444ac042ee8029d8",
+    "semantic_hash": "9cf31e667732e8ed444ac042ee8029d8"
+  },
+  "src/StWorkbench.Core/IoAutoMapping.cs": {
+    "mtime": 1792040342.5103605,
+    "seen": 1792565988.274131,
+    "ast_hash": "7b4e5939a8fae6217101b1b0114381eb",
+    "semantic_hash": "7b4e5939a8fae6217101b1b0114381eb"
+  },
+  "src/StWorkbench.Core/MotionCycleConfiguration.cs": {
+    "mtime": 1791969624.0862267,
+    "seen": 1792565988.274131,
+    "ast_hash": "61d842f68285d3be399e17b49f93d2d3",
+    "semantic_hash": "61d842f68285d3be399e17b49f93d2d3"
+  },
+  "src/StWorkbench.Core/MotionPathAsset.cs": {
+    "mtime": 1791952297.7579708,
+    "seen": 1792565988.274131,
+    "ast_hash": "3f11eb4b0db08c2c232080ddd02f34d1",
+    "semantic_hash": "3f11eb4b0db08c2c232080ddd02f34d1"
+  },
+  "src/StWorkbench.Core/NetworkConfiguration.cs": {
+    "mtime": 1792470508.3717155,
+    "seen": 1792565988.274131,
+    "ast_hash": "4feb004f86f1f31a2448efa2ec7fd915",
+    "semantic_hash": "4feb004f86f1f31a2448efa2ec7fd915"
+  },
+  "src/StWorkbench.Core/PathBindingValidator.cs": {
+    "mtime": 1791954940.458293,
+    "seen": 1792565988.274131,
+    "ast_hash": "2ce5d03feb453db4a00d19400ab47287",
+    "semantic_hash": "2ce5d03feb453db4a00d19400ab47287"
+  },
+  "src/StWorkbench.Core/ProjectModel.cs": {
+    "mtime": 1792563832.5655928,
+    "seen": 1792565988.274131,
+    "ast_hash": "4d84e6204e85f59f9c447b92d661b6f4",
+    "semantic_hash": "4d84e6204e85f59f9c447b92d661b6f4"
+  },
+  "src/StWorkbench.Core/ProjectStore.cs": {
+    "mtime": 1791952127.6938589,
+    "seen": 1792565988.274131,
+    "ast_hash": "598bac826da6cca5458855bf2f943340",
+    "semantic_hash": "598bac826da6cca5458855bf2f943340"
+  },
+  "src/StWorkbench.Core/ProjectValidator.cs": {
+    "mtime": 1792563833.5098066,
+    "seen": 1792565988.274131,
+    "ast_hash": "d210a01e76015d6038046045c867a78f",
+    "semantic_hash": "d210a01e76015d6038046045c867a78f"
+  },
+  "src/StWorkbench.Core/StInstructionCatalog.cs": {
+    "mtime": 1792030503.2110486,
+    "seen": 1792565988.274131,
+    "ast_hash": "fe23f81cac88121cbd32d56267cd2558",
+    "semantic_hash": "fe23f81cac88121cbd32d56267cd2558"
+  },
+  "src/StWorkbench.Core/StLanguageService.cs": {
+    "mtime": 1792110889.5954666,
+    "seen": 1792565988.274131,
+    "ast_hash": "48932a9af575eb917ec1d82df034c6e6",
+    "semantic_hash": "48932a9af575eb917ec1d82df034c6e6"
+  },
+  "src/StWorkbench.Core/StResourceInsertion.cs": {
+    "mtime": 1791966753.868629,
+    "seen": 1792565988.274131,
+    "ast_hash": "d7657b12f3a48bcd778854e78c3234b4",
+    "semantic_hash": "d7657b12f3a48bcd778854e78c3234b4"
+  },
+  "src/StWorkbench.Core/StSnippetInsertion.cs": {
+    "mtime": 1792030504.186795,
+    "seen": 1792565988.274131,
+    "ast_hash": "8e92c7d956c63e6cbf8706bded7ec18d",
+    "semantic_hash": "8e92c7d956c63e6cbf8706bded7ec18d"
+  },
+  "src/StWorkbench.Core/StWorkbench.Core.csproj": {
+    "mtime": 1791874345.7470512,
+    "seen": 1792565988.274131,
+    "ast_hash": "80f05a21712fbff33d18e570bafa96c3",
+    "semantic_hash": "80f05a21712fbff33d18e570bafa96c3"
+  },
+  "src/StWorkbench.Mcp/BuildService.cs": {
+    "mtime": 1792069905.8611844,
+    "seen": 1792565988.274131,
+    "ast_hash": "1eb68f15343fb9f78a3fe300ad6c410d",
+    "semantic_hash": "1eb68f15343fb9f78a3fe300ad6c410d"
+  },
+  "src/StWorkbench.Mcp/ConfigurationService.cs": {
+    "mtime": 1792069060.2624135,
+    "seen": 1792565988.274131,
+    "ast_hash": "23520e062f05b26c23ed1dbfca811d0c",
+    "semantic_hash": "23520e062f05b26c23ed1dbfca811d0c"
+  },
+  "src/StWorkbench.Mcp/DeviceService.cs": {
+    "mtime": 1792084845.5050044,
+    "seen": 1792565988.274131,
+    "ast_hash": "fe210f48d8197b34229c7a3940c296a6",
+    "semantic_hash": "fe210f48d8197b34229c7a3940c296a6"
+  },
+  "src/StWorkbench.Mcp/EngineeringSchemas.cs": {
+    "mtime": 1792069293.1004086,
+    "seen": 1792565988.274131,
+    "ast_hash": "1889c59ee75095c3eb74c9862017c5d9",
+    "semantic_hash": "1889c59ee75095c3eb74c9862017c5d9"
+  },
+  "src/StWorkbench.Mcp/McpTools.cs": {
+    "mtime": 1792556532.7649555,
+    "seen": 1792565988.274131,
+    "ast_hash": "0371e1af309ab793f0c1d32cb56851d3",
+    "semantic_hash": "0371e1af309ab793f0c1d32cb56851d3"
+  },
+  "src/StWorkbench.Mcp/MotionService.cs": {
+    "mtime": 1792069563.2741945,
+    "seen": 1792565988.274131,
+    "ast_hash": "41ef979c4ef191bc4e67274a3fc6e355",
+    "semantic_hash": "41ef979c4ef191bc4e67274a3fc6e355"
+  },
+  "src/StWorkbench.Mcp/MotionTransport.cs": {
+    "mtime": 1792070081.3667133,
+    "seen": 1792565988.274131,
+    "ast_hash": "4ac36c46dbd70632dcf86648944361cd",
+    "semantic_hash": "4ac36c46dbd70632dcf86648944361cd"
+  },
+  "src/StWorkbench.Mcp/OperationJobs.cs": {
+    "mtime": 1792070001.3893254,
+    "seen": 1792565988.274131,
+    "ast_hash": "852b9350f1ba38dbe2d1a006b2176d9b",
+    "semantic_hash": "852b9350f1ba38dbe2d1a006b2176d9b"
+  },
+  "src/StWorkbench.Mcp/Program.cs": {
+    "mtime": 1792069018.663588,
+    "seen": 1792565988.274131,
+    "ast_hash": "2f33070c451732e2efeac65e17e2ee40",
+    "semantic_hash": "2f33070c451732e2efeac65e17e2ee40"
+  },
+  "src/StWorkbench.Mcp/ServerOptions.cs": {
+    "mtime": 1792068442.8870416,
+    "seen": 1792565988.274131,
+    "ast_hash": "43c9be6d5c46c716518237cb405d3ae0",
+    "semantic_hash": "43c9be6d5c46c716518237cb405d3ae0"
+  },
+  "src/StWorkbench.Mcp/StWorkbench.Mcp.csproj": {
+    "mtime": 1792068382.3014443,
+    "seen": 1792565988.274131,
+    "ast_hash": "fc27fda276fd2a9117d9afb1048aa4b6",
+    "semantic_hash": "fc27fda276fd2a9117d9afb1048aa4b6"
+  },
+  "src/StWorkbench.Mcp/WorkspaceModels.cs": {
+    "mtime": 1792069142.724304,
+    "seen": 1792565988.274131,
+    "ast_hash": "aec2dc50a46d17b437b9de7112423328",
+    "semantic_hash": "aec2dc50a46d17b437b9de7112423328"
+  },
+  "src/StWorkbench.Mcp/WorkspaceService.cs": {
+    "mtime": 1792084331.8316448,
+    "seen": 1792565988.274131,
+    "ast_hash": "3ab7b7d82f3552b3a37a47cf0c5c0035",
+    "semantic_hash": "3ab7b7d82f3552b3a37a47cf0c5c0035"
+  },
+  "src/StWorkbench.Motion/BufferedMotionBridge.cs": {
+    "mtime": 1791874807.0044918,
+    "seen": 1792565988.274131,
+    "ast_hash": "d8ec9398ab7072b471a9035c432132f7",
+    "semantic_hash": "d8ec9398ab7072b471a9035c432132f7"
+  },
+  "src/StWorkbench.Motion/ContinuousPathPlanner.cs": {
+    "mtime": 1792037839.6208389,
+    "seen": 1792565988.274131,
+    "ast_hash": "1b00e0642554675bdc15b11f03ab68d0",
+    "semantic_hash": "1b00e0642554675bdc15b11f03ab68d0"
+  },
+  "src/StWorkbench.Motion/MotionContract.cs": {
+    "mtime": 1791874648.7177205,
+    "seen": 1792565988.274131,
+    "ast_hash": "f258c4fa3a283adac5b69e2984b2b3eb",
+    "semantic_hash": "f258c4fa3a283adac5b69e2984b2b3eb"
+  },
+  "src/StWorkbench.Motion/StWorkbench.Motion.csproj": {
+    "mtime": 1791952043.236267,
+    "seen": 1792565988.274131,
+    "ast_hash": "4d57fc941ae7c36f3f0f481357162e25",
+    "semantic_hash": "4d57fc941ae7c36f3f0f481357162e25"
+  },
+  "src/StWorkbench.OpenPlc/DebugSocketClient.cs": {
+    "mtime": 1792564148.2791984,
+    "seen": 1792565988.274131,
+    "ast_hash": "4a1f5cf4d879f820c8ca6c21e3e4491f",
+    "semantic_hash": "4a1f5cf4d879f820c8ca6c21e3e4491f"
+  },
+  "src/StWorkbench.OpenPlc/DebugSymbols.cs": {
+    "mtime": 1791955079.7926357,
+    "seen": 1792565988.274131,
+    "ast_hash": "afdda4df580020ee059506c3b32e80b6",
+    "semantic_hash": "afdda4df580020ee059506c3b32e80b6"
+  },
+  "src/StWorkbench.OpenPlc/DeviceCertificateTrust.cs": {
+    "mtime": 1791879064.730252,
+    "seen": 1792565988.274131,
+    "ast_hash": "ed640f1ff541c87acb0fbfe7af6cd1cb",
+    "semantic_hash": "ed640f1ff541c87acb0fbfe7af6cd1cb"
+  },
+  "src/StWorkbench.OpenPlc/OpenPlcClient.cs": {
+    "mtime": 1792564146.3380291,
+    "seen": 1792565988.274131,
+    "ast_hash": "36ae5d73f97b72ed158a0425206861f7",
+    "semantic_hash": "36ae5d73f97b72ed158a0425206861f7"
+  },
+  "src/StWorkbench.OpenPlc/ReadOnlyMonitor.cs": {
+    "mtime": 1791874857.4640026,
+    "seen": 1792565988.274131,
+    "ast_hash": "0dac55c2b8369c336d855d223f38207b",
+    "semantic_hash": "0dac55c2b8369c336d855d223f38207b"
+  },
+  "src/StWorkbench.OpenPlc/SshRuntimeTunnel.cs": {
+    "mtime": 1791883638.1429431,
+    "seen": 1792565988.274131,
+    "ast_hash": "0a53cf4df011ff192916986844cf9ed6",
+    "semantic_hash": "0a53cf4df011ff192916986844cf9ed6"
+  },
+  "src/StWorkbench.OpenPlc/SshSessionBroker.cs": {
+    "mtime": 1791879769.5816348,
+    "seen": 1792565988.274131,
+    "ast_hash": "217b830550418cf6b8b4ecb81fd18584",
+    "semantic_hash": "217b830550418cf6b8b4ecb81fd18584"
+  },
+  "src/StWorkbench.OpenPlc/StWorkbench.OpenPlc.csproj": {
+    "mtime": 1791874555.3898346,
+    "seen": 1792565988.274131,
+    "ast_hash": "80f05a21712fbff33d18e570bafa96c3",
+    "semantic_hash": "80f05a21712fbff33d18e570bafa96c3"
+  },
+  "src/StWorkbench.Toolchain/EngineeringArchive.cs": {
+    "mtime": 1792564220.9258993,
+    "seen": 1792565988.274131,
+    "ast_hash": "ae0642c11c200239eb2e0c27f74311b5",
+    "semantic_hash": "ae0642c11c200239eb2e0c27f74311b5"
+  },
+  "src/StWorkbench.Toolchain/EngineeringClient.cs": {
+    "mtime": 1792564817.433098,
+    "seen": 1792565988.274131,
+    "ast_hash": "bb887e33f6bd15fea6023595aabf9d9b",
+    "semantic_hash": "bb887e33f6bd15fea6023595aabf9d9b"
+  },
+  "src/StWorkbench.Toolchain/ExternalCompiler.cs": {
+    "mtime": 1791877487.7468405,
+    "seen": 1792565988.274131,
+    "ast_hash": "ae95121ac2553e7ed7faed343795f8e5",
+    "semantic_hash": "ae95121ac2553e7ed7faed343795f8e5"
+  },
+  "src/StWorkbench.Toolchain/HardwarePackageBuilder.cs": {
+    "mtime": 1792564103.7564805,
+    "seen": 1792565988.274131,
+    "ast_hash": "8e65e5e7dee8d5d3b48faab495765b8c",
+    "semantic_hash": "8e65e5e7dee8d5d3b48faab495765b8c"
+  },
+  "src/StWorkbench.Toolchain/PackageBuilder.cs": {
+    "mtime": 1792564417.0199287,
+    "seen": 1792565988.274131,
+    "ast_hash": "7689d40e32bc807a927b30f6ca9055b2",
+    "semantic_hash": "7689d40e32bc807a927b30f6ca9055b2"
+  },
+  "src/StWorkbench.Toolchain/ProgramDownloadWorkflow.cs": {
+    "mtime": 1792564024.775404,
+    "seen": 1792565988.274131,
+    "ast_hash": "9740250e9ea450b43056d561582b23bb",
+    "semantic_hash": "9740250e9ea450b43056d561582b23bb"
+  },
+  "src/StWorkbench.Toolchain/RemoteDeploymentClient.cs": {
+    "mtime": 1792563945.4610927,
+    "seen": 1792565988.274131,
+    "ast_hash": "2c3aa9e02c0748e2d3ab97a30daa54c9",
+    "semantic_hash": "2c3aa9e02c0748e2d3ab97a30daa54c9"
+  },
+  "src/StWorkbench.Toolchain/StWorkbench.Toolchain.csproj": {
+    "mtime": 1791952302.8853126,
+    "seen": 1792565988.274131,
+    "ast_hash": "315579e55f12859e2fd9de156a61f42e",
+    "semantic_hash": "315579e55f12859e2fd9de156a61f42e"
+  },
+  "tests/StWorkbench.App.Tests/AxisPropertiesUiTests.cs": {
+    "mtime": 1792038191.301548,
+    "seen": 1792565988.274131,
+    "ast_hash": "7d595147c055e2ab054e4090fe380ac1",
+    "semantic_hash": "7d595147c055e2ab054e4090fe380ac1"
+  },
+  "tests/StWorkbench.App.Tests/AxisUiTests.cs": {
+    "mtime": 1791981044.18084,
+    "seen": 1792565988.274131,
+    "ast_hash": "d85003bab38b0d6641c3ec4f42ecf6b9",
+    "semantic_hash": "d85003bab38b0d6641c3ec4f42ecf6b9"
+  },
+  "tests/StWorkbench.App.Tests/CommunicationUiTests.cs": {
+    "mtime": 1792111210.035952,
+    "seen": 1792565988.274131,
+    "ast_hash": "d12deb76c7f27aa201594d13eb18fcb5",
+    "semantic_hash": "d12deb76c7f27aa201594d13eb18fcb5"
+  },
+  "tests/StWorkbench.App.Tests/ConfigurationUiTests.cs": {
+    "mtime": 1792040302.7946506,
+    "seen": 1792565988.274131,
+    "ast_hash": "11f2f65d33941997e689046e1eb80272",
+    "semantic_hash": "11f2f65d33941997e689046e1eb80272"
+  },
+  "tests/StWorkbench.App.Tests/ConfirmationDialogUiTests.cs": {
+    "mtime": 1792486439.8822694,
+    "seen": 1792565988.274131,
+    "ast_hash": "0111f88301232797fc87a4e46d7e5272",
+    "semantic_hash": "0111f88301232797fc87a4e46d7e5272"
+  },
+  "tests/StWorkbench.App.Tests/DownloadApplyUiTests.cs": {
+    "mtime": 1792565046.3350644,
+    "seen": 1792565988.274131,
+    "ast_hash": "fc2396e648706ed89a4a577e651f8631",
+    "semantic_hash": "fc2396e648706ed89a4a577e651f8631"
+  },
+  "tests/StWorkbench.App.Tests/EditorOnlineWriteUiTests.cs": {
+    "mtime": 1792486661.6325097,
+    "seen": 1792565988.274131,
+    "ast_hash": "9d5f642dd16162e39523a53606c1dc3f",
+    "semantic_hash": "9d5f642dd16162e39523a53606c1dc3f"
+  },
+  "tests/StWorkbench.App.Tests/EngineeringNavigationUiTests.cs": {
+    "mtime": 1792041817.4671733,
+    "seen": 1792565988.274131,
+    "ast_hash": "24a4b22b008341b9d36bcdf432112ef2",
+    "semantic_hash": "24a4b22b008341b9d36bcdf432112ef2"
+  },
+  "tests/StWorkbench.App.Tests/EtherCatRuntimeUiTests.cs": {
+    "mtime": 1792565096.7461498,
+    "seen": 1792565988.274131,
+    "ast_hash": "11266afb12485770842fb5e2f07e414e",
+    "semantic_hash": "11266afb12485770842fb5e2f07e414e"
+  },
+  "tests/StWorkbench.App.Tests/IoMappingUiTests.cs": {
+    "mtime": 1792040629.023156,
+    "seen": 1792565988.274131,
+    "ast_hash": "33b0774fe3cd333b7c0d1d58f2b7fd20",
+    "semantic_hash": "33b0774fe3cd333b7c0d1d58f2b7fd20"
+  },
+  "tests/StWorkbench.App.Tests/MotionCycleUiTests.cs": {
+    "mtime": 1791970028.3233507,
+    "seen": 1792565988.274131,
+    "ast_hash": "1d21eb7ae14983690f6c34fe9a7f596f",
+    "semantic_hash": "1d21eb7ae14983690f6c34fe9a7f596f"
+  },
+  "tests/StWorkbench.App.Tests/MultiAxisUiTests.cs": {
+    "mtime": 1792029860.6481724,
+    "seen": 1792565988.274131,
+    "ast_hash": "ba2a6093ad57557921f0957de91a1c9e",
+    "semantic_hash": "ba2a6093ad57557921f0957de91a1c9e"
+  },
+  "tests/StWorkbench.App.Tests/OnlineWorkspaceUiTests.cs": {
+    "mtime": 1792487235.0638309,
+    "seen": 1792565988.274131,
+    "ast_hash": "bb0d73e86cc6879060fb70bae18627bd",
+    "semantic_hash": "bb0d73e86cc6879060fb70bae18627bd"
+  },
+  "tests/StWorkbench.App.Tests/OnlineWriteUiTests.cs": {
+    "mtime": 1792485381.7001307,
+    "seen": 1792565988.274131,
+    "ast_hash": "328c69c065ecd2cb580f890de79fcdb6",
+    "semantic_hash": "328c69c065ecd2cb580f890de79fcdb6"
+  },
+  "tests/StWorkbench.App.Tests/PathNavigationUiTests.cs": {
+    "mtime": 1792038945.338358,
+    "seen": 1792565988.274131,
+    "ast_hash": "d42a4654bc095caecee68776e3c9aa3c",
+    "semantic_hash": "d42a4654bc095caecee68776e3c9aa3c"
+  },
+  "tests/StWorkbench.App.Tests/PathScaleUiTests.cs": {
+    "mtime": 1792032095.7560406,
+    "seen": 1792565988.274131,
+    "ast_hash": "69904e06a071e66c42f64dabf4677ba0",
+    "semantic_hash": "69904e06a071e66c42f64dabf4677ba0"
+  },
+  "tests/StWorkbench.App.Tests/PathUiTests.cs": {
+    "mtime": 1792030618.6342573,
+    "seen": 1792565988.274131,
+    "ast_hash": "612a09dbb730757f272c6d2a646a845d",
+    "semantic_hash": "612a09dbb730757f272c6d2a646a845d"
+  },
+  "tests/StWorkbench.App.Tests/Program.cs": {
+    "mtime": 1792565047.3055995,
+    "seen": 1792565988.274131,
+    "ast_hash": "2d92ba50cfed8ccd0ea50916d47431a4",
+    "semantic_hash": "2d92ba50cfed8ccd0ea50916d47431a4"
+  },
+  "tests/StWorkbench.App.Tests/ResourceDragTests.cs": {
+    "mtime": 1791966700.177666,
+    "seen": 1792565988.274131,
+    "ast_hash": "f9caf2f0a2ad642042cd870ffc3da04f",
+    "semantic_hash": "f9caf2f0a2ad642042cd870ffc3da04f"
+  },
+  "tests/StWorkbench.App.Tests/ScopedTransferUiTests.cs": {
+    "mtime": 1792564255.9676733,
+    "seen": 1792565988.274131,
+    "ast_hash": "086f2dc406dfa75d04fab6877fd1e3a4",
+    "semantic_hash": "086f2dc406dfa75d04fab6877fd1e3a4"
+  },
+  "tests/StWorkbench.App.Tests/StWorkbench.App.Tests.csproj": {
+    "mtime": 1791874945.7426598,
+    "seen": 1792565988.274131,
+    "ast_hash": "b6730990c3af58cf2c2c2ca5bd03dd17",
+    "semantic_hash": "b6730990c3af58cf2c2c2ca5bd03dd17"
+  },
+  "tests/StWorkbench.App.Tests/UsabilityTests.cs": {
+    "mtime": 1791949203.5060976,
+    "seen": 1792565988.274131,
+    "ast_hash": "b71bd9290c47a69973c5677b1582d173",
+    "semantic_hash": "b71bd9290c47a69973c5677b1582d173"
+  },
+  "tests/StWorkbench.Core.Tests/AxisBindingTests.cs": {
+    "mtime": 1791978443.486261,
+    "seen": 1792565988.274131,
+    "ast_hash": "d9c03b790192052cfc0a1ef1a504793d",
+    "semantic_hash": "d9c03b790192052cfc0a1ef1a504793d"
+  },
+  "tests/StWorkbench.Core.Tests/AxisMechanicsTests.cs": {
+    "mtime": 1792038126.9494145,
+    "seen": 1792565988.274131,
+    "ast_hash": "285ce2117e315aa5e8dc4cb18818b81b",
+    "semantic_hash": "285ce2117e315aa5e8dc4cb18818b81b"
+  },
+  "tests/StWorkbench.Core.Tests/CommunicationTests.cs": {
+    "mtime": 1792111001.6755514,
+    "seen": 1792565988.274131,
+    "ast_hash": "a5d3513aaffc76a40b96df310ec36649",
+    "semantic_hash": "a5d3513aaffc76a40b96df310ec36649"
+  },
+  "tests/StWorkbench.Core.Tests/ConfigurationTests.cs": {
+    "mtime": 1792025694.7203953,
+    "seen": 1792565988.274131,
+    "ast_hash": "6680c0def9fa218e27fbe1c3f6ba91bd",
+    "semantic_hash": "6680c0def9fa218e27fbe1c3f6ba91bd"
+  },
+  "tests/StWorkbench.Core.Tests/EsiDetailedTests.cs": {
+    "mtime": 1792468626.902875,
+    "seen": 1792565988.274131,
+    "ast_hash": "0deb189799be514c60d0ef7ace7cb360",
+    "semantic_hash": "0deb189799be514c60d0ef7ace7cb360"
+  },
+  "tests/StWorkbench.Core.Tests/EsiTests.cs": {
+    "mtime": 1792468626.901876,
+    "seen": 1792565988.274131,
+    "ast_hash": "03b86cd209922617129f530d6e89ec29",
+    "semantic_hash": "03b86cd209922617129f530d6e89ec29"
+  },
+  "tests/StWorkbench.Core.Tests/EtherCatRuntimeTests.cs": {
+    "mtime": 1792469401.8649142,
+    "seen": 1792565988.274131,
+    "ast_hash": "ba5a1937fe621125001d69e4f35fc7f4",
+    "semantic_hash": "ba5a1937fe621125001d69e4f35fc7f4"
+  },
+  "tests/StWorkbench.Core.Tests/InstructionTests.cs": {
+    "mtime": 1792030567.7763038,
+    "seen": 1792565988.274131,
+    "ast_hash": "4c5603139b3fca5ff3b71f97fc8b2136",
+    "semantic_hash": "4c5603139b3fca5ff3b71f97fc8b2136"
+  },
+  "tests/StWorkbench.Core.Tests/IoAutoMappingTests.cs": {
+    "mtime": 1792040333.87579,
+    "seen": 1792565988.274131,
+    "ast_hash": "15a576b8c45d69441c046282ce2d4de5",
+    "semantic_hash": "15a576b8c45d69441c046282ce2d4de5"
+  },
+  "tests/StWorkbench.Core.Tests/LanguageTests.cs": {
+    "mtime": 1791913009.9485953,
+    "seen": 1792565988.274131,
+    "ast_hash": "7d47c7b8a005ed6826d84e0eab8e3992",
+    "semantic_hash": "7d47c7b8a005ed6826d84e0eab8e3992"
+  },
+  "tests/StWorkbench.Core.Tests/MotionCycleTests.cs": {
+    "mtime": 1791969576.1876526,
+    "seen": 1792565988.274131,
+    "ast_hash": "170d46b0cb2e47bc2fb5b8a0a29e17bf",
+    "semantic_hash": "170d46b0cb2e47bc2fb5b8a0a29e17bf"
+  },
+  "tests/StWorkbench.Core.Tests/PathAssetTests.cs": {
+    "mtime": 1791954809.0230062,
+    "seen": 1792565988.274131,
+    "ast_hash": "8b5857cf1e613d9ca90c9df50879e767",
+    "semantic_hash": "8b5857cf1e613d9ca90c9df50879e767"
+  },
+  "tests/StWorkbench.Core.Tests/Program.cs": {
+    "mtime": 1792470508.3747132,
+    "seen": 1792565988.274131,
+    "ast_hash": "3aace538bcaba1c7462bb530de04a7b4",
+    "semantic_hash": "3aace538bcaba1c7462bb530de04a7b4"
+  },
+  "tests/StWorkbench.Core.Tests/RegressionTests.cs": {
+    "mtime": 1791877423.378517,
+    "seen": 1792565988.274131,
+    "ast_hash": "2b08c02d3284657847014b43185ea515",
+    "semantic_hash": "2b08c02d3284657847014b43185ea515"
+  },
+  "tests/StWorkbench.Core.Tests/ResourceInsertionTests.cs": {
+    "mtime": 1791966754.8385289,
+    "seen": 1792565988.274131,
+    "ast_hash": "1e0a704e6c461de436a1a7f5662a79af",
+    "semantic_hash": "1e0a704e6c461de436a1a7f5662a79af"
+  },
+  "tests/StWorkbench.Core.Tests/StWorkbench.Core.Tests.csproj": {
+    "mtime": 1791874349.7629168,
+    "seen": 1792565988.274131,
+    "ast_hash": "6645bce8091236be4377446b0da79402",
+    "semantic_hash": "6645bce8091236be4377446b0da79402"
+  },
+  "tests/StWorkbench.Debug.Tests/Program.cs": {
+    "mtime": 1792485251.1037552,
+    "seen": 1792565988.274131,
+    "ast_hash": "ed9bb54e3728970f536a76f686b04e31",
+    "semantic_hash": "ed9bb54e3728970f536a76f686b04e31"
+  },
+  "tests/StWorkbench.Debug.Tests/StWorkbench.Debug.Tests.csproj": {
+    "mtime": 1791879677.6093223,
+    "seen": 1792565988.274131,
+    "ast_hash": "0db90b4601808c417acb51a5c8f455dd",
+    "semantic_hash": "0db90b4601808c417acb51a5c8f455dd"
+  },
+  "tests/StWorkbench.Deployment.Tests/ConfigurationDownloadWorkflowTests.cs": {
+    "mtime": 1792563995.8009162,
+    "seen": 1792565988.274131,
+    "ast_hash": "c59cb53f2a29bfb0e2a9d43dfe798e3f",
+    "semantic_hash": "c59cb53f2a29bfb0e2a9d43dfe798e3f"
+  },
+  "tests/StWorkbench.Deployment.Tests/EngineeringClientTests.cs": {
+    "mtime": 1792564821.4895098,
+    "seen": 1792565988.274131,
+    "ast_hash": "d76a729c26abeaf46099163d6282440d",
+    "semantic_hash": "d76a729c26abeaf46099163d6282440d"
+  },
+  "tests/StWorkbench.Deployment.Tests/Program.cs": {
+    "mtime": 1792563873.8619714,
+    "seen": 1792565988.274131,
+    "ast_hash": "df63332b3490b5eee4ebe71515f4b8ff",
+    "semantic_hash": "df63332b3490b5eee4ebe71515f4b8ff"
+  },
+  "tests/StWorkbench.Deployment.Tests/ProgramDownloadWorkflowTests.cs": {
+    "mtime": 1792562129.8958805,
+    "seen": 1792565988.274131,
+    "ast_hash": "e73f86b3afe63dcea51c2308af88e061",
+    "semantic_hash": "e73f86b3afe63dcea51c2308af88e061"
+  },
+  "tests/StWorkbench.Deployment.Tests/StWorkbench.Deployment.Tests.csproj": {
+    "mtime": 1791878785.5875993,
+    "seen": 1792565988.274131,
+    "ast_hash": "da7bb59fcd72653a495b3424bcc8ca9d",
+    "semantic_hash": "da7bb59fcd72653a495b3424bcc8ca9d"
+  },
+  "tests/StWorkbench.Mcp.Tests/ControlTests.cs": {
+    "mtime": 1792069771.0491357,
+    "seen": 1792565988.274131,
+    "ast_hash": "8b2bebb7b60b6ee28e9fe907f38858ab",
+    "semantic_hash": "8b2bebb7b60b6ee28e9fe907f38858ab"
+  },
+  "tests/StWorkbench.Mcp.Tests/Program.cs": {
+    "mtime": 1792070040.7821856,
+    "seen": 1792565988.274131,
+    "ast_hash": "43c67a4311b994a16fb258839666b6b3",
+    "semantic_hash": "43c67a4311b994a16fb258839666b6b3"
+  },
+  "tests/StWorkbench.Mcp.Tests/ProtocolTests.cs": {
+    "mtime": 1792556330.5459824,
+    "seen": 1792565988.274131,
+    "ast_hash": "73ef129b724473cc14e9694eda2a04f0",
+    "semantic_hash": "73ef129b724473cc14e9694eda2a04f0"
+  },
+  "tests/StWorkbench.Mcp.Tests/ShutdownTests.cs": {
+    "mtime": 1792070039.8675928,
+    "seen": 1792565988.274131,
+    "ast_hash": "087008035f5a7e0ea9310314ee678e39",
+    "semantic_hash": "087008035f5a7e0ea9310314ee678e39"
+  },
+  "tests/StWorkbench.Mcp.Tests/StWorkbench.Mcp.Tests.csproj": {
+    "mtime": 1792068064.8573225,
+    "seen": 1792565988.274131,
+    "ast_hash": "f2175505112f996bd21bbcb7b63a814d",
+    "semantic_hash": "f2175505112f996bd21bbcb7b63a814d"
+  },
+  "tests/StWorkbench.Mcp.Tests/WorkspaceTests.cs": {
+    "mtime": 1792069404.8617973,
+    "seen": 1792565988.274131,
+    "ast_hash": "cf79ee3c4aff811ef83f17b35112cd89",
+    "semantic_hash": "cf79ee3c4aff811ef83f17b35112cd89"
+  },
+  "tests/StWorkbench.Motion.Tests/ContinuousPathTests.cs": {
+    "mtime": 1792037814.9453044,
+    "seen": 1792565988.274131,
+    "ast_hash": "01a276008b516cf873ccc5934a52a7f9",
+    "semantic_hash": "01a276008b516cf873ccc5934a52a7f9"
+  },
+  "tests/StWorkbench.Motion.Tests/Program.cs": {
+    "mtime": 1791952044.2336516,
+    "seen": 1792565988.274131,
+    "ast_hash": "3eed532cc7e68f812e5cc102677a3e12",
+    "semantic_hash": "3eed532cc7e68f812e5cc102677a3e12"
+  },
+  "tests/StWorkbench.Motion.Tests/StWorkbench.Motion.Tests.csproj": {
+    "mtime": 1791874520.9352286,
+    "seen": 1792565988.274131,
+    "ast_hash": "f92968baf50b7a739c0b8930fb9ee0ac",
+    "semantic_hash": "f92968baf50b7a739c0b8930fb9ee0ac"
+  },
+  "tests/StWorkbench.OpenPlc.Tests/Program.cs": {
+    "mtime": 1791884100.3694177,
+    "seen": 1792565988.274131,
+    "ast_hash": "a507b75e0f066e0974a4b4c11f2067be",
+    "semantic_hash": "a507b75e0f066e0974a4b4c11f2067be"
+  },
+  "tests/StWorkbench.OpenPlc.Tests/StWorkbench.OpenPlc.Tests.csproj": {
+    "mtime": 1791874556.5862296,
+    "seen": 1792565988.274131,
+    "ast_hash": "0db90b4601808c417acb51a5c8f455dd",
+    "semantic_hash": "0db90b4601808c417acb51a5c8f455dd"
+  },
+  "tests/StWorkbench.Toolchain.Tests/EngineeringArchiveTests.cs": {
+    "mtime": 1792564201.2589345,
+    "seen": 1792565988.274131,
+    "ast_hash": "5cf87c73ee97a5a799fa64a37242e280",
+    "semantic_hash": "5cf87c73ee97a5a799fa64a37242e280"
+  },
+  "tests/StWorkbench.Toolchain.Tests/FeaturePackageSmoke.cs": {
+    "mtime": 1792111104.0523925,
+    "seen": 1792565988.274131,
+    "ast_hash": "118954dd5ee73ca713a64fd31096363a",
+    "semantic_hash": "118954dd5ee73ca713a64fd31096363a"
+  },
+  "tests/StWorkbench.Toolchain.Tests/GenericEtherCatPackageSmoke.cs": {
+    "mtime": 1792564370.5661638,
+    "seen": 1792565988.274131,
+    "ast_hash": "463dfaf4b16f6b033edcb0158e4f9835",
+    "semantic_hash": "463dfaf4b16f6b033edcb0158e4f9835"
+  },
+  "tests/StWorkbench.Toolchain.Tests/Program.cs": {
+    "mtime": 1792564133.8750262,
+    "seen": 1792565988.274131,
+    "ast_hash": "9f5a48a74df369dcc1f1907015e65de8",
+    "semantic_hash": "9f5a48a74df369dcc1f1907015e65de8"
+  },
+  "tests/StWorkbench.Toolchain.Tests/RealAxisPackageSmoke.cs": {
+    "mtime": 1792037980.347946,
+    "seen": 1792565988.274131,
+    "ast_hash": "a080ee360f677466a5d641e97d6c6634",
+    "semantic_hash": "a080ee360f677466a5d641e97d6c6634"
+  },
+  "tests/StWorkbench.Toolchain.Tests/RealCompilerSmoke.cs": {
+    "mtime": 1791876911.4687133,
+    "seen": 1792565988.274131,
+    "ast_hash": "43017f92a29c5ea2ddd2372aabc3b483",
+    "semantic_hash": "43017f92a29c5ea2ddd2372aabc3b483"
+  },
+  "tests/StWorkbench.Toolchain.Tests/RealHardwarePackageSmoke.cs": {
+    "mtime": 1792025694.7183993,
+    "seen": 1792565988.274131,
+    "ast_hash": "b369c547b2e15bd01bbd956d024271e0",
+    "semantic_hash": "b369c547b2e15bd01bbd956d024271e0"
+  },
+  "tests/StWorkbench.Toolchain.Tests/RealMotionCyclePackageSmoke.cs": {
+    "mtime": 1791968966.767554,
+    "seen": 1792565988.274131,
+    "ast_hash": "2cddf8183e0e6156bede3c9bed680f72",
+    "semantic_hash": "2cddf8183e0e6156bede3c9bed680f72"
+  },
+  "tests/StWorkbench.Toolchain.Tests/RealPackageSmoke.cs": {
+    "mtime": 1792564104.778037,
+    "seen": 1792565988.274131,
+    "ast_hash": "c498d7ca06acea6d36ea8f1216b5f9bf",
+    "semantic_hash": "c498d7ca06acea6d36ea8f1216b5f9bf"
+  },
+  "tests/StWorkbench.Toolchain.Tests/RealPathPackageSmoke.cs": {
+    "mtime": 1791952972.970242,
+    "seen": 1792565988.274131,
+    "ast_hash": "2692de176b8e71dfabe9e7b2a9c4df23",
+    "semantic_hash": "2692de176b8e71dfabe9e7b2a9c4df23"
+  },
+  "tests/StWorkbench.Toolchain.Tests/StWorkbench.Toolchain.Tests.csproj": {
+    "mtime": 1791874498.1175117,
+    "seen": 1792565988.274131,
+    "ast_hash": "da7bb59fcd72653a495b3424bcc8ca9d",
+    "semantic_hash": "da7bb59fcd72653a495b3424bcc8ca9d"
+  },
+  "tools/axis-bridge/axis_bridge.cpp": {
+    "mtime": 1791972444.1424413,
+    "seen": 1792565988.274131,
+    "ast_hash": "cd0f36557211b6a4285e667256a03f26",
+    "semantic_hash": "cd0f36557211b6a4285e667256a03f26"
+  },
+  "tools/axis-bridge/axis_bridge.hpp": {
+    "mtime": 1791971614.632765,
+    "seen": 1792565988.274131,
+    "ast_hash": "0ca4ab516a4a18abbd1b5f21025ec59c",
+    "semantic_hash": "0ca4ab516a4a18abbd1b5f21025ec59c"
+  },
+  "tools/axis-bridge/axis_lifecycle.inc": {
+    "mtime": 1791971614.6337695,
+    "seen": 1792565988.274131,
+    "ast_hash": "df6d6d600f1fb55b340241c9b74596a5",
+    "semantic_hash": "df6d6d600f1fb55b340241c9b74596a5"
+  },
+  "tools/axis-bridge/compile_fixture.mjs": {
+    "mtime": 1791971475.2938528,
+    "seen": 1792565988.274131,
+    "ast_hash": "8a1622efad28ca22ca9982ed1e664537",
+    "semantic_hash": "8a1622efad28ca22ca9982ed1e664537"
+  },
+  "tools/axis-bridge/generated_axis_scan_shim.cpp": {
+    "mtime": 1791971201.7731404,
+    "seen": 1792565988.274131,
+    "ast_hash": "0153cd32b147d4538a95aefb92d725d2",
+    "semantic_hash": "0153cd32b147d4538a95aefb92d725d2"
+  },
+  "tools/axis-bridge/test_candidate.cpp": {
+    "mtime": 1791972983.9899602,
+    "seen": 1792565988.274131,
+    "ast_hash": "653e7f9d2cf7efdb1f4169849f044670",
+    "semantic_hash": "653e7f9d2cf7efdb1f4169849f044670"
+  },
+  "tools/axis-bridge/test_contract.mjs": {
+    "mtime": 1791970981.4625716,
+    "seen": 1792565988.274131,
+    "ast_hash": "16b441880608af26c70d82f4c3a0a88d",
+    "semantic_hash": "16b441880608af26c70d82f4c3a0a88d"
+  },
+  "tools/axis-bridge/test_scan.cpp": {
+    "mtime": 1791972501.1009555,
+    "seen": 1792565988.274131,
+    "ast_hash": "92e943779329e3ef69f773385ebd7a2e",
+    "semantic_hash": "92e943779329e3ef69f773385ebd7a2e"
+  },
+  "tools/axis-bridge/test_stub.cpp": {
+    "mtime": 1791971475.2938528,
+    "seen": 1792565988.274131,
+    "ast_hash": "35afea135336118e1df9fe28c6f9ca0d",
+    "semantic_hash": "35afea135336118e1df9fe28c6f9ca0d"
+  },
+  "tools/axis-bridge/test_transport.cpp": {
+    "mtime": 1791972379.914037,
+    "seen": 1792565988.274131,
+    "ast_hash": "f287dc6dc4a342988b75693e6a556548",
+    "semantic_hash": "f287dc6dc4a342988b75693e6a556548"
+  },
+  "tools/axis-bridge/verify-linux.sh": {
+    "mtime": 1791971665.959642,
+    "seen": 1792565988.274131,
+    "ast_hash": "07d2e805e762bbd9d70fafe02bb05494",
+    "semantic_hash": "07d2e805e762bbd9d70fafe02bb05494"
+  },
+  "tools/communication-bridge/communication_bridge.cpp": {
+    "mtime": 1792084412.2758758,
+    "seen": 1792565988.274131,
+    "ast_hash": "1c1479867954b31fce926b6944f82c16",
+    "semantic_hash": "1c1479867954b31fce926b6944f82c16"
+  },
+  "tools/communication-bridge/communication_bridge.hpp": {
+    "mtime": 1792084407.8968344,
+    "seen": 1792565988.274131,
+    "ast_hash": "22adf8357bac6fbc323bb5586c766c04",
+    "semantic_hash": "22adf8357bac6fbc323bb5586c766c04"
+  },
+  "tools/communication-bridge/communication_lifecycle.inc": {
+    "mtime": 1792084409.8964381,
+    "seen": 1792565988.274131,
+    "ast_hash": "fc4121fd7ed0c471750ec9b1602628b4",
+    "semantic_hash": "fc4121fd7ed0c471750ec9b1602628b4"
+  },
+  "tools/communication-bridge/generated_communication_scan_shim.cpp": {
+    "mtime": 1792085130.3756719,
+    "seen": 1792565988.274131,
+    "ast_hash": "2e8afdd8459e02d9153164027fa42037",
+    "semantic_hash": "2e8afdd8459e02d9153164027fa42037"
+  },
+  "tools/communication-bridge/test.cpp": {
+    "mtime": 1792111070.403392,
+    "seen": 1792565988.274131,
+    "ast_hash": "4b21372ee9b9aba6d8f6543b97d67211",
+    "semantic_hash": "4b21372ee9b9aba6d8f6543b97d67211"
+  },
+  "tools/communication-bridge/test.mjs": {
+    "mtime": 1792085117.1263256,
+    "seen": 1792565988.274131,
+    "ast_hash": "689af9af827d909e69df4cfacca3d2ec",
+    "semantic_hash": "689af9af827d909e69df4cfacca3d2ec"
+  },
+  "tools/communication-bridge/test_e2e.cpp": {
+    "mtime": 1792110789.7193062,
+    "seen": 1792565988.274131,
+    "ast_hash": "384d83d05847fcec30d96d25e4d9ed56",
+    "semantic_hash": "384d83d05847fcec30d96d25e4d9ed56"
+  },
+  "tools/compiler-adapter/compile-axis.mjs": {
+    "mtime": 1791973346.4513857,
+    "seen": 1792565988.274131,
+    "ast_hash": "10e21f6beae41c73416637d29c94d0ef",
+    "semantic_hash": "10e21f6beae41c73416637d29c94d0ef"
+  },
+  "tools/compiler-adapter/compile-extended.mjs": {
+    "mtime": 1792084648.267515,
+    "seen": 1792565988.274131,
+    "ast_hash": "00ed1fa3d08cd2fe5b63b20be6ab83da",
+    "semantic_hash": "00ed1fa3d08cd2fe5b63b20be6ab83da"
+  },
+  "tools/compiler-adapter/compile-motion.mjs": {
+    "mtime": 1791952786.8671927,
+    "seen": 1792565988.274131,
+    "ast_hash": "b361bb9c74bf03c26cadf6c1f9f6dc02",
+    "semantic_hash": "b361bb9c74bf03c26cadf6c1f9f6dc02"
+  },
+  "tools/compiler-adapter/compile.mjs": {
+    "mtime": 1791877577.4947205,
+    "seen": 1792565988.274131,
+    "ast_hash": "5f6510696fb483f804972aa2414d600e",
+    "semantic_hash": "5f6510696fb483f804972aa2414d600e"
+  },
+  "tools/compiler-adapter/package.json": {
+    "mtime": 1791877358.7272058,
+    "seen": 1792565988.274131,
+    "ast_hash": "33fdfd0a5536a5d5fef2e51dc49c6438",
+    "semantic_hash": "33fdfd0a5536a5d5fef2e51dc49c6438"
+  },
+  "tools/control-library/test.cpp": {
+    "mtime": 1792084765.167217,
+    "seen": 1792565988.274131,
+    "ast_hash": "3d426abedf9db91bdaa67e70ae169a0a",
+    "semantic_hash": "3d426abedf9db91bdaa67e70ae169a0a"
+  },
+  "tools/control-library/test.mjs": {
+    "mtime": 1792084739.4228945,
+    "seen": 1792565988.274131,
+    "ast_hash": "59a7ef687b586306095bca45e5f12901",
+    "semantic_hash": "59a7ef687b586306095bca45e5f12901"
+  },
+  "tools/motion-bridge/generated_scan_shim.cpp": {
+    "mtime": 1791952447.3158522,
+    "seen": 1792565988.274131,
+    "ast_hash": "c0c503ec3003d557331110ee10d4ec1b",
+    "semantic_hash": "c0c503ec3003d557331110ee10d4ec1b"
+  },
+  "tools/motion-bridge/motion_bridge.cpp": {
+    "mtime": 1791952539.6229079,
+    "seen": 1792565988.274131,
+    "ast_hash": "55d226c67de62ed6b8ef6c354cfbcbd2",
+    "semantic_hash": "55d226c67de62ed6b8ef6c354cfbcbd2"
+  },
+  "tools/motion-bridge/motion_bridge.hpp": {
+    "mtime": 1791952538.650865,
+    "seen": 1792565988.274131,
+    "ast_hash": "3c86c3c9951195c1c213b82c6a5b0126",
+    "semantic_hash": "3c86c3c9951195c1c213b82c6a5b0126"
+  },
+  "tools/motion-bridge/runtime_lifecycle.inc": {
+    "mtime": 1791953224.848293,
+    "seen": 1792565988.274131,
+    "ast_hash": "c4f6cc912aef6f41b467d4322ec1d8d2",
+    "semantic_hash": "c4f6cc912aef6f41b467d4322ec1d8d2"
+  },
+  "tools/motion-bridge/test_candidate.cpp": {
+    "mtime": 1791955296.7922373,
+    "seen": 1792565988.274131,
+    "ast_hash": "6dc8db7fd0932436f41303beac647406",
+    "semantic_hash": "6dc8db7fd0932436f41303beac647406"
+  },
+  "tools/motion-bridge/test_scan.cpp": {
+    "mtime": 1791952789.1751735,
+    "seen": 1792565988.274131,
+    "ast_hash": "fb09f97a85a97376df8cbda74eeed2c6",
+    "semantic_hash": "fb09f97a85a97376df8cbda74eeed2c6"
+  },
+  "tools/runtime-compat/include/iec_fault.hpp": {
+    "mtime": 1791879532.232272,
+    "seen": 1792565988.274131,
+    "ast_hash": "730033c06337723021c6f101e0eca346",
+    "semantic_hash": "730033c06337723021c6f101e0eca346"
+  },
+  "tools/runtime-compat/include/iec_global.hpp": {
+    "mtime": 1791879533.1938443,
+    "seen": 1792565988.274131,
+    "ast_hash": "80cb63a99f970ff98d901dc7f268cf8a",
+    "semantic_hash": "80cb63a99f970ff98d901dc7f268cf8a"
+  },
+  "tools/runtime-compat/tests/compat.cpp": {
+    "mtime": 1791879485.3497565,
+    "seen": 1792565988.274131,
+    "ast_hash": "89354a34efa690079763914ffad3e84f",
+    "semantic_hash": "89354a34efa690079763914ffad3e84f"
+  },
+  "tools/runtime-compat/tests/run-linux.sh": {
+    "mtime": 1791879684.3497958,
+    "seen": 1792565988.274131,
+    "ast_hash": "f59ec0d097bdb7b6b4359499f68cdcd3",
+    "semantic_hash": "f59ec0d097bdb7b6b4359499f68cdcd3"
+  },
+  "README.md": {
+    "mtime": 1792111547.2971938,
+    "seen": 1792565988.274131,
+    "ast_hash": "7c31e315ee99594b55e8f0190e0b18f7",
+    "semantic_hash": "7c31e315ee99594b55e8f0190e0b18f7"
+  },
+  "docs/axis-control.md": {
+    "mtime": 1792556783.7638311,
+    "seen": 1792565988.274131,
+    "ast_hash": "bfa7808c10fda96749e0089a021c5658",
+    "semantic_hash": "bfa7808c10fda96749e0089a021c5658"
+  },
+  "docs/axis-fault-management.md": {
+    "mtime": 1792555773.66698,
+    "seen": 1792565988.274131,
+    "ast_hash": "8c892091a1057d3cf98381215f877ddf",
+    "semantic_hash": "8c892091a1057d3cf98381215f877ddf"
+  },
+  "docs/axis-feedback-7103.md": {
+    "mtime": 1792488999.8398829,
+    "seen": 1792565988.274131,
+    "ast_hash": "dd6b0ddf794ea91245bdfaa68504ee9f",
+    "semantic_hash": "dd6b0ddf794ea91245bdfaa68504ee9f"
+  },
+  "docs/continuous-paths.md": {
+    "mtime": 1792038998.9130635,
+    "seen": 1792565988.274131,
+    "ast_hash": "fd144deb1f93d622c83988a3e0692077",
+    "semantic_hash": "fd144deb1f93d622c83988a3e0692077"
+  },
+  "docs/control-and-communication.md": {
+    "mtime": 1792111071.3750434,
+    "seen": 1792565988.274131,
+    "ast_hash": "a1d724f3284e68cb79a6b76cdc5f318d",
+    "semantic_hash": "a1d724f3284e68cb79a6b76cdc5f318d"
+  },
+  "docs/control-communication-verification.md": {
+    "mtime": 1792111880.437315,
+    "seen": 1792565988.274131,
+    "ast_hash": "d7054e11ab986303f2985333f771fc93",
+    "semantic_hash": "d7054e11ab986303f2985333f771fc93"
+  },
+  "docs/download-program.md": {
+    "mtime": 1792043825.3789957,
+    "seen": 1792565988.274131,
+    "ast_hash": "5e7bb68d1393763fafe817fd7eaa630a",
+    "semantic_hash": "5e7bb68d1393763fafe817fd7eaa630a"
+  },
+  "docs/editor-usability.md": {
+    "mtime": 1791981094.1855493,
+    "seen": 1792565988.274131,
+    "ast_hash": "477ca368381b28a2660c4dde3b083e07",
+    "semantic_hash": "477ca368381b28a2660c4dde3b083e07"
+  },
+  "docs/generic-ethercat.md": {
+    "mtime": 1792562974.7911148,
+    "seen": 1792565988.274131,
+    "ast_hash": "06a238d69192e6ec4fa2eb8ec3b27d5e",
+    "semantic_hash": "06a238d69192e6ec4fa2eb8ec3b27d5e"
+  },
+  "docs/hardware-network.md": {
+    "mtime": 1792470538.837716,
+    "seen": 1792565988.274131,
+    "ast_hash": "e3b06ae641a41f8e6ebf0773d73bff8e",
+    "semantic_hash": "e3b06ae641a41f8e6ebf0773d73bff8e"
+  },
+  "docs/i210-ethercat.md": {
+    "mtime": 1792376373.3537643,
+    "seen": 1792565988.274131,
+    "ast_hash": "5acb66d0beec894d05be4cf126a091ed",
+    "semantic_hash": "5acb66d0beec894d05be4cf126a091ed"
+  },
+  "docs/licenses.md": {
+    "mtime": 1792085208.5963202,
+    "seen": 1792565988.274131,
+    "ast_hash": "1db49b7fba82b7211a66b703dea65c0e",
+    "semantic_hash": "1db49b7fba82b7211a66b703dea65c0e"
+  },
+  "docs/mcp-verification.md": {
+    "mtime": 1792070418.8791873,
+    "seen": 1792565988.274131,
+    "ast_hash": "a552183787e1beb014a62567d44b421d",
+    "semantic_hash": "a552183787e1beb014a62567d44b421d"
+  },
+  "docs/mcp.md": {
+    "mtime": 1792085209.6145148,
+    "seen": 1792565988.274131,
+    "ast_hash": "730f5b122be54b135c9960f7115d38e8",
+    "semantic_hash": "730f5b122be54b135c9960f7115d38e8"
+  },
+  "docs/motion-cycle.md": {
+    "mtime": 1791970195.9167848,
+    "seen": 1792565988.274131,
+    "ast_hash": "43a6249375ee5398a07481a3454637ad",
+    "semantic_hash": "43a6249375ee5398a07481a3454637ad"
+  },
+  "docs/online-boolean-write.md": {
+    "mtime": 1792487306.4712286,
+    "seen": 1792565988.274131,
+    "ast_hash": "e45ce9af994d1236157ab9e43e9f76d7",
+    "semantic_hash": "e45ce9af994d1236157ab9e43e9f76d7"
+  },
+  "docs/project-resource-drag.md": {
+    "mtime": 1791966851.1587412,
+    "seen": 1792565988.274131,
+    "ast_hash": "3f3b4081cee28eedb1592706baf1dc7d",
+    "semantic_hash": "3f3b4081cee28eedb1592706baf1dc7d"
+  },
+  "docs/resident-hardware-broker.md": {
+    "mtime": 1792476442.4960418,
+    "seen": 1792565988.274131,
+    "ast_hash": "a329164dc73f828c8466fc377180fc11",
+    "semantic_hash": "a329164dc73f828c8466fc377180fc11"
+  },
+  "docs/runtime-user-install.md": {
+    "mtime": 1791884102.3407035,
+    "seen": 1792565988.274131,
+    "ast_hash": "7e2810d0c6e5516e0aedad8fc600909d",
+    "semantic_hash": "7e2810d0c6e5516e0aedad8fc600909d"
+  },
+  "docs/st-inline-monitor.md": {
+    "mtime": 1791913344.478661,
+    "seen": 1792565988.274131,
+    "ast_hash": "fd457d8d713d718aef9c1cc1846ffc0b",
+    "semantic_hash": "fd457d8d713d718aef9c1cc1846ffc0b"
+  },
+  "docs/superpowers/plans/2026-10-13-st-workbench.md": {
+    "mtime": 1791881962.4691682,
+    "seen": 1792565988.274131,
+    "ast_hash": "17d82e7a7496d8b5f2512ed779b633e9",
+    "semantic_hash": "17d82e7a7496d8b5f2512ed779b633e9"
+  },
+  "docs/superpowers/plans/2026-10-14-axis-control.md": {
+    "mtime": 1791970889.1800196,
+    "seen": 1792565988.274131,
+    "ast_hash": "93252fe6dab8da19b3715d1e49480f9e",
+    "semantic_hash": "93252fe6dab8da19b3715d1e49480f9e"
+  },
+  "docs/superpowers/plans/2026-10-14-editor-usability.md": {
+    "mtime": 1791948405.3762226,
+    "seen": 1792565988.274131,
+    "ast_hash": "72fe4fdbfec78d49b46b28a2da0cbbd2",
+    "semantic_hash": "72fe4fdbfec78d49b46b28a2da0cbbd2"
+  },
+  "docs/superpowers/plans/2026-10-14-motion-cycle.md": {
+    "mtime": 1791968743.8254616,
+    "seen": 1792565988.274131,
+    "ast_hash": "35d6199505cf84f0401295e908b9e9a3",
+    "semantic_hash": "35d6199505cf84f0401295e908b9e9a3"
+  },
+  "docs/superpowers/plans/2026-10-14-project-resource-drag.md": {
+    "mtime": 1791965841.6949024,
+    "seen": 1792565988.274131,
+    "ast_hash": "b22eed33ef2a3b3de8dcad1c47fb140c",
+    "semantic_hash": "b22eed33ef2a3b3de8dcad1c47fb140c"
+  },
+  "docs/superpowers/plans/2026-10-14-st-inline-monitor.md": {
+    "mtime": 1791913008.9723847,
+    "seen": 1792565988.274131,
+    "ast_hash": "bccd59bd0667bc151ff19f6bae2026e9",
+    "semantic_hash": "bccd59bd0667bc151ff19f6bae2026e9"
+  },
+  "docs/superpowers/plans/2026-10-14-unified-continuous-paths.md": {
+    "mtime": 1791951912.5400498,
+    "seen": 1792565988.274131,
+    "ast_hash": "4f91197b52444dfe4fa11677e2620ac7",
+    "semantic_hash": "4f91197b52444dfe4fa11677e2620ac7"
+  },
+  "docs/superpowers/plans/2026-10-15-automatic-io.md": {
+    "mtime": 1792040721.0832746,
+    "seen": 1792565988.274131,
+    "ast_hash": "f74c5056bfcfdc5234a1676655d65fa2",
+    "semantic_hash": "f74c5056bfcfdc5234a1676655d65fa2"
+  },
+  "docs/superpowers/plans/2026-10-15-axis-properties.md": {
+    "mtime": 1792038358.1143038,
+    "seen": 1792565988.274131,
+    "ast_hash": "f5e50a7d64d8dda2067a57cd0435b2b0",
+    "semantic_hash": "f5e50a7d64d8dda2067a57cd0435b2b0"
+  },
+  "docs/superpowers/plans/2026-10-15-download-apply.md": {
+    "mtime": 1792043851.727781,
+    "seen": 1792565988.274131,
+    "ast_hash": "657025a6ea9affb3f65afd1136868c43",
+    "semantic_hash": "657025a6ea9affb3f65afd1136868c43"
+  },
+  "docs/superpowers/plans/2026-10-15-hardware-network.md": {
+    "mtime": 1792026255.042294,
+    "seen": 1792565988.274131,
+    "ast_hash": "03fc99db5986bb6bd4b82ae38dc2e693",
+    "semantic_hash": "03fc99db5986bb6bd4b82ae38dc2e693"
+  },
+  "docs/superpowers/plans/2026-10-15-mcp.md": {
+    "mtime": 1792070595.2776084,
+    "seen": 1792565988.274131,
+    "ast_hash": "fd8173226ec864c29e5242b1bd06442b",
+    "semantic_hash": "fd8173226ec864c29e5242b1bd06442b"
+  },
+  "docs/superpowers/plans/2026-10-16-control-and-communications.md": {
+    "mtime": 1792111551.0717876,
+    "seen": 1792565988.274131,
+    "ast_hash": "4c21ae8812f8b04c4ccaf49787fd77e7",
+    "semantic_hash": "4c21ae8812f8b04c4ccaf49787fd77e7"
+  },
+  "docs/superpowers/plans/2026-10-19-is620n-mcp-test.md": {
+    "mtime": 1792376672.7895775,
+    "seen": 1792565988.274131,
+    "ast_hash": "797712dc56319a3fe95c6a9695f8613b",
+    "semantic_hash": "797712dc56319a3fe95c6a9695f8613b"
+  },
+  "docs/superpowers/plans/2026-10-20-axis-fault-management.md": {
+    "mtime": 1792490609.164076,
+    "seen": 1792565988.274131,
+    "ast_hash": "59b6cd64864076468ddb4d874206ed67",
+    "semantic_hash": "59b6cd64864076468ddb4d874206ed67"
+  },
+  "docs/superpowers/plans/2026-10-20-generic-ethercat.md": {
+    "mtime": 1792470705.1782086,
+    "seen": 1792565988.274131,
+    "ast_hash": "61ecee5f3b1aef2fcebca78aad081a6d",
+    "semantic_hash": "61ecee5f3b1aef2fcebca78aad081a6d"
+  },
+  "docs/superpowers/plans/2026-10-20-online-boolean-write.md": {
+    "mtime": 1792485976.0041406,
+    "seen": 1792565988.274131,
+    "ast_hash": "ed578811c4e1ce35e1b7f1f7ed26bae9",
+    "semantic_hash": "ed578811c4e1ce35e1b7f1f7ed26bae9"
+  },
+  "docs/superpowers/plans/2026-10-20-online-workspace.md": {
+    "mtime": 1792487280.8220778,
+    "seen": 1792565988.274131,
+    "ast_hash": "19dcc50e0eba6eeb7035727c9ade8143",
+    "semantic_hash": "19dcc50e0eba6eeb7035727c9ade8143"
+  },
+  "docs/superpowers/plans/2026-10-20-resident-hardware-broker.md": {
+    "mtime": 1792476525.4153645,
+    "seen": 1792565988.274131,
+    "ast_hash": "716a3a2801e4afd8408093fd88ac5d59",
+    "semantic_hash": "716a3a2801e4afd8408093fd88ac5d59"
+  },
+  "docs/superpowers/plans/2026-10-21-scoped-engineering-transfer.md": {
+    "mtime": 1792563666.4978862,
+    "seen": 1792565988.274131,
+    "ast_hash": "78f39a2473bd4f60e00e961209cd6e97",
+    "semantic_hash": "78f39a2473bd4f60e00e961209cd6e97"
+  },
+  "docs/superpowers/plans/2026-10-21-unified-download.md": {
+    "mtime": 1792562979.5079775,
+    "seen": 1792565988.274131,
+    "ast_hash": "56922a188ce81d91925e1e0d6fb898af",
+    "semantic_hash": "56922a188ce81d91925e1e0d6fb898af"
+  },
+  "docs/superpowers/specs/2026-10-13-st-environment-design.md": {
+    "mtime": 1791881962.4671686,
+    "seen": 1792565988.274131,
+    "ast_hash": "224b477f36eb185e01e426ba5fe6527f",
+    "semantic_hash": "224b477f36eb185e01e426ba5fe6527f"
+  },
+  "docs/superpowers/specs/2026-10-14-axis-control-design.md": {
+    "mtime": 1791970888.2520065,
+    "seen": 1792565988.274131,
+    "ast_hash": "c221672b3e11d1c14786a18d9ef924b6",
+    "semantic_hash": "c221672b3e11d1c14786a18d9ef924b6"
+  },
+  "docs/superpowers/specs/2026-10-14-motion-cycle-design.md": {
+    "mtime": 1791968742.845542,
+    "seen": 1792565988.274131,
+    "ast_hash": "f91abbcc2b6a8ecb4eac63b71f336e09",
+    "semantic_hash": "f91abbcc2b6a8ecb4eac63b71f336e09"
+  },
+  "docs/superpowers/specs/2026-10-14-project-resource-drag-design.md": {
+    "mtime": 1791965840.7733421,
+    "seen": 1792565988.274131,
+    "ast_hash": "ff0ddc413c7cea685da5beb220a17e72",
+    "semantic_hash": "ff0ddc413c7cea685da5beb220a17e72"
+  },
+  "docs/superpowers/specs/2026-10-14-unified-continuous-paths-design.md": {
+    "mtime": 1791951701.1436963,
+    "seen": 1792565988.274131,
+    "ast_hash": "25a16a91aae9a6d03d84397486474baa",
+    "semantic_hash": "25a16a91aae9a6d03d84397486474baa"
+  },
+  "docs/superpowers/specs/2026-10-15-automatic-io-design.md": {
+    "mtime": 1792040164.4866197,
+    "seen": 1792565988.274131,
+    "ast_hash": "f898bc036896039cbba33cd187191a3e",
+    "semantic_hash": "f898bc036896039cbba33cd187191a3e"
+  },
+  "docs/superpowers/specs/2026-10-15-axis-properties-design.md": {
+    "mtime": 1792037707.104514,
+    "seen": 1792565988.274131,
+    "ast_hash": "263b9c79fd542fa4a72be285737b523f",
+    "semantic_hash": "263b9c79fd542fa4a72be285737b523f"
+  },
+  "docs/superpowers/specs/2026-10-15-download-apply-design.md": {
+    "mtime": 1792043826.3525746,
+    "seen": 1792565988.274131,
+    "ast_hash": "aa5cd840f359f74fce7f2f22101d3521",
+    "semantic_hash": "aa5cd840f359f74fce7f2f22101d3521"
+  },
+  "docs/superpowers/specs/2026-10-15-hardware-network-design.md": {
+    "mtime": 1792025296.175621,
+    "seen": 1792565988.274131,
+    "ast_hash": "cb0bf48493943c36d38e804d6da9c7a9",
+    "semantic_hash": "cb0bf48493943c36d38e804d6da9c7a9"
+  },
+  "docs/superpowers/specs/2026-10-15-mcp-design.md": {
+    "mtime": 1792067990.5223198,
+    "seen": 1792565988.274131,
+    "ast_hash": "fad96c0d19fcd5c22ab95515b788354a",
+    "semantic_hash": "fad96c0d19fcd5c22ab95515b788354a"
+  },
+  "docs/superpowers/specs/2026-10-16-communications-design.md": {
+    "mtime": 1792111113.1289146,
+    "seen": 1792565988.274131,
+    "ast_hash": "15ee51145eac1865c27f5f35b1b90b54",
+    "semantic_hash": "15ee51145eac1865c27f5f35b1b90b54"
+  },
+  "docs/superpowers/specs/2026-10-16-control-algorithms-design.md": {
+    "mtime": 1792084120.8428607,
+    "seen": 1792565988.274131,
+    "ast_hash": "b34208c72f456f7318ffe7f632866975",
+    "semantic_hash": "b34208c72f456f7318ffe7f632866975"
+  },
+  "docs/superpowers/specs/2026-10-21-engineering-service-and-scoped-transfer-design.md": {
+    "mtime": 1792563488.9015884,
+    "seen": 1792565988.274131,
+    "ast_hash": "bce61342cf99fec2f94fc6d2d2560187",
+    "semantic_hash": "bce61342cf99fec2f94fc6d2d2560187"
+  },
+  "docs/superpowers/specs/2026-10-21-unified-download-design.md": {
+    "mtime": 1792562036.1439166,
+    "seen": 1792565988.274131,
+    "ast_hash": "4bb1a2bcbfcec31edf7d57859dac64df",
+    "semantic_hash": "4bb1a2bcbfcec31edf7d57859dac64df"
+  },
+  "docs/third-party/mcp-sdk/DOTNET-LICENSE.TXT": {
+    "mtime": 1792069741.945599,
+    "seen": 1792565988.274131,
+    "ast_hash": "63c534a6c98335b401207e9d809ff7ae",
+    "semantic_hash": "63c534a6c98335b401207e9d809ff7ae"
+  },
+  "docs/third-party/mcp-sdk/DOTNET-THIRD-PARTY-NOTICES.TXT": {
+    "mtime": 1782498180.0,
+    "seen": 1792565988.274131,
+    "ast_hash": "28907c1d989c3d725ea4503cbda28921",
+    "semantic_hash": "28907c1d989c3d725ea4503cbda28921"
+  },
+  "docs/third-party/mcp-sdk/EXTENSIONS-LICENSE.TXT": {
+    "mtime": 1792069790.5337994,
+    "seen": 1792565988.274131,
+    "ast_hash": "d56691c953fff1800148e69ffa3d7596",
+    "semantic_hash": "d56691c953fff1800148e69ffa3d7596"
+  },
+  "docs/third-party/mcp-sdk/THIRD-PARTY-NOTICES.txt": {
+    "mtime": 1792069580.706135,
+    "seen": 1792565988.274131,
+    "ast_hash": "5e5da6e456b13af905a56f9f7dd2f176",
+    "semantic_hash": "5e5da6e456b13af905a56f9f7dd2f176"
+  },
+  "docs/unified-download.md": {
+    "mtime": 1792562975.7344499,
+    "seen": 1792565988.274131,
+    "ast_hash": "c9d55f7749a462e1c6c822bfab4ea0cf",
+    "semantic_hash": "c9d55f7749a462e1c6c822bfab4ea0cf"
+  },
+  "docs/verification.md": {
+    "mtime": 1792111549.2688622,
+    "seen": 1792565988.274131,
+    "ast_hash": "5aaaed40eac080605d5d363cb6976390",
+    "semantic_hash": "5aaaed40eac080605d5d363cb6976390"
+  },
+  "examples/generic-ethercat/README.md": {
+    "mtime": 1792476441.3577328,
+    "seen": 1792565988.274131,
+    "ast_hash": "6330a77de160a0dcf28664ef12d41836",
+    "semantic_hash": "6330a77de160a0dcf28664ef12d41836"
+  },
+  "examples/is620n-test/README.md": {
+    "mtime": 1792403659.077675,
+    "seen": 1792565988.274131,
+    "ast_hash": "3765a4b6b2a24e57a160d7ea5db571cc",
+    "semantic_hash": "3765a4b6b2a24e57a160d7ea5db571cc"
+  },
+  "examples/is620n-test/hardware-probe.txt": {
+    "mtime": 1792377215.6383324,
+    "seen": 1792565988.274131,
+    "ast_hash": "b188bfa1ff0624697003c066f04b3828",
+    "semantic_hash": "b188bfa1ff0624697003c066f04b3828"
+  },
+  "examples/is620n-test/hardware-profile-probe.txt": {
+    "mtime": 1792377852.2979684,
+    "seen": 1792565988.274131,
+    "ast_hash": "1b528d6671f9d1f230560eff50463b94",
+    "semantic_hash": "1b528d6671f9d1f230560eff50463b94"
+  },
+  "examples/is620n-turn-test/README.md": {
+    "mtime": 1792478923.9320555,
+    "seen": 1792565988.274131,
+    "ast_hash": "4db5a4d697a65b90ad5ae76f56795e28",
+    "semantic_hash": "4db5a4d697a65b90ad5ae76f56795e28"
+  },
+  "examples/library-axis-turn/README.md": {
+    "mtime": 1792556696.319883,
+    "seen": 1792565988.274131,
+    "ast_hash": "d54b4d0388555acef42442022bbc19fc",
+    "semantic_hash": "d54b4d0388555acef42442022bbc19fc"
+  },
+  "examples/motion/README.md": {
+    "mtime": 1791874809.965361,
+    "seen": 1792565988.274131,
+    "ast_hash": "c108be2904943f46f3ffb00c1d61cde9",
+    "semantic_hash": "c108be2904943f46f3ffb00c1d61cde9"
+  },
+  "examples/standard-axis-turn/README.md": {
+    "mtime": 1792556783.7698295,
+    "seen": 1792565988.274131,
+    "ast_hash": "126c8815b7096c1bba4e369accb988af",
+    "semantic_hash": "126c8815b7096c1bba4e369accb988af"
+  },
+  "linux/axis/README.md": {
+    "mtime": 1792555667.6905181,
+    "seen": 1792565988.274131,
+    "ast_hash": "4286382e6bebfb463ca76e0cb9366b55",
+    "semantic_hash": "4286382e6bebfb463ca76e0cb9366b55"
+  },
+  "linux/communication/README.md": {
+    "mtime": 1792111773.8137674,
+    "seen": 1792565988.274131,
+    "ast_hash": "41b4224a236fd3a58a5a02166fde282a",
+    "semantic_hash": "41b4224a236fd3a58a5a02166fde282a"
+  },
+  "linux/debug-write/README.md": {
+    "mtime": 1792485419.6463096,
+    "seen": 1792565988.274131,
+    "ast_hash": "907914fc25818351a356475e9aa7476a",
+    "semantic_hash": "907914fc25818351a356475e9aa7476a"
+  },
+  "linux/deployment/README.md": {
+    "mtime": 1792564503.6208155,
+    "seen": 1792565988.274131,
+    "ast_hash": "4f33dacbb238ce67e05cbdf1bd1cf2a8",
+    "semantic_hash": "4f33dacbb238ce67e05cbdf1bd1cf2a8"
+  },
+  "linux/engineering-service/README.md": {
+    "mtime": 1792565081.9056952,
+    "seen": 1792565988.274131,
+    "ast_hash": "76a7c0bf30368acb23d26ea91aa48c8d",
+    "semantic_hash": "76a7c0bf30368acb23d26ea91aa48c8d"
+  },
+  "linux/engineering-service/requirements.txt": {
+    "mtime": 1792563962.7202592,
+    "seen": 1792565988.274131,
+    "ast_hash": "062537fadf78539af105c2dd03c82035",
+    "semantic_hash": "062537fadf78539af105c2dd03c82035"
+  },
+  "linux/ethercat-i210/native-profile/GENERIC_RUNTIME_CONFIG.md": {
+    "mtime": 1792469444.4463408,
+    "seen": 1792565988.274131,
+    "ast_hash": "4dc0f7e124539cc709fedca1a007c8e4",
+    "semantic_hash": "4dc0f7e124539cc709fedca1a007c8e4"
+  },
+  "linux/ethercat-i210/native-profile/README.md": {
+    "mtime": 1792470433.875378,
+    "seen": 1792565988.274131,
+    "ast_hash": "ffdb5246a88d2cb7bef7339a766f735a",
+    "semantic_hash": "ffdb5246a88d2cb7bef7339a766f735a"
+  },
+  "linux/mcp/README.md": {
+    "mtime": 1792069009.6255352,
+    "seen": 1792565988.274131,
+    "ast_hash": "240b2f878683325793d31e2898c6fe9c",
+    "semantic_hash": "240b2f878683325793d31e2898c6fe9c"
+  },
+  "src/StWorkbench.OpenPlc/README.md": {
+    "mtime": 1791877624.5003636,
+    "seen": 1792565988.274131,
+    "ast_hash": "bf5431f3df7abb7d0d2d0c45e0bbc08c",
+    "semantic_hash": "bf5431f3df7abb7d0d2d0c45e0bbc08c"
+  },
+  "tools/axis-bridge/README.md": {
+    "mtime": 1791972548.2930977,
+    "seen": 1792565988.274131,
+    "ast_hash": "7010ede47d68ab84f2ac85cf576994aa",
+    "semantic_hash": "7010ede47d68ab84f2ac85cf576994aa"
+  },
+  "tools/compiler-adapter/README.md": {
+    "mtime": 1791877828.5717669,
+    "seen": 1792565988.274131,
+    "ast_hash": "a24c606b14637bfe1aef6435a867760d",
+    "semantic_hash": "a24c606b14637bfe1aef6435a867760d"
+  },
+  "tools/control-library/README.md": {
+    "mtime": 1792084738.326534,
+    "seen": 1792565988.274131,
+    "ast_hash": "e71d18abb86095fec6fd31f67dbcc572",
+    "semantic_hash": "e71d18abb86095fec6fd31f67dbcc572"
+  },
+  "tools/motion-bridge/README.md": {
+    "mtime": 1791952869.252911,
+    "seen": 1792565988.274131,
+    "ast_hash": "be090cecb254d3f4fef51a622436d5f7",
+    "semantic_hash": "be090cecb254d3f4fef51a622436d5f7"
+  },
+  "tools/runtime-compat/README.md": {
+    "mtime": 1791879683.2142913,
+    "seen": 1792565988.274131,
+    "ast_hash": "ed78cf91e57734dcd470c4d135a62245",
+    "semantic_hash": "ed78cf91e57734dcd470c4d135a62245"
+  }
+}

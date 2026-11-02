@@ -14,7 +14,7 @@ import test_coordinator
 def bundle():
     return {"SchemaVersion": 1, "Executor": "EcMotion", "Configuration": {
         "Enabled": True, "PeriodMicroseconds": 1000, "SchedulingPolicy": "FIFO",
-        "Priority": 40, "Cpu": None, "WatchdogCycles": 3, "AxisNames": ["X"]},
+        "Priority": 80, "Cpu": None, "WatchdogCycles": 3, "AxisNames": ["X"]},
         "Axes": [{"Name": "X", "ControllerAxis": "Axis1", "Unit": "mm", "MinPosition": -100, "MaxPosition": 100}]}
 
 

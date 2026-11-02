@@ -1,19 +1,19 @@
 {
   "src/EcMotion.Igh/CMakeLists.txt": {
     "baseSha256": "559aef55d061101924c917b7d98549e900bdafbc73013e57dc4c55c98e808d82",
-    "patchedSha256": "c2d2484168d48fa988d9e5aa8b59e8ab0b74c3f74f4499a7fac42a5fe1bc7a62"
+    "patchedSha256": "22420a2cfde4dfa199775bd3d8461090ec9276722993204817642599ed05abff"
   },
   "src/EcMotion.Igh/include/axis_feedback.hpp": {
     "baseSha256": "f120c7f2d0e22a8c6d1037b158b2581a0d7d32ed396a093d766cc90f665ca7b8",
-    "patchedSha256": "1b5ab04bbe3217182c9d99c9fac54190e818a6066a25ce2e89404e50030104fc"
+    "patchedSha256": "182aadb65a459c07b9f4b2b4737627426286625c1c3a89ed488b6946358de48c"
   },
   "src/EcMotion.Igh/include/control_backend.hpp": {
     "baseSha256": "2f0fffee96c4ed278217fd77de0fbb16b6df9b70a3dad479272bc9e370356430",
-    "patchedSha256": "4fdd779698b59806f28d91e891f6ca18be4d748c1097e389dda6ad951a014b3c"
+    "patchedSha256": "cb8d00102c2640a75c14ac2a3fd78e42222398a650e95187e0d1149d85a8a0fe"
   },
   "src/EcMotion.Igh/include/cyclic_trace.hpp": {
     "baseSha256": "5a8ce0513358943bb2a354c79910546ddb86a28e9bf4608426739add9e020d19",
-    "patchedSha256": "bc655b667b0c4a66f8db997d43a1b39c8eb72f25bf3d9da4065c37de99df7dec"
+    "patchedSha256": "cae08be4fb70b122c0b5923a230e500bb48924da05d59e260fd49de192e9efd4"
   },
   "src/EcMotion.Igh/include/delivery_monitor.hpp": {
     "baseSha256": null,
@@ -29,7 +29,7 @@
   },
   "src/EcMotion.Igh/include/realtime_exchange.hpp": {
     "baseSha256": "e21ae7ceb8f5fe684122c3528e5b867611a9abdda1fae35f19e0f942bc7c0be4",
-    "patchedSha256": "b383e7e40d5601e527a8370d7ebd175c66114cab2135ca88541ed5bca62d642e"
+    "patchedSha256": "8d4c1269da27afe55b3644e6654a075a8c3d598d463725d6acd8a08d626b00ce"
   },
   "src/EcMotion.Igh/include/reference_history.hpp": {
     "baseSha256": null,
@@ -37,15 +37,15 @@
   },
   "src/EcMotion.Igh/src/axis_feedback.cpp": {
     "baseSha256": "ce4b54c3093fb851faac00188910882a0ff7c6c180fd87e6b950ae87ee4f0013",
-    "patchedSha256": "7bcb640ed22be8dec2308f5b5fe1814696b29b1b1d8175bdbee90d214ef6c978"
+    "patchedSha256": "f3d366d13f7ed8355f87e53d7f30e4dec9db77903ea2d58af957c5cc894d96b6"
   },
   "src/EcMotion.Igh/src/cyclic_trace.cpp": {
     "baseSha256": "000a3063613b43bc9e40cc88218f6e1b4314665f01f10ff844f5e7d262482a4a",
-    "patchedSha256": "e21ee190d1803d3835f1d7543f96f4b8d44cca8be666d2626b99a4b9c4a9ac59"
+    "patchedSha256": "e942d9aafab878ce7de65d75bce4841c3924b0461b61d9b347d62bd0c248d4e2"
   },
   "src/EcMotion.Igh/src/cyclic_trace_selftest.cpp": {
     "baseSha256": "fdb5c5e57fe6cea7fead1f8030bd4076396b76cc65090bedd794bf8879c0a23e",
-    "patchedSha256": "bde20febf8b748e18fa89b4f6330008e86445fd45837883c63514e3f486e4b14"
+    "patchedSha256": "dc5f9e30a4edb5bedae5b684bc6df8182bc06efda563c6b7d630bc5aae1505f0"
   },
   "src/EcMotion.Igh/src/delivery_monitor.cpp": {
     "baseSha256": null,
@@ -61,31 +61,31 @@
   },
   "src/EcMotion.Igh/src/drive_demand_protection_selftest.cpp": {
     "baseSha256": null,
-    "patchedSha256": "43548ce0d30098d0e85f88a8abb0490787490ea992c292403bb20395a684cbd0"
+    "patchedSha256": "32ed0a2e8970fb6d3cb62b7ab32ae3a3b4dbab9d7dc10f575c55d77dd857487f"
   },
   "src/EcMotion.Igh/src/ethercat_runtime_cli_selftest.py": {
     "baseSha256": "87b099b65f1325b218e03520d8c65b6e0444fe98fd0b86176ae374c35d886cf4",
-    "patchedSha256": "86f160bdeb7a63ec4a07782c592e3f8642e9c8695a79595845ba4521ca197e9b"
+    "patchedSha256": "8f0c6ba4c25520b057f24da67a92943d945352d793d5a1ea4f523423bdfc775a"
   },
   "src/EcMotion.Igh/src/fieldbus_control_backend.cpp": {
     "baseSha256": "9c8e052f51b9f20f66631981f2e3d53437e467e5a3a6941929d88a0f2a908bc8",
-    "patchedSha256": "cbbb7bec997753221cbafa9f1487cde2817f112f0b92356cd1e67b5a957744cf"
+    "patchedSha256": "711c513f4d0072cd70e00a3ca7c2e44b343d4a13ff0fdd35e86052f39732cb9d"
   },
   "src/EcMotion.Igh/src/main.cpp": {
     "baseSha256": "2436584d58d8512dadae054edb3fc81e1d70bf81e598d735ce6cea4703cfc8c8",
-    "patchedSha256": "83a4ac3af7d70f0f8b4a9dc30549a16a6657399317b62cd443d2a8ccc23ac335"
+    "patchedSha256": "ec2bdfd19e40cbd80241b77aed2d3599965022c3e6eef4a2eb2ae554c0b3aa87"
   },
   "src/EcMotion.Igh/src/motion_correction_selftest.cpp": {
     "baseSha256": "473de8bc392c18a822bd6df6d22a612d94a6495b9e947b4ef90710e3c0c0206e",
-    "patchedSha256": "9779e768ea0ccedae20257068deb270a0ed58ecd7fa38feb8eaed00dc53a9920"
+    "patchedSha256": "af60153caaa95cf93d79530c15183f97a593380785f5d9cf3149383734a95edf"
   },
   "src/EcMotion.Igh/src/native_protocol_server.cpp": {
     "baseSha256": "1d0414eb9013c6abd2b4894021b97448c6dd58f689b5c59b9e185c349c6ab49b",
-    "patchedSha256": "2edf4bfe4ef485f9fd5e1a300ff406f1c1014dba3d71fe67aea49d151a6238b2"
+    "patchedSha256": "278c26fdbeb286f0acb937a9fc69edc608ba28348b9a12dc6b2dea1533bd1628"
   },
   "src/EcMotion.Igh/src/realtime_exchange.cpp": {
     "baseSha256": "a77327fd1c73670d6107726de2bb02885c3be7d93385cace5e6f282310de4150",
-    "patchedSha256": "d842fb62a682ecaba380271962e0393d0cf40a7dcc5f003edfb5b74858a74a35"
+    "patchedSha256": "673c630ea86e4fb83168696d4ec10b8a671bf141bcd3abc72e1f3c99c0ea1508"
   },
   "src/EcMotion.Igh/src/reference_history.cpp": {
     "baseSha256": null,
@@ -94,5 +94,57 @@
   "src/EcMotion.Igh/src/reference_history_selftest.cpp": {
     "baseSha256": null,
     "patchedSha256": "ca9d886c566e03f5224aa194c02560c13a40769555ca4e38898801bc00fed199"
+  },
+  "src/EcMotion.Igh/include/motion_setpoint.hpp": {
+    "baseSha256": "c5aaeff77f662bc3da43f37d15811ca81a9ee78b1ef1f187314130511b305cfd",
+    "patchedSha256": "24d18eb3ebd706cac13426a9905e0908fbf6c09fb63475d8ea8b26b22da89cd0"
+  },
+  "src/EcMotion.Igh/src/motion_setpoint.cpp": {
+    "baseSha256": "21a565a9a25176a49bb04fcdb45ba3ce75445a2433e2cd0c1b26102f912d113f",
+    "patchedSha256": "2765a4f1189c1d6f9bfcf07ed847a2782da40876dc0621764287d2af8f8a3c06"
+  },
+  "src/EcMotion.Igh/src/smooth_profile_selftest.cpp": {
+    "baseSha256": null,
+    "patchedSha256": "8ae7f3b88d85a8f16d486dad139f8752076f483d48b3e48d1385526930652abd"
+  },
+  "src/EcMotion.Igh/src/motion_safety.cpp": {
+    "baseSha256": "9e72753b05d9dfe6621ef7047e3414879828059a08760b6767ba28d4b0c49df8",
+    "patchedSha256": "2d2c5de30c349924cbfd6602b7fe4ae5131c13091bd2642772a54cd7620bc9e4"
+  },
+  "src/EcMotion.Igh/include/motion_runtime_version.hpp": {
+    "baseSha256": null,
+    "patchedSha256": "c1c95725ed7703520ecfb30f9e95e46f78c47f31bd3409678cb73d1ee826cb11"
+  },
+  "src/EcMotion.Igh/include/fieldbus_control_backend.hpp": {
+    "baseSha256": null,
+    "patchedSha256": "df73e7592e0896667afb1e99b79d410139f5daee8d14044b4edbcde8114fe1af"
+  },
+  "src/EcMotion.Igh/src/io_map_config_selftest.cpp": {
+    "baseSha256": null,
+    "patchedSha256": "7b1b6f93a2d85cca3a3f941f7530b4e60696c24d9c781b0a9daabf372124fb96"
+  },
+  "src/EcMotion.Igh/include/cpu_latency_request.hpp": {
+    "baseSha256": null,
+    "patchedSha256": "255ca5f691f8ec575e4b59bde7c68126458d3f1fa6a3d403da097f5e9286768b"
+  },
+  "src/EcMotion.Igh/src/cpu_latency_selftest.cpp": {
+    "baseSha256": null,
+    "patchedSha256": "e6d2434683c3f105962444fc117f2c87a3adebc640eaa8617d507b06953699fb"
+  },
+  "src/EcMotion.Igh/src/control_backend.cpp": {
+    "baseSha256": null,
+    "patchedSha256": "ba7d0857a7b78dce49c36679891fa8e19c23ff0bae027df9f677c4db544833ed"
+  },
+  "src/EcMotion.Igh/src/fieldbus_cycle.cpp": {
+    "baseSha256": null,
+    "patchedSha256": "b97bde95ff63dd7a5050005482219658dc6467a215ca9b749f479b44c6a19f75"
+  },
+  "src/EcMotion.Igh/src/dynamic_profile_selftest.cpp": {
+    "baseSha256": null,
+    "patchedSha256": "6d3cf0df49aeb1d59b58139ba31308e2de7e0db4be915e459c3d094f20fbca62"
+  },
+  "src/EcMotion.Igh/src/native_profile_protocol_selftest.cpp": {
+    "baseSha256": null,
+    "patchedSha256": "cd910c3403cbdd743ae1c05f0b93be35c6fe649b1856eaf2a65db82090e106ac"
   }
 }

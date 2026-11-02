@@ -22,7 +22,7 @@ internal static class RealAxisPackageSmoke
         {
             using var manifest = JsonDocument.Parse(zip.GetEntry("build-manifest.json")!.Open());
             if (!manifest.RootElement.TryGetProperty("AxisInterfaceVersion", out var version) || version.GetString() != "workbench-axis-v1") throw new Exception("Basic axis interface not marked");
-            foreach (var file in new[] { "axis_control.st", "axis-constants.st", "axis_bridge.hpp", "axis_bridge.cpp", "generated_axis_scan_shim.cpp", "axis_lifecycle.inc", "axis-manifest.json", "axes/axis_worker.py" })
+            foreach (var file in new[] { "axis_control.st", "axis-constants.st", "axis_bridge.hpp", "axis_bridge.cpp", "generated_axis_scan_shim.cpp", "axis_lifecycle.inc", "axis-manifest.json", "native/src/axis_worker.cpp", "native/LICENSE" })
                 if (zip.GetEntry(file) is null || !manifest.RootElement.GetProperty("Files").TryGetProperty(file, out _)) throw new Exception("Axis dependency missing: " + file);
             using var axis = JsonDocument.Parse(zip.GetEntry("axis-manifest.json")!.Open());
             if (axis.RootElement.GetProperty("Axes")[0].GetProperty("ControllerAxis").GetString() != "Axis1") throw new Exception("Axis mapping differs");

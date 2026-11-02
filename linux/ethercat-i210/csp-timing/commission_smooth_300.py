@@ -22,7 +22,7 @@ try:
  axis=machine['axes'][0]
  assert axis['motionSafety']['maximumFollowingError']==.005 and axis['motionSafety']['followingErrorTimeoutMilliseconds']==20
  assert axis['homing']['method']==35 and axis['homing']['allowCurrentPositionZero']
- axis.update(maximumVelocity=5.0,maximumAcceleration=2.0,maximumDeceleration=2.0,maximumJerk=20.0,demandDeliveryTolerance=0.01,softLimitNegative=-25.0,softLimitPositive=25.0,velocityFeedforwardGain=0)
+ axis.update(maximumVelocity=5.0,maximumAcceleration=2.0,maximumDeceleration=2.0,maximumJerk=20.0,driveErrorOnly=True,demandDeliveryEnforced=False,demandDeliveryTolerance=0.01,softLimitNegative=-25.0,softLimitPositive=25.0,velocityFeedforwardGain=0)
  axis['motionSafety']['maximumActualVelocity']=7.5
  axis['driveDemandProtection']=True
  axis['velocityFeedbackRawPerUnitPerSecond']=1048576
@@ -31,6 +31,7 @@ try:
  mp=ROOT/'config/smooth-300-machine.json';mp.write_text(json.dumps(machine,indent=2))
  ec=json.loads((OLD/'config/commissioned-ethercat.json').read_text())
  ec['slaves'][0]['startupSdos']=[{'index':8197,'subindex':20,'data':[1,0],'transition':'PS'},{'index':8200,'subindex':20,'data':[232,3],'transition':'PS'}]
+ ec['slaves'][0]['startupSdos'].append({'index':0x6065,'subindex':0,'data':[0xf6,0x28,0,0],'transition':'PS'})
  ec['slaves'][0]['dc']['sync0ShiftNs']=670000
  ec['machineSha256']=hashlib.sha256(mp.read_bytes()).hexdigest()
  ec['ioMapSha256']=hashlib.sha256((ROOT/'config/is620n-io-map.json').read_bytes()).hexdigest()
@@ -42,12 +43,12 @@ try:
   run(['systemctl','stop',oldunit]);old_stopped=True
  subprocess.run(['systemctl','reset-failed',UNIT],capture_output=True)
  started=True
- run(['systemd-run','--unit='+UNIT,'--service-type=exec','--property=Group=a','--property=LimitMEMLOCK=infinity','--property=LimitRTPRIO=95','--property=RuntimeDirectory='+UNIT,'--property=TimeoutStopSec=15',str(ROOT/'smooth-build/ecmotion-rt'),'--cpu','2','--machine-config',str(mp),'--io-map',str(ROOT/'config/is620n-io-map.json'),'--ethercat-config',str(ep),'--socket','/run/'+UNIT+'/controller.sock','--axis-trace-csv',str(ROOT/'traces/smooth-300a.csv'),'--axis-trace-capacity','120000'])
+ run(['systemd-run','--unit='+UNIT,'--service-type=exec','--property=Group=a','--property=LimitMEMLOCK=infinity','--property=LimitRTPRIO=95','--property=RuntimeDirectory='+UNIT,'--property=TimeoutStopSec=15',str(ROOT/'smooth-build/ecmotion-rt'),'--cpu','2','--machine-config',str(mp),'--io-map',str(ROOT/'config/is620n-io-map.json'),'--ethercat-config',str(ep),'--socket','/run/'+UNIT+'/controller.sock','--axis-trace-csv',str(ROOT/'traces/smooth-layered1.csv'),'--axis-trace-capacity','120000'])
  stable=0;deadline=time.monotonic()+25
  while time.monotonic()<deadline:
   try:
    if client is None:client=ControllerClient('/run/'+UNIT+'/controller.sock');client.hello()
-   snap=client.snapshot();ready=snap['runtimeReady'] and snap['ioReady'] and 'bus_ready=1' in snap['diagnostics']
+   snap=client.snapshot();ready=snap['runtimeReady'] and snap['ioReady'] and 'bus_ready=1' in snap['diagnostics'] and snap['axes'][0]['timingReady'] and not snap['axes'][0]['timingFault']
    stable=stable+1 if ready else 0
    if stable>=30:break
   except OSError:
@@ -59,7 +60,7 @@ try:
  pid=run(['systemctl','show',UNIT,'--property=MainPID','--value']).stdout.decode().strip()
  for sequence in (1,2):
   time.sleep(10) # Allow a full measurement window after startup lock.
-  run(['kill','-USR1',pid]);csvpath=ROOT/('traces/smooth-300a.csv.capture-'+str(sequence)+'.csv')
+  run(['kill','-USR1',pid]);csvpath=ROOT/('traces/smooth-layered1.csv.capture-'+str(sequence)+'.csv')
   deadline=time.monotonic()+10
   while time.monotonic()<deadline and not csvpath.exists():time.sleep(.05)
   time.sleep(.2)
@@ -76,6 +77,7 @@ try:
    assert all(not int(r['pre_send_budget_overrun']) and not int(r['actual_send_budget_overrun']) for r in rows),'Send budget overrun'
   result.setdefault('captures',[]).append({'path':str(csvpath),'rows':len(rows),'OP_after_export':True})
   run(['kill','-USR2',pid]);time.sleep(.5)
+ assert read('0x6065',0,'uint32')==10486, 'Drive following window was not applied'
  result['driveParameters']={'source':read('0x2005',20),'gain':read('0x2008',20)}
  assert result['driveParameters']=={'source':1,'gain':1000}
  result['status']='PASS';result['snapshot']=snap;result['binarySha256']=hashlib.sha256((ROOT/'smooth-build/ecmotion-rt').read_bytes()).hexdigest()

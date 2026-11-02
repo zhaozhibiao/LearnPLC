@@ -23,6 +23,9 @@ import urllib.request
 import motion_cycle
 import axis_gate
 import communication_gate
+import ethercat_hardware
+import configuration_download
+import scoped_transfer
 
 RUNTIME_COMMIT = "a9e38d901fb87deb5a8cf778b52639b9387834d0"
 MAX_ARCHIVE = 32 * 1024 * 1024
@@ -65,7 +68,7 @@ def identity(value):
     return value.upper()
 
 
-def validate_archive(path, package_sha256, build_hash):
+def validate_archive(path, package_sha256, build_hash, hardware_only=False):
     build_hash = identity(build_hash)
     path = pathlib.Path(path)
     if path.stat().st_size > MAX_ARCHIVE or digest(path).lower() != package_sha256.lower():
@@ -82,7 +85,7 @@ def validate_archive(path, package_sha256, build_hash):
                     or str(pathlib.PurePosixPath(name)) != name or name in names or stat.S_ISLNK(entry.external_attr >> 16) or entry.is_dir()
                     or entry.file_size > 16 * 1024 * 1024 or entry.file_size > max(1, entry.compress_size) * 500):
                 raise DeploymentError("Unsafe archive member: " + name)
-            if not (name in {"LICENSE", "COPYING", "COPYING.RUNTIME", "RUNTIME-COMPAT-LICENSE", "control/LICENSE", "paths/LICENSE", "paths/virtual_worker.py", "runtime_lifecycle.inc", "axis_lifecycle.inc", "axes/axis_worker.py", "axes/LICENSE"} or name in communication_gate.FILES or pathlib.PurePosixPath(name).suffix in {".cpp", ".hpp", ".h", ".st", ".json"}):
+            if not (name in {"LICENSE", "COPYING", "COPYING.RUNTIME", "RUNTIME-COMPAT-LICENSE", "control/LICENSE", "paths/LICENSE", "paths/virtual_worker.py", "runtime_lifecycle.inc", "axis_lifecycle.inc", "axes/axis_worker.py", "axes/axis_worker_v2.py", "axes/LICENSE"} or name in communication_gate.FILES or pathlib.PurePosixPath(name).suffix in {".cpp", ".hpp", ".h", ".st", ".json"}):
                 raise DeploymentError("Unexpected archive file: " + name)
             names.add(name)
         if "build-manifest.json" not in names:
@@ -90,15 +93,52 @@ def validate_archive(path, package_sha256, build_hash):
         if archive.getinfo("build-manifest.json").file_size > 1024 * 1024:
             raise DeploymentError("Manifest capacity exceeded")
         manifest = json.loads(archive.read("build-manifest.json"))
-        if (manifest.get("BuildHash", "").upper() != build_hash or manifest.get("RuntimeCommit") != RUNTIME_COMMIT
-                or manifest.get("CompilerVersion") != "STruC++ version 0.7.0"):
+        if (manifest.get("BuildHash", "").upper() != build_hash or (not hardware_only and
+                (manifest.get("ArtifactKind") == "hardware-only" or manifest.get("RuntimeCommit") != RUNTIME_COMMIT
+                or manifest.get("CompilerVersion") != "STruC++ version 0.7.0"))):
             raise DeploymentError("Unapproved Runtime/compiler/build identity")
+        task_interface = manifest.get("TaskSchedulingInterfaceVersion")
+        if task_interface not in (None, "workbench-task-scheduling-v1") or bool(task_interface) != ("task-scheduling.json" in names):
+            raise DeploymentError("Task scheduling manifest/interface identity differs")
         inventory = manifest.get("Files", {})
         if set(inventory) | {"build-manifest.json"} != names:
             raise DeploymentError("Archive inventory differs from manifest")
         for name, checksum in inventory.items():
             if hashlib.sha256(archive.read(name)).hexdigest().lower() != checksum.lower():
                 raise DeploymentError("Archive content checksum mismatch: " + name)
+        runtime_interface = manifest.get("EtherCatRuntimeInterfaceVersion")
+        if runtime_interface is None:
+            if set(ethercat_hardware.FILES).intersection(names):
+                raise DeploymentError("EtherCAT runtime files require an explicit interface identity")
+        else:
+            if runtime_interface != "workbench-ethercat-v1" or not set(ethercat_hardware.FILES).issubset(names):
+                raise DeploymentError("Unsupported or incomplete EtherCAT runtime bundle")
+            try:
+                contents = {name: archive.read(name) for name in ethercat_hardware.FILES}
+                hashes = {name: hashlib.sha256(data).hexdigest() for name, data in contents.items()}
+                for data in contents.values():
+                    if len(data) > ethercat_hardware.MAX_JSON:
+                        raise ValueError("Configuration capacity exceeded")
+                    ethercat_hardware.parse_json(data)
+                fingerprint = ethercat_hardware.validate_topology(ethercat_hardware.parse_json(contents["ethercat-runtime.json"]), hashes)
+                if manifest.get("EtherCatTopologyFingerprint") != fingerprint:
+                    raise ValueError("Build manifest topology fingerprint differs")
+            except (ValueError, TypeError, KeyError, UnicodeError) as error:
+                raise DeploymentError("Invalid EtherCAT runtime bundle: " + str(error)) from error
+        if hardware_only:
+            required = set(ethercat_hardware.FILES) | {'axis-manifest.json', 'hardware-configuration.json', 'build-manifest.json'}
+            if manifest.get('ArtifactKind') != 'hardware-only' or names != required or runtime_interface != 'workbench-ethercat-v1':
+                raise DeploymentError('Unsupported standalone hardware bundle')
+            try:
+                scoped_transfer.validate_axes(axis_gate.strict_json(archive.read('axis-manifest.json')))
+                configuration = ethercat_hardware.parse_json(archive.read('hardware-configuration.json'))
+                if configuration.get('SchemaVersion') != 1 or configuration.get('State') != 'offline-engineering':
+                    raise ValueError('Unsupported saved hardware configuration')
+                if hashlib.sha256(archive.read('hardware-configuration.json')).hexdigest() != identity(manifest.get('HardwareHash')).lower():
+                    raise ValueError('Hardware engineering identity differs')
+            except (ValueError, TypeError, KeyError, UnicodeError) as error:
+                raise DeploymentError('Invalid standalone hardware bundle: ' + str(error)) from error
+            return manifest
         required = {"generated.cpp", "generated.hpp", "generated_debug.cpp", "defines.h", "debug-map.json", "configuration.st", "strucpp_runtime/include/debug_table.hpp"}
         if not required.issubset(names):
             raise DeploymentError("Required Runtime artifacts missing")
@@ -167,7 +207,7 @@ def motion_candidate_source(relative, content, manifest):
         return content
     if motion is not None and motion != "workbench-continuous-v1":
         raise DeploymentError("Unsupported motion interface")
-    if axis is not None and axis != axis_gate.INTERFACE:
+    if axis is not None and axis not in axis_gate.INTERFACES:
         raise DeploymentError("Unsupported axis interface")
     if communication is not None and communication != communication_gate.INTERFACE:
         raise DeploymentError("Unsupported communication interface")
@@ -244,6 +284,24 @@ def verify_motion_ready(manifest, generated, config, environment):
         raise DeploymentError("Motion worker is unavailable or its capability data is invalid") from error
 
 
+def verify_candidate_exports(manifest, exports):
+    required = REQUIRED_EXPORTS | ({"workbench_task_scheduling_v1"} if manifest.get("TaskSchedulingInterfaceVersion") else set())
+    if manifest.get('AxisInterfaceVersion')==axis_gate.INTERFACE_V2:
+        if manifest.get('AxisExportMarker')!='workbench_axis_v2':raise DeploymentError('V2 axis export marker is missing')
+        required |= {'workbench_axis_v2'}
+    if not required.issubset(exports):
+        raise DeploymentError("Candidate missing pinned Runtime exports: " + ",".join(sorted(required - exports)))
+
+
+def verify_task_scheduling(connection, manifest):
+    version = manifest.get("TaskSchedulingInterfaceVersion")
+    if version is None:
+        return
+    capability = getattr(connection, "task_scheduling_supported", None)
+    if version != "workbench-task-scheduling-v1" or not callable(capability) or capability() is not True:
+        raise DeploymentError("Runtime lacks verified task scheduling v1; upgrade runtime before activation")
+
+
 class RuntimeConnection:
     def __init__(self, path, timeout=3):
         self.path = path
@@ -260,7 +318,7 @@ class RuntimeConnection:
         self.socket.close()
 
     def command(self, command):
-        if command not in {"STATUS", "START", "STOP"}:
+        if command not in {"STATUS", "START", "STOP", "DEBUG:46 02"}:
             raise DeploymentError("Unsupported IPC command")
         self.socket.sendall((command + "\n").encode("ascii"))
         response = bytearray()
@@ -270,6 +328,13 @@ class RuntimeConnection:
                 raise DeploymentError("Incomplete or oversized Runtime response")
             response.extend(chunk)
         return response.decode("ascii").strip()
+
+    def task_scheduling_supported(self):
+        response = self.command("DEBUG:46 02")
+        try:
+            return response.startswith("DEBUG:") and bytes.fromhex(response[6:]) == bytes([0x46, 0x7e, 1])
+        except ValueError:
+            return False
 
     def status(self):
         response = self.command("STATUS")
@@ -329,6 +394,11 @@ class RestRuntimeConnection:
         response = self.call("/api/status").get("status", "UNKNOWN")
         return response[7:] if response.startswith("STATUS:") else "UNKNOWN"
 
+    def task_scheduling_supported(self):
+        response = self.call('/api/workbench-task-scheduling')
+        return (isinstance(response, dict) and response.get('interface') == 'workbench-task-scheduling-v1'
+                and response.get('supported') is True)
+
     def transition(self, action, expected):
         state = self.status()
         if state == expected:
@@ -379,10 +449,48 @@ class Coordinator:
         if "ActiveState=inactive" not in result or "MainPID=0" not in result:
             raise DeploymentError("Private Runtime service is not confirmed inactive")
 
+    def resume_axis_v2_version(self):
+        """Preflight the committed active v2 channel before starting either service."""
+        if not self.active_path.exists():return None
+        active=self.active()
+        build=active.get('build_hash')
+        if not isinstance(build,str) or re.fullmatch('[0-9A-Fa-f]{64}',build) is None:return None
+        version=self.version(build)
+        stage=version/'stage-result.json'
+        if not stage.exists() or read_json(stage).get('manifest',{}).get('AxisInterfaceVersion')!=axis_gate.INTERFACE_V2:return None
+        try:
+            generated,manifest,compiled=configuration_download.candidate(version)
+            self.verify_active(active,build)
+            if (manifest.get('AxisInterfaceVersion')!=axis_gate.INTERFACE_V2
+                    or compiled.get('library_sha256')!=active.get('library_sha256')):
+                raise ValueError('Active v2 library differs from verified staged candidate')
+            raw=ethercat_hardware.read_regular(generated/'axis-manifest.json')
+            data=axis_gate.validate_manifest(axis_gate.strict_json(raw))
+            if data['InterfaceVersion']!=axis_gate.INTERFACE_V2:raise ValueError('V2 manifest required')
+            axis_gate.verify_native_profile_capabilities(data,configuration_download.native_state(self.config))
+            configuration_download.validate_config(self.config,axis_gate.INTERFACE_V2)
+            destination=configuration_download.manifest_destination(self.config,axis_gate.INTERFACE_V2)
+            for path,name in [(destination,'axis-manifest.json'),(destination.with_name('axis_worker_v2.py'),'axes/axis_worker_v2.py')]:
+                if path.is_symlink():raise ValueError('Symlink in installed v2 worker resources')
+                info=path.stat()
+                if (not stat.S_ISREG(info.st_mode) or info.st_uid!=os.getuid() or stat.S_IMODE(info.st_mode)!=0o600
+                        or configuration_download.source_digest(path)!=configuration_download.source_digest(generated/name)):
+                    raise ValueError('Installed v2 worker/manifest differs from active candidate')
+            return version
+        except (OSError,ValueError,KeyError,subprocess.SubprocessError) as error:
+            raise DeploymentError('Active v2 bridge cannot resume safely: '+str(error)) from error
+
     def resume_service(self, allow_empty=False):
         if self.config.get("control_transport") != "rest":
             return
+        axis_v2=self.resume_axis_v2_version()
         self.service("start")
+        if axis_v2 is not None:
+            try:
+                configuration_download.service('start',axis_gate.INTERFACE_V2)
+                configuration_download.wait_ready(axis_v2,self.config)
+            except (OSError,ValueError,subprocess.SubprocessError) as error:
+                raise DeploymentError('Resumed v2 bridge readiness is unconfirmed; PLC was never requested to START: '+str(error)) from error
         deadline = time.monotonic() + 30
         while time.monotonic() < deadline:
             try:
@@ -442,7 +550,70 @@ class Coordinator:
         if state != "STOPPED" and not (empty_allowed and state == "EMPTY"):
             raise DeploymentError("Activation requires confirmed " + ("EMPTY" if empty_allowed else "STOPPED") + "; actual " + state)
 
-    def stage(self, request):
+    def active_hardware_matches(self, active):
+        hardware_active = pathlib.Path(self.config["ethercat_active_record"]) if self.config.get("ethercat_active_record") else self.prefix / "hardware-active.json"
+        if not isinstance(active.get("build_hash"), str) or not re.fullmatch(r"[0-9A-Fa-f]{64}", active["build_hash"]):
+            return not hardware_active.exists()
+        stage = self.version(active["build_hash"]) / "stage-result.json"
+        manifest = read_json(stage).get("manifest", {}) if stage.exists() else {}
+        if hardware_active.exists():
+            expected = read_json(hardware_active).get("topologyFingerprint")
+            if (manifest.get("EtherCatRuntimeInterfaceVersion") != "workbench-ethercat-v1"
+                    or manifest.get("EtherCatTopologyFingerprint") != expected):
+                return False
+        # Updating a shared axis bridge can change AXIS_REF index/name bindings
+        # without changing the physical bus. An old application must not regain
+        # permission to run against that different logical mapping.
+        if manifest.get("AxisInterfaceVersion") is not None:
+            try:
+                environment = configuration_download.runtime_environment()
+                verify_axis_ready(manifest, stage.parent / "core" / "generated", self.config, environment)
+            except (DeploymentError, OSError, ValueError, KeyError, subprocess.SubprocessError):
+                return False
+        return True
+
+    def verify_start_hardware(self, active):
+        if not self.active_hardware_matches(active):
+            raise DeploymentError("Active PLC hardware configuration is stale; activate a program matching the applied hardware before Start")
+        if not re.fullmatch(r"[0-9A-Fa-f]{64}", active["build_hash"]):
+            return  # Explicitly adopted legacy identity, with no newer hardware applied.
+        version = self.version(active["build_hash"])
+        stage = version / "stage-result.json"
+        manifest = read_json(stage).get("manifest", {}) if stage.exists() else {}
+        if manifest.get("EtherCatRuntimeInterfaceVersion") is not None:
+            try:
+                ethercat_hardware.verify_applied(version / "core" / "generated", self.config)
+            except (ValueError, OSError, KeyError) as error:
+                raise DeploymentError("Active hardware cannot be verified: " + str(error)) from error
+        if manifest.get("AxisInterfaceVersion") is not None:
+            try:
+                environment = configuration_download.runtime_environment()
+                verify_axis_ready(manifest, version / "core" / "generated", self.config, environment)
+            except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
+                raise DeploymentError("Active axis mapping cannot be verified: " + str(error)) from error
+
+    @staticmethod
+    def native_core_pid():
+        result = subprocess.run(["systemctl", "show", "st-workbench-is620n.service", "--property=LoadState", "--property=ActiveState", "--property=MainPID"],
+                                check=False, capture_output=True, text=True, timeout=10)
+        fields = {}
+        for line in result.stdout.splitlines():
+            key, separator, value = line.partition('=')
+            if not separator or key not in {'LoadState', 'ActiveState', 'MainPID'} or key in fields:
+                raise DeploymentError('Native service state is unconfirmed')
+            fields[key] = value
+        if set(fields) != {'LoadState', 'ActiveState', 'MainPID'} or not fields['MainPID'].isascii() or not fields['MainPID'].isdecimal():
+            raise DeploymentError('Native service state is unconfirmed')
+        pid = int(fields['MainPID'])
+        if fields['LoadState'] == 'not-found' and fields['ActiveState'] == 'inactive' and pid == 0:
+            return 0  # Transient systemd units disappear after reboot; the broker may initialize a stopped core.
+        if result.returncode != 0 or fields['LoadState'] != 'loaded' or fields['ActiveState'] not in {'active', 'inactive', 'failed', 'activating', 'deactivating', 'reloading'}:
+            raise DeploymentError('Native service state is unconfirmed')
+        if pid and fields['ActiveState'] in {'inactive', 'failed'}:
+            raise DeploymentError('Native service state is unconfirmed')
+        return pid
+
+    def stage(self, request, hardware_only=False):
         build_hash = identity(request["build_hash"])
         if request.get("package_base64"):
             encoded = request["package_base64"]
@@ -454,7 +625,7 @@ class Coordinator:
             package.write_bytes(base64.b64decode(encoded, validate=True))
         else:
             package = pathlib.Path(request["package_path"])
-        manifest = validate_archive(package, request["package_sha256"], build_hash)
+        manifest = validate_archive(package, request["package_sha256"], build_hash, hardware_only)
         version = self.version(build_hash)
         if version.exists():
             # Transport bytes include ZIP timestamps, order and compression. Reuse only
@@ -485,6 +656,8 @@ class Coordinator:
     def compile(self, request):
         version = self.version(request["build_hash"])
         stage = read_json(version / "stage-result.json")
+        if stage['manifest'].get('ArtifactKind') == 'hardware-only':
+            raise DeploymentError('Standalone hardware cannot enter program compilation')
         profile = read_json(pathlib.Path(__file__).with_name("runtime-profile.json"))
         for relative, checksum in profile["source_hashes"].items():
             source = self.runtime / relative
@@ -509,8 +682,7 @@ class Coordinator:
             if run_bounded(["nm", "-D", "--defined-only", str(library)], version, export_path, 15) != 0:
                 raise DeploymentError("Candidate symbol inspection failed")
             exports = {line.split()[-1] for line in export_path.read_text().splitlines() if line.split()}
-            if not REQUIRED_EXPORTS.issubset(exports):
-                raise DeploymentError("Candidate missing pinned Runtime exports: " + ",".join(sorted(REQUIRED_EXPORTS - exports)))
+            verify_candidate_exports(stage["manifest"], exports)
             result = {"state": "compiled", "build_hash": identity(request["build_hash"]), "library_sha256": digest(library),
                 "exports_verified": True, "runtime_commit": RUNTIME_COMMIT, "log_path": str(log_path), "request_id": request["request_id"]}
         result["log"] = log_path.read_text(encoding="utf8", errors="replace")[-65536:]
@@ -583,6 +755,8 @@ class Coordinator:
         active = self.active()
         self.verify_active(active, request.get("expected_active_build_hash"))
         version = self.version(request["build_hash"])
+        if read_json(version / 'stage-result.json')['manifest'].get('ArtifactKind') == 'hardware-only':
+            raise DeploymentError('Standalone hardware cannot activate a PLC program')
         compiled = read_json(version / "compile-result.json")
         library = version / "build" / "new_libplc.so"
         if compiled.get("state") != "compiled" or compiled.get("exports_verified") is not True or digest(library) != compiled["library_sha256"]:
@@ -607,6 +781,7 @@ class Coordinator:
             verify_motion_ready(manifest, version / "core" / "generated", self.config, environment)
         target = pathlib.Path(active["library_path"])
         with self.connection() as connection:
+            verify_task_scheduling(connection, manifest)
             self.stopped(connection, active["build_hash"] is None)
             history = self.prefix / ".history"
             history.mkdir(exist_ok=True)
@@ -693,6 +868,121 @@ class Coordinator:
             self.resume_service(old["build_hash"] is None)
         return {"state": "rolled-back", "active": old}
 
+    def apply_hardware(self, request):
+        if "administrative_password" in request:
+            request.pop("administrative_password", None)
+            raise DeploymentError("Password transport is no longer supported; use the authorized local hardware broker")
+        with self.connection() as connection:
+            if connection.status() != "STOPPED":
+                raise DeploymentError("Hardware apply requires PLC STOPPED; no implicit PLC stop is performed")
+        active = self.active()
+        self.verify_active(active, request.get("expected_active_build_hash"))
+        version = self.version(request["build_hash"])
+        old_core_pid = self.native_core_pid()
+        bridge_units = ["stworkbench-is620n-axis.service"]
+        if self.config.get("axis_v2_socket_path"):
+            bridge_units.append(axis_gate.channel(axis_gate.INTERFACE_V2, self.config)['service'])
+        previously_active = {unit for unit in bridge_units if subprocess.run(
+            ["systemctl", "--user", "is-active", "--quiet", unit], capture_output=True, timeout=10).returncode == 0}
+        stopped_units = []
+        try:
+            generated, hardware_manifest = scoped_transfer.inventory(version)
+            ethercat_hardware.check_bundle(version, self.config)
+            axis_manifest = generated / 'axis-manifest.json'
+            raw = ethercat_hardware.read_regular(axis_manifest) if 'axis-manifest.json' in hardware_manifest['Files'] else None
+            axes = scoped_transfer.validate_axes(axis_gate.strict_json(raw)) if raw is not None else None
+            has_axes = bool(axes and axes['Axes'])
+            interface = axes['InterfaceVersion'] if has_axes else axis_gate.INTERFACE
+            selected = axis_gate.channel(interface, self.config)
+            expected_socket = ("/home/a/.local/share/st-workbench/is620n-axis/axis.sock"
+                               if interface == axis_gate.INTERFACE else selected['socket'])
+            if has_axes and (selected['socket'] != expected_socket or self.config.get("axis_backend") != "EcMotion"):
+                raise DeploymentError("Generic hardware application requires the configured private EcMotion axis bridge")
+            def stop_bridge():
+                for unit in bridge_units:
+                    subprocess.run(["systemctl", "--user", "stop", unit], check=True, capture_output=True, timeout=20)
+                    stopped_units.append(unit)
+            applied = ethercat_hardware.apply_bundle(version, self.config, before_apply=stop_bridge, request_id=request["request_id"])
+            if has_axes:
+                destination = pathlib.Path(expected_socket).with_name("axis-manifest.json")
+                if destination.is_symlink():
+                    raise DeploymentError("Private axis manifest may not be a symlink")
+                temporary = destination.with_name("axis-manifest-" + request["request_id"] + ".tmp")
+                with open(temporary, "xb") as stream:
+                    os.chmod(temporary, 0o600)
+                    stream.write(raw)
+                os.replace(temporary, destination)
+                subprocess.run(["systemctl", "--user", "start", selected["service"]], check=True, capture_output=True, timeout=20)
+                deadline = time.monotonic() + 10
+                while True:
+                    try:
+                        loaded = (configuration_download.worker_digest(self.config, interface)
+                                  if interface == axis_gate.INTERFACE_V2 else configuration_download.worker_digest(self.config))
+                        if loaded != hashlib.sha256(raw).hexdigest():
+                            raise ValueError('Loaded axis manifest differs from applied hardware')
+                        break
+                    except (OSError, ValueError, KeyError, subprocess.SubprocessError):
+                        if time.monotonic() >= deadline: raise
+                        time.sleep(.1)
+            ethercat_hardware.verify_applied(version / "core" / "generated", self.config)
+        except (OSError, ValueError, KeyError, subprocess.SubprocessError) as error:
+            # A preflight rejection must not destroy the still-running
+            # original channel. Only restore if the SAME old core lives;
+            # never attach an old manifest to a changed/unknown process.
+            if stopped_units and previously_active and old_core_pid:
+                try:
+                    if self.native_core_pid() == old_core_pid:
+                        for unit in stopped_units:
+                            if unit in previously_active:
+                                subprocess.run(["systemctl", "--user", "start", unit], check=True, capture_output=True, timeout=20)
+                except (OSError, subprocess.SubprocessError):
+                    pass
+            raise DeploymentError("Hardware apply failed or unconfirmed; query actual state before retry: " + str(error)) from error
+        with self.connection() as connection:
+            if connection.status() != "STOPPED":
+                raise DeploymentError("Hardware applied but PLC state is unconfirmed")
+        if self.active() != active:
+            raise DeploymentError("Active PLC identity changed during hardware operation")
+        atomic_json(self.prefix / "hardware-active.json", applied)
+        return {"state": "hardware-applied", "active": active, "hardware": applied, "message": "总线组态已应用并取得核心指纹和实时反馈确认；PLC 保持停止，请重新编译设备候选后激活。"}
+
+    def apply_configuration(self, request):
+        if "administrative_password" in request:
+            request.pop("administrative_password", None)
+            raise DeploymentError("Password transport is not supported; use the authorized hardware broker")
+        with self.connection() as connection:
+            if connection.status() != "STOPPED":
+                raise DeploymentError("Configuration apply requires PLC STOPPED; no implicit stop is performed")
+        active = self.active()
+        self.verify_active(active, request.get("expected_active_build_hash"))
+        version = self.version(request["build_hash"])
+        try:
+            plan = configuration_download.plan(version, self.config)
+            if plan["identity"] != request.get("configuration_identity"):
+                raise ValueError("Configuration plan identity changed; confirm the actual plan before retry")
+            if plan["kind"] == "axis":
+                configuration_download.apply_axis(version, self.config, request["request_id"])
+            elif plan["kind"] == "hardware":
+                self.apply_hardware(request)
+                configuration_download.wait_ready(version, self.config)
+            else:
+                configuration_download.wait_ready(version, self.config)
+            with self.connection() as connection:
+                if connection.status() != "STOPPED":
+                    raise ValueError("Configuration applied but PLC stopped state is unconfirmed")
+            self.verify_active(active, request.get("expected_active_build_hash"))
+            if self.active() != active:
+                raise ValueError("Active PLC identity changed during configuration update")
+            _, manifest, compiled = configuration_download.candidate(version)
+            if manifest.get("AxisInterfaceVersion") is not None:
+                compiled["axis_ready"] = True
+                compiled["axis_message"] = "Verified candidate axis manifest and advancing native feedback after configuration application"
+                atomic_json(version / "compile-result.json", compiled)
+        except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
+            raise DeploymentError("Configuration apply failed or unconfirmed; query actual state before retry: " + str(error)) from error
+        return {"state": "configuration-applied", "configuration_plan": plan, "active": active,
+                "axis_ready": True, "message": "工程组态已匹配并验证，PLC 保持停止；可继续应用已编译程序。"}
+
     def execute(self, request):
         if not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", request.get("request_id", "")):
             raise DeploymentError("Request ID is required and must be a safe identifier")
@@ -704,6 +994,29 @@ class Coordinator:
                 raise DeploymentError("An unfinished activation transaction requires explicit recovery")
             if action == "stage":
                 result = self.stage(request)
+            elif action == 'hardware-stage':
+                result = self.stage(request, hardware_only=True)
+            elif action in {'program-export', 'program-debug-map', 'hardware-export'}:
+                try:
+                    result = scoped_transfer.hardware(self) if action == 'hardware-export' else scoped_transfer.program(self, action == 'program-export')
+                except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
+                    raise DeploymentError('Export could not be verified: ' + str(error)) from error
+            elif action == "configuration-plan":
+                try:
+                    plan = configuration_download.plan(self.version(request["build_hash"]), self.config)
+                except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError) as error:
+                    raise DeploymentError("Configuration plan could not be verified: " + str(error)) from error
+                result = {"state": "configuration-planned", "configuration_plan": plan}
+            elif action == "configuration-apply":
+                result = self.apply_configuration(request)
+            elif action == "hardware-validate":
+                try:
+                    checked = ethercat_hardware.check_bundle(self.version(request["build_hash"]), self.config)
+                except (OSError, ValueError, KeyError) as error:
+                    raise DeploymentError("Hardware configuration rejected: " + str(error)) from error
+                result = {"state": "hardware-validated", "message": "总线组态包检查通过；应用前必须停止 PLC 并撤销轴使能。", "hardware": checked}
+            elif action == "hardware-apply":
+                result = self.apply_hardware(request)
             elif action == "compile":
                 try:
                     result = self.compile(request)
@@ -743,9 +1056,13 @@ class Coordinator:
                         self.verify_active(active, request.get("expected_active_build_hash"))
                         if action == "start" and active["build_hash"] is None:
                             raise DeploymentError("Cannot start an empty baseline")
+                        if action == "start":
+                            self.verify_start_hardware(active)
                         result = {"state": connection.transition(action.upper(), "RUNNING" if action == "start" else "STOPPED").lower(), "active": active}
             else:
                 raise DeploymentError("Unsupported explicit deployment action")
+            if result.get("active") is not None:
+                result["hardware_matches_active"] = self.active_hardware_matches(result["active"])
             result.update({"success": result["state"] != "compile-failed", "request_id": request["request_id"]})
             return result
 

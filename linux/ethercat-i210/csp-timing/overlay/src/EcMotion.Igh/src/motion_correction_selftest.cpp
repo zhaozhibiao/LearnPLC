@@ -48,7 +48,13 @@ int main(int argc,char** argv){try{
  check(axis.apply_command(reset),"healthy explicit timing reset rejected");axis.process(image,s);
  check(!s.motion_timing_fault && s.motion_timing_ready,"timing reset did not clear latch");
  RealtimeExchange exchange;RealtimeSnapshot published;published.axis_count=1;published.axes[0]=s;published.axes[0].motion_timing_ready=false;published.axes[0].motion_timing_fault=true;
+ published.axes[0].demand_position_error=.001;published.axes[0].drive_following_error=-.002;
+ published.axes[0].demand_delivery_error=.003;published.axes[0].demand_feedback_valid=true;
+ published.axes[0].demand_delivery_mismatch=true;published.axes[0].demand_delivery_fault=true;
  exchange.publish(published);const auto observed=exchange.snapshot();check(!observed.axes[0].motion_timing_ready && observed.axes[0].motion_timing_fault,"timing flags lost across snapshot exchange");
+ check(observed.axes[0].demand_position_error==.001 && observed.axes[0].drive_following_error==-.002
+   && observed.axes[0].demand_delivery_error==.003 && observed.axes[0].demand_feedback_valid
+   && observed.axes[0].demand_delivery_mismatch && observed.axes[0].demand_delivery_fault,"demand diagnostics lost across snapshot exchange");
  auto bad=c;bad.velocity_feedback_raw_per_unit_per_second=std::numeric_limits<double>::quiet_NaN();bool rejected=false;try{Cia402AxisAdapter x(layout,bad);}catch(const std::invalid_argument&){rejected=true;}check(rejected,"NaN velocity scale accepted");
  bad=c;bad.velocity_offset_raw_per_unit_per_second=-1;rejected=false;try{Cia402AxisAdapter x(layout,bad);}catch(const std::invalid_argument&){rejected=true;}check(rejected,"negative offset scale accepted");
  std::cout<<"motion correction PASS\n";return 0;

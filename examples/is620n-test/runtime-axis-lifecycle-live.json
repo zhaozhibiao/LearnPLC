@@ -1,0 +1,36 @@
+{
+  "readonlyPlcConnections": 3,
+  "zeroCommandScansPerConnection": 5,
+  "workerPid": 16679,
+  "socketSurvivedAllDisconnects": true,
+  "physicalBasicAxis": true,
+  "controllerReady": true,
+  "plcState": "STOPPED",
+  "axisState": "Disabled",
+  "finalVelocity": 0.0149993896484375,
+  "activeIdentityUnchanged": true,
+  "appliedCommandSequence": 0,
+  "checkedCandidateBuildHashes": [
+    "5CB4FA5793460A1B3646544B31032B0FDFE6EE403A16E59934BB517D153655E1",
+    "3CB70471472D8BF6693D56C57FC18CA030BFF3C83C5B4DE4563CC06025A22249"
+  ],
+  "diagnostics": "backend=igh; realtime=true; bus_ready=1; cycles=1129745; rejected_commands=0; statusword=0x8250; mode=8; error=0x0; commissioning_required=0; software_limit_violation=0; following_error_fault=0; overspeed_fault=0; realtime_bus_ready=1",
+  "workerSha256": "59b1ea48910b1de7470cfe9409cd28aa7d810be01f6df18f2f140e3ad27ff612",
+  "candidateCompileResults": [
+    {
+      "build_hash": "5CB4FA5793460A1B3646544B31032B0FDFE6EE403A16E59934BB517D153655E1",
+      "state": "compiled",
+      "axis_ready": true,
+      "axis_message": "Verified private EcMotion basic axis backend; motion-cycle configuration is not applied",
+      "library_sha256": "e6546ec993f7b91cdd8677da261d6e53374327927a6261755979a4c6e21f8419"
+    },
+    {
+      "build_hash": "3CB70471472D8BF6693D56C57FC18CA030BFF3C83C5B4DE4563CC06025A22249",
+      "state": "compiled",
+      "axis_ready": true,
+      "axis_message": "Verified private EcMotion basic axis backend; motion-cycle configuration is not applied",
+      "library_sha256": "853677730791e93de62369d8674dc2b7a2904fa3d6f4f44508bf01044a8f94dd"
+    }
+  ],
+  "coreRuntimeLimit": "infinity; until explicit stop or host reboot"
+}

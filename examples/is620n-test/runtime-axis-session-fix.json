@@ -1,0 +1,10 @@
+{
+  "workerUpdated": true,
+  "workerSha256": "59b1ea48910b1de7470cfe9409cd28aa7d810be01f6df18f2f140e3ad27ff612",
+  "previousPlcState": "RUNNING",
+  "plcState": "STOPPED",
+  "activeIdentityUnchanged": true,
+  "motionCommandsSent": 0,
+  "testsPassed": 32,
+  "physicalReadiness": "pending privileged core restart"
+}

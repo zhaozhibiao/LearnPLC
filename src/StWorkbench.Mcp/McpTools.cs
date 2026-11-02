@@ -69,21 +69,24 @@ public sealed class McpTools(WorkspaceService workspace, ConfigurationService co
         return new { view.Revision, symbols, completion = language.Complete(symbols, prefix), signature = signatureName is null ? null : language.Signature(symbols, signatureName) };
     });
 
-    [McpServerTool(Name = "st_instructions", ReadOnly = true), Description("List original standard ST examples (logic, IF/ELSE, timers, counters) and available axis/path function block names. search filters standard templates.")]
+    [McpServerTool(Name = "st_instructions", ReadOnly = true), Description("List original standard ST examples (logic, IF/ELSE, timers, counters) and available axis/path function block names. search filters standard and configured engineering-axis templates.")]
     public Task<CallToolResult> Instructions(string search = "", string? sessionId = null) => Result(async () =>
     {
         var library = new List<SourceDocument>();
-        foreach (var (folder, file) in new[] { ("axis-bridge", "axis_control.st"), ("motion-bridge", "continuous_path.st") })
+        foreach (var (folder, file) in new[] { ("axis-bridge-v2", "axis_control.st"), ("motion-bridge", "continuous_path.st") })
             library.Add(new(Guid.NewGuid(), "library/" + file, await File.ReadAllTextAsync(Path.Combine(options.RepositoryRoot, "tools", folder, file))));
         var signatures = new StLanguageService().Index(library).Where(s => s.Name.StartsWith("MC_", StringComparison.Ordinal) || s.Owner?.StartsWith("MC_", StringComparison.Ordinal) == true || s.Name == "AXIS_REF").ToArray();
         var draft = sessionId is null ? null : await workspace.ReadAsync(sessionId);
+        var axisTemplates = AxisInstructionCatalog.Create(draft?.Project.Hardware.Axes ?? [], includeCompatibilityAliases: true).ToArray();
+        var moveTemplate = axisTemplates.FirstOrDefault(i => i.Id.EndsWith("_MC_MoveAbsolute", StringComparison.Ordinal));
+        const string emptyProgram = "PROGRAM Main\nVAR\nEND_VAR\n\nEND_PROGRAM\n";
         return new
         {
-            templates = StInstructionCatalog.All.Where(i => (i.Id + i.Name + i.Category + i.Description).Contains(search, StringComparison.OrdinalIgnoreCase)),
+            templates = StInstructionCatalog.All.Concat(axisTemplates).Where(i => (i.Id + i.Name + i.Category + i.Description).Contains(search, StringComparison.OrdinalIgnoreCase)),
             axisBlocks = AxisControlBinding.BlockNames, motionSignatures = signatures,
             axisConstants = draft is null ? null : AxisControlBinding.Constants(draft.Project.Hardware.Axes),
             paths = draft?.Project.Paths.Select(p => new { p.Name, p.Id, p.NumericId, p.Version, p.ContentHash, p.Axes }),
-            axisExample = "VAR\n    move : MC_MoveAbsolute;\n    Start : BOOL;\nEND_VAR\nmove(Axis := AXIS_X, Execute := Start, Position := 10.0, Velocity := 1.0);",
+            axisExample = moveTemplate is null ? null : StSnippetInsertion.Insert(emptyProgram, emptyProgram.IndexOf("END_PROGRAM", StringComparison.Ordinal), moveTemplate).Text,
             note = "Declare an actual configured engineering axis; do not use an unknown AXIS_X. MC_ interfaces are supplied by package generation; do not copy private AB_/MB_ globals into user ST. Runtime readiness is separate."
         };
     });
@@ -94,13 +97,14 @@ public sealed class McpTools(WorkspaceService workspace, ConfigurationService co
         {
             var at = sources.FindIndex(s => s.ItemId == itemId); if (at < 0) throw new ArgumentException("Unknown source.");
             var instruction = StInstructionCatalog.All
+                .Concat(AxisInstructionCatalog.Create(project.Hardware.Axes, includeCompatibilityAliases: true))
                 .Concat(BuiltinLibraryCatalog.ControlInstructions(options.RepositoryRoot, project.Tasks.FirstOrDefault(t => t.Enabled)?.IntervalMilliseconds / 1000.0 ?? 0.01))
                 .Concat(BuiltinLibraryCatalog.CommunicationInstructions(project.Communication))
                 .SingleOrDefault(i => i.Id == instructionId) ?? throw new ArgumentException("Unknown instruction ID.");
             sources[at] = sources[at] with { Text = StSnippetInsertion.Insert(sources[at].Text, offset, instruction).Text };
         }));
 
-    [McpServerTool(Name = "configuration_update", Destructive = true), Description("Atomically replace offline hardware, network, tasks and motion cycle configuration using current revision. Null network/motionCycle clears those sections. Does not apply to physical device.")]
+    [McpServerTool(Name = "configuration_update", Destructive = true), Description("Atomically replace offline hardware, network, tasks and motion cycle configuration using current revision. Task Scheduling is Ordinary (default SCHED_OTHER) or Realtime (SCHED_FIFO below motion), Priority is IEC 0 highest to 31 lowest, Cpu is optional. Enabled tasks must bind different programs. Null network/motionCycle clears those sections. Does not apply to physical device.")]
     public Task<CallToolResult> Configure(string sessionId, string expectedRevision, HardwareConfiguration hardware, PlcTask[] tasks, NetworkConfiguration? network = null, MotionCycleConfiguration? motionCycle = null) =>
         Result(() => configuration.ConfigureAsync(sessionId, expectedRevision, hardware, network, tasks, motionCycle));
 
@@ -120,7 +124,7 @@ public sealed class McpTools(WorkspaceService workspace, ConfigurationService co
         var paths = new[] { "tools/control-library/control.st", "tools/communication-bridge/communication.st" };
         var sources = new List<SourceDocument>(); foreach (var path in paths) sources.Add(new(Guid.NewGuid(), path, await File.ReadAllTextAsync(Path.Combine(options.RepositoryRoot, path))));
         var symbols = new StLanguageService().Index(sources).Where(s => s.Owner?.StartsWith("CB_", StringComparison.Ordinal) != true && !s.Name.StartsWith("CB_", StringComparison.Ordinal)).ToArray();
-        return new { draft.Revision, draft.Project.Communication, symbols, templates = BuiltinLibraryCatalog.ControlInstructions(options.RepositoryRoot, draft.Project.Tasks.Single(t => t.Enabled).IntervalMilliseconds / 1000.0).Concat(BuiltinLibraryCatalog.CommunicationInstructions(draft.Project.Communication)).ToArray(), constants = draft.Project.Communication is { } c ? CommunicationBinding.Constants(c) : null };
+        return new { draft.Revision, draft.Project.Communication, symbols, templates = BuiltinLibraryCatalog.ControlInstructions(options.RepositoryRoot, draft.Project.Tasks.First(t => t.Enabled).IntervalMilliseconds / 1000.0).Concat(BuiltinLibraryCatalog.CommunicationInstructions(draft.Project.Communication)).ToArray(), constants = draft.Project.Communication is { } c ? CommunicationBinding.Constants(c) : null };
     });
 
     [McpServerTool(Name = "dxf_preview", ReadOnly = true), Description("Parse workspace DXF using millimetersPerUnit scale. Returns already-scaled contours; selecting another scale requires reparsing original DXF. No stored path changes.")]
@@ -196,7 +200,7 @@ public sealed class McpTools(WorkspaceService workspace, ConfigurationService co
     public Task<CallToolResult> Schema() => Result(() => Task.FromResult<object>(new
     {
         project = EngineeringSchemas.For(typeof(StProject)), sources = EngineeringSchemas.For(typeof(SourceDocument[])),
-        hardware = EngineeringSchemas.For(typeof(HardwareConfiguration)), path = EngineeringSchemas.For(typeof(MotionPathAsset))
+        hardware = EngineeringSchemas.For(typeof(HardwareConfiguration)), tasks = EngineeringSchemas.For(typeof(PlcTask[])), path = EngineeringSchemas.For(typeof(MotionPathAsset))
     }));
 
     private static async Task<CallToolResult> Done(Func<Task> action) => await Result(async () => { await action(); return new { success = true }; });

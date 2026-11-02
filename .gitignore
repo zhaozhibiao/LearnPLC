@@ -8,4 +8,7 @@ artifacts/
 .tools/
 *.user
 *.tmp
+tmp/
+.vs/
+.vscode/
 **/.avalonia-build-tasks/

@@ -27,7 +27,7 @@ internal static class FeaturePackageSmoke
         var result = await builder.BuildAsync(snapshot, new Dictionary<Guid, string> { [main.Id] = "Main" }, "node", adapter, distribution, root);
         if (!result.Success) throw new Exception("Control+comm compile: " + result.Compilation.Log);
         using var zip = ZipFile.OpenRead(result.PackagePath);
-        foreach (var file in new[] { "control/control.st", "control/LICENSE", "communication.st", "communication_bridge.cpp", "generated_communication_scan_shim.cpp", "communication_lifecycle.inc", "communication/communication_worker.py", "communication/LICENSE", "communication-manifest.json" })
+        foreach (var file in new[] { "control/control.st", "control/LICENSE", "communication.st", "communication_bridge.cpp", "generated_communication_scan_shim.cpp", "communication_lifecycle.inc", "native/src/communication_worker.cpp", "native/LICENSE", "communication-manifest.json" })
             if (zip.GetEntry(file) is null) throw new Exception("Missing feature dependency: " + file);
         using var manifest = JsonDocument.Parse(zip.GetEntry("build-manifest.json")!.Open());
         if (manifest.RootElement.GetProperty("CommunicationInterfaceVersion").GetString() != CommunicationBinding.Interface || manifest.RootElement.GetProperty("ControlLibraryVersion").GetString() != "1.0.0") throw new Exception("Missing feature identity");

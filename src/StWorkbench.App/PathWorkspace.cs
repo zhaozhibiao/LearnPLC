@@ -154,7 +154,7 @@ public sealed partial class MainWindow
     private void RefreshPathExecutionStatus()
     {
         if (pathPane is null || selectedPath is not { } asset) return;
-        if (debugClient is null || monitorSession is null || !CandidateMatchesProject()) { SetPathOfflineStatus($"工程预存 {asset.Name} v{asset.Version} · {asset.ContentHash}"); return; }
+        if (debugClient is null || monitorSession is null || !(engineeringClient is not null ? EngineeringOnlineIdentityReady() : CandidateMatchesProject())) { SetPathOfflineStatus($"工程预存 {asset.Name} v{asset.Version} · {asset.ContentHash}"); return; }
         var now = DateTimeOffset.UtcNow;
         string? Field(string prefix, string name)
         {

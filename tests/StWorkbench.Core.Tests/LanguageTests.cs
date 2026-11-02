@@ -25,5 +25,22 @@ public static class LanguageTests
         if (!typed.Any(s => s.Name == "Second" && s.Kind == "TYPE")) throw new Exception("FAIL: multiple type declarations");
         if (!service.Signature(typed, "Shapes")!.Contains("ARRAY [1..10] OF REAL")) throw new Exception("FAIL: complete array parameter signature");
         Console.WriteLine("PASS: multiple datatypes and array signature");
+        var repository = new DirectoryInfo(AppContext.BaseDirectory);
+        while (repository is not null && !File.Exists(Path.Combine(repository.FullName, "tools", "axis-bridge", "axis_control.st"))) repository = repository.Parent;
+        if (repository is null) throw new Exception("FAIL: repository for actual axis library symbols");
+        var publicSymbols = BuiltinLibraryCatalog.PublicSymbols(repository.FullName, [], null);
+        var missingOutputs = new[] { (Owner: "MC_MoveAbsolute", Output: "Done"), (Owner: "MC_ReadStatus", Output: "Stopping"), (Owner: "MC_Power", Output: "Status"), (Owner: "MC_MoveVelocity", Output: "InVelocity"), (Owner: "MC_ReadStatus", Output: "Busy") }
+            .Where(output => !publicSymbols.Any(s => s.Owner == output.Owner && s.Name == output.Output && s.Kind == "VAR_OUTPUT")).Select(output => output.Owner + "." + output.Output).ToArray();
+        if (missingOutputs.Length > 0) throw new Exception("FAIL: real axis outputs missing from editor: " + string.Join(", ", missingOutputs));
+        if (publicSymbols.Any(s => s.Name.StartsWith("AB_", StringComparison.OrdinalIgnoreCase) || s.Owner?.StartsWith("AB_", StringComparison.OrdinalIgnoreCase) == true || s.Name.StartsWith("CB_", StringComparison.OrdinalIgnoreCase) || s.Owner?.StartsWith("CB_", StringComparison.OrdinalIgnoreCase) == true)) throw new Exception("FAIL: internal bridge symbols leaked into public completions");
+        if (publicSymbols.Any(s => s.File == "tools/axis-bridge/axis_control.st" && s.Kind is "VAR" or "VAR_GLOBAL")) throw new Exception("FAIL: axis implementation locals leaked through public blocks");
+        foreach (var block in new[] { "MC_MoveAbsolute", "MC_MoveVelocity", "MC_Stop" })
+        {
+            foreach (var input in block == "MC_Stop" ? new[] { "Deceleration", "Jerk" } : new[] { "Acceleration", "Deceleration", "Jerk" })
+                if (!publicSymbols.Any(s => s.Owner == block && s.Kind == "VAR_INPUT" && s.Name == input)) throw new Exception("FAIL: verified v2 dynamic pin missing from editor signature: " + block + "." + input);
+            if (block == "MC_Stop" && publicSymbols.Any(s => s.Owner == block && s.Kind == "VAR_INPUT" && s.Name == "Acceleration")) throw new Exception("FAIL: unsupported Stop acceleration advertised");
+        }
+        if (publicSymbols.Any(s => s.File.Contains("axis-bridge", StringComparison.Ordinal) && s.Kind is "VAR" or "VAR_GLOBAL")) throw new Exception("FAIL: v2 implementation locals leaked through public blocks");
+        Console.WriteLine("PASS: actual axis public outputs available without private bridge symbols");
     }
 }

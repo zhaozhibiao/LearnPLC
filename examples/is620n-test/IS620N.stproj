@@ -1,0 +1,213 @@
+{
+  "SchemaVersion": 1,
+  "Project": {
+    "Network": {
+      "ManagementHost": "192.168.1.31",
+      "SshUser": "a",
+      "RuntimeEndpoint": "",
+      "EtherCatInterface": "enp3s0"
+    },
+    "SchemaVersion": 1,
+    "Id": "f8d1f254-c49b-41c9-8e78-daa4f5f4e078",
+    "Name": "IS620N \u7A7A\u8F7D\u5355\u6B21\u5F80\u8FD4\u6D4B\u8BD5\uFF08\u5F85\u5B9E\u673A\u9002\u914D\uFF09",
+    "Items": [
+      {
+        "Id": "91104fdc-745d-49de-88ac-0e2d24052797",
+        "Name": "Main",
+        "Kind": 0,
+        "SourcePath": "sources/Main.st"
+      }
+    ],
+    "Tasks": [
+      {
+        "Name": "Cyclic",
+        "ProgramId": "91104fdc-745d-49de-88ac-0e2d24052797",
+        "IntervalMilliseconds": 10,
+        "Enabled": true
+      }
+    ],
+    "Hardware": {
+      "Stations": [
+        {
+          "Id": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+          "Name": "IS620NDrive",
+          "DeviceId": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+          "AliasAddress": 0,
+          "EnabledEntries": [
+            {
+              "Index": 24640,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "Controlword",
+              "Type": "UINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24698,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "TargetPosition",
+              "Type": "DINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24831,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "TargetVelocity",
+              "Type": "DINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24672,
+              "SubIndex": 0,
+              "BitLength": 8,
+              "Name": "ModeOfOperation",
+              "Type": "SINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24639,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "ErrorCode",
+              "Type": "UINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24641,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "Statusword",
+              "Type": "UINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24676,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "ActualPosition",
+              "Type": "DINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24684,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "ActualVelocity",
+              "Type": "DINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24673,
+              "SubIndex": 0,
+              "BitLength": 8,
+              "Name": "ModeDisplay",
+              "Type": "SINT",
+              "IsInput": true
+            }
+          ]
+        }
+      ],
+      "Devices": [
+        {
+          "Id": "c5835b8d-873b-42d8-a74c-0546299c7ac5",
+          "Name": "IS620N_ECAT_v2.6.2 (commissioned 1600/1A00 PDO)",
+          "VendorId": 1048576,
+          "ProductCode": 786696,
+          "Revision": 65537,
+          "Entries": [
+            {
+              "Index": 24640,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "Controlword",
+              "Type": "UINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24698,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "TargetPosition",
+              "Type": "DINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24831,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "TargetVelocity",
+              "Type": "DINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24672,
+              "SubIndex": 0,
+              "BitLength": 8,
+              "Name": "ModeOfOperation",
+              "Type": "SINT",
+              "IsInput": false
+            },
+            {
+              "Index": 24639,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "ErrorCode",
+              "Type": "UINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24641,
+              "SubIndex": 0,
+              "BitLength": 16,
+              "Name": "Statusword",
+              "Type": "UINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24676,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "ActualPosition",
+              "Type": "DINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24684,
+              "SubIndex": 0,
+              "BitLength": 32,
+              "Name": "ActualVelocity",
+              "Type": "DINT",
+              "IsInput": true
+            },
+            {
+              "Index": 24673,
+              "SubIndex": 0,
+              "BitLength": 8,
+              "Name": "ModeDisplay",
+              "Type": "SINT",
+              "IsInput": true
+            }
+          ]
+        }
+      ],
+      "Io": [],
+      "Axes": [
+        {
+          "Name": "IS620N",
+          "ControllerAxis": "Axis1",
+          "Unit": "rev",
+          "MinPosition": -1,
+          "MaxPosition": 1,
+          "StationId": "0b9ac243-47e3-4d5e-b5ea-64f73dde5166",
+          "MaximumVelocity": 0.01
+        }
+      ]
+    },
+    "Paths": []
+  },
+  "SourceFiles": {
+    "91104fdc-745d-49de-88ac-0e2d24052797": ".stversions/4894ee890a39c0488ced5627d863e3367901542a722bb2441925a9391835fd5c/f001fd3427cdcea3edc2f7a2b330bb6a9bf49bf9027796bc86906c84f9fdddca/sources/Main.st"
+  }
+}

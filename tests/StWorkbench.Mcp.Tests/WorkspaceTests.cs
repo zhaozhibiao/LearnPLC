@@ -40,6 +40,24 @@ internal static class WorkspaceTests
             var changedView = await service.ReadAsync(renamed.SessionId);
             changedView.Project.Name = "mutated returned DTO";
             Check((await service.ReadAsync(renamed.SessionId)).Project.Name != changedView.Project.Name, "detached returned DTO");
+            var workerView = await service.AddResourceAsync(renamed.SessionId, renamed.Revision, "Worker", ItemKind.Program);
+            var worker = workerView.Project.Items.Single(i => i.Name == "Worker");
+            var configuration = new ConfigurationService(service);
+            PlcTask[] tasks = [workerView.Project.Tasks[0], new() { Name = "Fast", ProgramId = worker.Id, Scheduling = PlcTaskScheduling.Realtime, Priority = 4, Cpu = 2 }];
+            workerView.Project.Hardware.Axes.Add(new("Migration", "Axis1", "mm", -10, 10) { MaximumJerk = 12, Runtime = new() { DriveDemandProtection = true, DriveErrorOnly = true, DemandDeliveryEnforced = false, DemandDeliveryTolerance = .02, FollowingErrorRawPerUnit = 100, PositionDemandRawPerUnit = 200, VelocityFeedbackRawPerUnitPerSecond = 123, VelocityOffsetRawPerUnitPerSecond = 456, VelocityFeedforwardGain = .75, DriveFollowingErrorWindowRaw = 321 } });
+            var schema = EngineeringSchemas.For(typeof(HardwareConfiguration)).ToJsonString();
+            Check(schema.Contains("VelocityOffsetRawPerUnitPerSecond") && schema.Contains("DriveFollowingErrorWindowRaw") && schema.Contains("CycleTiming") && schema.Contains("DcSync0ShiftNanoseconds"), "MCP schema exposes migration settings");
+            var configured = await configuration.ConfigureAsync(workerView.SessionId, workerView.Revision, workerView.Project.Hardware, null, tasks, null);
+            Check(configured.Project.Tasks[0].Scheduling == PlcTaskScheduling.Ordinary && configured.Project.Tasks[1] is { Scheduling: PlcTaskScheduling.Realtime, Priority: 4, Cpu: 2 }, "MCP preserves ordinary and realtime task settings");
+            Check(configured.Project.Hardware.Axes[0] is { MaximumJerk: 12, Runtime: { VelocityFeedforwardGain: .75, DemandDeliveryEnforced: false, DriveFollowingErrorWindowRaw: 321 } }, "MCP detached engineering fields survive update/read");
+            tasks[1].Priority = 9;
+            Check((await service.ReadAsync(configured.SessionId)).Project.Tasks[1].Priority == 4, "MCP scheduling settings detached from caller");
+            await service.SaveAsync(configured.SessionId, configured.Revision);
+            Check((await new ProjectStore().LoadAsync(Path.Combine(root, "Demo/Main.stproj"))).Project.Tasks[1].Priority == 4, "MCP multi task scheduling saved for desktop");
+            var migrationReload = (await new ProjectStore().LoadAsync(Path.Combine(root, "Demo/Main.stproj"))).Project.Hardware.Axes[0];
+            Check(migrationReload.Runtime is { VelocityFeedbackRawPerUnitPerSecond: 123, VelocityOffsetRawPerUnitPerSecond: 456, FollowingErrorRawPerUnit: 100, PositionDemandRawPerUnit: 200 } && migrationReload.MaximumJerk == 12, "MCP save/reopen preserves protection and velocity units");
+            tasks[1].ProgramId = tasks[0].ProgramId;
+            await Reject(() => configuration.ConfigureAsync(configured.SessionId, configured.Revision, configured.Project.Hardware, null, tasks, null), "MCP rejects concurrent program instances");
             Console.WriteLine("PASS MCP workspace revisions, save conflicts, confinement and ProjectStore compatibility");
         }
         finally { Directory.Delete(root, true); }

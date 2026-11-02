@@ -1,0 +1,27 @@
+{
+  "SavedSourceMatches": true,
+  "InsertedCount": 13,
+  "MemoryTests": [
+    "cold",
+    "sequence",
+    "offset",
+    "unhomed",
+    "limits",
+    "feedback-loss",
+    "cancel",
+    "moving",
+    "stop-feedback-loss",
+    "stop-error",
+    "speed30",
+    "speed60",
+    "overspeed"
+  ],
+  "SourceSha256": "FC5E13EAD0B4B0CCDE50C7F12743210812C29A4381A81D232FC5E435D373E0B1",
+  "BuildHash": "0A4D7EAAE308FA9DED9D4DAF144AE098EF1EEEFB4F9ED124A623DA395B2F2746",
+  "DesktopInsertionEquivalent": true,
+  "Downloaded": false,
+  "InsertedThroughMcp": true,
+  "PhysicalMotionTested": false,
+  "Activated": false,
+  "LinuxGeneratedCppCompiled": true
+}

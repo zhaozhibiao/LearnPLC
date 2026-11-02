@@ -1,0 +1,21 @@
+[Unit]
+Description=Restore approved EtherCAT core with axes disabled
+Requires=ethercat.service
+After=ethercat.service
+Before=user@1000.service
+ConditionPathExists=/var/lib/st-workbench-ethercat/active.json
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/stworkbench-ethercat-restore
+RemainAfterExit=yes
+TimeoutStartSec=40
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=yes
+RestrictAddressFamilies=AF_UNIX
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

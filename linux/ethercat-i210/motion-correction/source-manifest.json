@@ -1,0 +1,38 @@
+{
+  "src/EcMotion.Igh/CMakeLists.txt": {
+    "baseSha256": "68c831a74e1af969d48ce4410708fa989f19671759a85d63d7ad695c35537dd4",
+    "patchedSha256": "559aef55d061101924c917b7d98549e900bdafbc73013e57dc4c55c98e808d82"
+  },
+  "src/EcMotion.Igh/include/axis_feedback.hpp": {
+    "baseSha256": "eaca83b3a3b9ca5e394e384bbc5471862c25245cd37a8d9a9b246c9ec43e7da0",
+    "patchedSha256": "f120c7f2d0e22a8c6d1037b158b2581a0d7d32ed396a093d766cc90f665ca7b8"
+  },
+  "src/EcMotion.Igh/src/axis_feedback.cpp": {
+    "baseSha256": "4c5dba10d53bfb4c5f87b612506bb39b400217fa0c54e78ca2a39cd7551829ad",
+    "patchedSha256": "ce4b54c3093fb851faac00188910882a0ff7c6c180fd87e6b950ae87ee4f0013"
+  },
+  "src/EcMotion.Igh/include/cyclic_trace.hpp": {
+    "baseSha256": "181d500bb5b0ee2a9473ee22002bf30f40a7efbdc1c55185f88aea69b77d9f62",
+    "patchedSha256": "5a8ce0513358943bb2a354c79910546ddb86a28e9bf4608426739add9e020d19"
+  },
+  "src/EcMotion.Igh/src/cyclic_trace.cpp": {
+    "baseSha256": "8e6d830b4fd770f834386e3eeb110aa46bb68da457de2cdd2f2c8d66803a21ad",
+    "patchedSha256": "000a3063613b43bc9e40cc88218f6e1b4314665f01f10ff844f5e7d262482a4a"
+  },
+  "src/EcMotion.Igh/src/main.cpp": {
+    "baseSha256": "c9bd5d05342fc38d6db4fa57daaab576e2a8038c0901918a5c3e370b671e8be1",
+    "patchedSha256": "2436584d58d8512dadae054edb3fc81e1d70bf81e598d735ce6cea4703cfc8c8"
+  },
+  "src/EcMotion.Igh/src/io_map_config_selftest.cpp": {
+    "baseSha256": "0e4fe81666ab04317db0a43a5bf0493b601aca81cb70701dcffc200099014354",
+    "patchedSha256": "195975c594dbf8da1786719d0b2ce3645aeb55cffe85ec5f3a931f102d114332"
+  },
+  "src/EcMotion.Igh/src/cyclic_trace_selftest.cpp": {
+    "baseSha256": "bbe84461c747d9b28a67a0b4caeafaa9af5a21bf70a5c374ee1e13b6baed4397",
+    "patchedSha256": "fdb5c5e57fe6cea7fead1f8030bd4076396b76cc65090bedd794bf8879c0a23e"
+  },
+  "src/EcMotion.Igh/src/motion_correction_selftest.cpp": {
+    "baseSha256": null,
+    "patchedSha256": "473de8bc392c18a822bd6df6d22a612d94a6495b9e947b4ef90710e3c0c0206e"
+  }
+}

@@ -15,6 +15,14 @@ var originalSettings = WorkbenchSettings.Load();
 var realDevice = Environment.GetEnvironmentVariable("ST_REAL_APP_VERIFY") == "1";
 if (realDevice) (originalSettings with { Endpoint = "https://localhost:18443" }).Save();
 var window = new MainWindow();
+if (Environment.GetEnvironmentVariable("ST_ENGINEERING_READ_VERIFY") == "1") { EngineeringDeviceReadVerification.Run(); window.Close(); return; }
+if (Environment.GetEnvironmentVariable("ST_SCOPED_TRANSFER_UI_VERIFY") == "1") { ScopedTransferUiTests.Run(); window.Close(); return; }
+if (Environment.GetEnvironmentVariable("ST_HARDWARE_UPLOAD_UI_VERIFY") == "1") { HardwareUploadUiTests.Run(); window.Close(); return; }
+if (Environment.GetEnvironmentVariable("ST_ONLINE_WORKSPACE_UI_VERIFY") == "1") { OnlineWorkspaceUiTests.Run(); window.Close(); return; }
+if (Environment.GetEnvironmentVariable("ST_EDITOR_ONLINE_WRITE_UI_VERIFY") == "1") { EditorOnlineWriteUiTests.Run(); window.Close(); return; }
+if (Environment.GetEnvironmentVariable("ST_ONLINE_WRITE_UI_VERIFY") == "1") { OnlineWriteUiTests.Run(); window.Close(); return; }
+if (Environment.GetEnvironmentVariable("ST_CONFIRMATION_UI_VERIFY") == "1") { ConfirmationDialogUiTests.Run(); window.Close(); return; }
+if (Environment.GetEnvironmentVariable("ST_ETHERCAT_RUNTIME_UI_VERIFY") == "1") { EtherCatRuntimeUiTests.Run(); window.Close(); return; }
 if (Environment.GetEnvironmentVariable("ST_DOWNLOAD_APPLY_UI_VERIFY") == "1") { DownloadApplyUiTests.Run(); window.Close(); return; }
 if (Environment.GetEnvironmentVariable("ST_ENGINEERING_NAVIGATION_UI_VERIFY") == "1") { EngineeringNavigationUiTests.Run(); window.Close(); return; }
 if (Environment.GetEnvironmentVariable("ST_IO_MAPPING_UI_VERIFY") == "1") { IoMappingUiTests.Run(); window.Close(); return; }
@@ -52,7 +60,7 @@ if (Environment.GetEnvironmentVariable("ST_REAL_EXISTING_MONITOR_VERIFY") == "1"
     var sourceBeforeMonitor = window.FindControl<TextEditor>("SourceEditor")!.Text;
     Pump(window.ConnectPrivateRuntimeAsync()); Pump(window.BindDebugAsync());
     for (int i=0;i<3;i++) { Pump(window.PollVariablesAsync()); Thread.Sleep(200); }
-    if (!window.FindControl<TextBox>("MonitorStatus")!.Text!.Contains("真实只读采样") || window.FindControl<TreeView>("InstanceTree")!.ItemCount == 0 || window.FindControl<TrendView>("TrendView")!.Points.Count < 2)
+    if (!window.FindControl<TextBox>("MonitorStatus")!.Text!.Contains("监视已连接") || window.FindControl<TreeView>("InstanceTree")!.ItemCount == 0 || window.FindControl<TrendView>("TrendView")!.Points.Count < 2)
         throw new Exception("Existing active program UI monitor failed");
     window.FindControl<TabControl>("WorkbenchTabs")!.SelectedIndex = 5; Dispatcher.UIThread.RunJobs();
     using (var frame = window.CaptureRenderedFrame()) frame?.Save("artifacts/current-program-monitor.png", Avalonia.Media.Imaging.PngBitmapEncoderOptions.Default);
@@ -125,11 +133,17 @@ if (Environment.GetEnvironmentVariable("ST_INSTRUCTION_COMPILE_VERIFY") == "1")
     Pump(window.SaveAtAsync(Path.GetFullPath("artifacts/instruction-example/Instructions.stproj"))); window.Close();
     Console.WriteLine("PASS all standard library snippets compiled and packaged by real STruC++ compiler"); return;
 }
+    OnlineWorkspaceUiTests.Run();
+    TaskSchedulingUiTests.Run();
     UsabilityTests.Run(window);
+    EditorOnlineWriteUiTests.Run();
     ResourceDragTests.Run();
     MotionCycleUiTests.Run();
     AxisUiTests.Run();
-    ConfigurationUiTests.Run();
+ConfigurationUiTests.Run();
+EtherCatRuntimeUiTests.Run();
+OnlineWriteUiTests.Run();
+ConfirmationDialogUiTests.Run();
     CommunicationUiTests.Run();
     IoMappingUiTests.Run();
     AxisPropertiesUiTests.Run();
@@ -138,13 +152,15 @@ if (Environment.GetEnvironmentVariable("ST_INSTRUCTION_COMPILE_VERIFY") == "1")
     PathNavigationUiTests.Run();
     EngineeringNavigationUiTests.Run();
     DownloadApplyUiTests.Run();
+ScopedTransferUiTests.Run();
+HardwareUploadUiTests.Run();
 PathUiTests.Run(window);
 if (window.FindControl<Button>("StartInlineMonitor") is null || window.FindControl<ComboBox>("MonitorInstance") is null || !window.FindControl<TextBlock>("InlineMonitorStatus")!.Text!.Contains("不可用")) throw new Exception("FAIL: ST editor online controls and truthful initial unavailable status");
 if (window.FindControl<TreeView>("ProjectTree") is not { ItemCount: > 0 }) throw new Exception("FAIL: project tree");
-if (window.FindControl<Button>("DownloadButton") is not { IsEnabled: false }) throw new Exception("FAIL: unverified download must remain unavailable");
+if (window.FindControl<Button>("DownloadButton") is not { IsEnabled: true }) throw new Exception("FAIL: download must be available to build and check current source");
 try { Pump(window.BindDebugAsync()); throw new Exception("FAIL: monitoring without authentication must fail"); }
-catch (InvalidOperationException e) when (e.Message.Contains("请先通过 SSH")) { }
-if (!window.FindControl<TextBox>("MonitorStatus")!.Text!.Contains("请先通过 SSH"))
+catch (InvalidOperationException e) when (e.Message.Contains("请先连接工程服务")) { }
+if (!window.FindControl<TextBox>("MonitorStatus")!.Text!.Contains("请先连接工程服务"))
     throw new Exception("FAIL: monitoring failure reason must appear beside the monitor controls");
 if (window.FindControl<Button>("RunButton") is not { IsEnabled: false } runButton || runButton.Parent is not WrapPanel)
     throw new Exception("FAIL: top toolbar must expose disabled Run until device status is confirmed");
@@ -187,7 +203,7 @@ try
     var buildStatus = window.FindControl<TextBlock>("BuildStatus")!;
     buildStatus.Text = "上一工程编译成功";
     Pump(window.LoadAtAsync(Path.Combine(saveDirectory, "Project.stproj")));
-    if (buildStatus.Text != "尚未编译") throw new Exception("FAIL: stale build success survived project replacement");
+    if (buildStatus.Text?.StartsWith("尚未编译",StringComparison.Ordinal)!=true) throw new Exception("FAIL: stale build success survived project replacement");
     Pump(window.LoadAtAsync(Path.Combine(saveDirectory, "Project.stproj")));
     var currentProject = (StProject)typeof(MainWindow).GetField("project", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(window)!;
     var selectedResource = (ProjectItem)typeof(MainWindow).GetField("selected", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.GetValue(window)!;

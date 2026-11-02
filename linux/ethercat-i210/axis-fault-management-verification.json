@@ -1,0 +1,72 @@
+{
+  "installed": true,
+  "PlcState": "STOPPED",
+  "ActiveProgramUnchanged": true,
+  "Hello": {
+    "autonomousPaths": true,
+    "controllerVersion": "EcMotion.IgH/0.2",
+    "ethercatTopologyFingerprint": "c4f5066aaa5afd0b4edf05bd4f6ac2455422c79f23e10a04d153f4846cd71670",
+    "ioReady": true,
+    "motionReady": true,
+    "pathResources": true,
+    "plcAbiVersion": 3,
+    "plcActionReceipts": true,
+    "plcBlockAbiVersions": [
+      4
+    ],
+    "plcScanBatch": true,
+    "plcTypedIo": true,
+    "protocolVersion": 4,
+    "runtimeReady": true
+  },
+  "Snapshot": {
+    "axes": [
+      {
+        "actualPosition": -4.76837158203125e-06,
+        "actualVelocity": -0.0149993896484375,
+        "fault": null,
+        "homed": false,
+        "motionAborted": false,
+        "motionBusy": false,
+        "motionDone": false,
+        "motionId": 0,
+        "motionTarget": 0.0,
+        "name": "Axis1",
+        "state": "Disabled"
+      }
+    ],
+    "diagnostics": "backend=igh; realtime=true; bus_ready=1; cycles=6216; rejected_commands=0; statusword=0x250; mode=8; error=0x0; commissioning_required=0; software_limit_violation=0; following_error_fault=0; overspeed_fault=0; realtime_bus_ready=1",
+    "digitalInputs": {},
+    "digitalOutputs": {},
+    "ioReady": true,
+    "lastAppliedCommandCycle": 0,
+    "lastAppliedCommandSequence": 0,
+    "motionReady": true,
+    "outputFeedbackAvailable": false,
+    "outputsAtConfiguredSafeState": true,
+    "pathCompletedPoints": 0,
+    "pathExecutionId": 0,
+    "pathStatus": 0,
+    "pathTotalPoints": 0,
+    "runtimeReady": true,
+    "sampleCycle": 6216,
+    "sampleMonotonicNs": 4279208471386,
+    "scalarIo": [],
+    "timestamp": "2026-10-21T12:04:39.066Z"
+  },
+  "Capabilities": {
+    "SchemaVersion": 1,
+    "InterfaceVersion": "workbench-axis-v1",
+    "ManifestSha256": "82c1eead09d07065facca09c4ef8485a7bf185ffa9ebed7209651bc857325ebc",
+    "Backend": "EcMotion",
+    "PID": 2341,
+    "ControllerReady": true,
+    "PhysicalBasicAxis": true,
+    "SimulatorBasicAxis": false,
+    "MotionReady": true,
+    "Continuous": false,
+    "MotionCycleApplied": false
+  },
+  "BinarySha256": "ceae22f11a89623566d0d533737386cb131be29a11ebce52061336ef1e004b98",
+  "PhysicalMotionTested": false
+}
